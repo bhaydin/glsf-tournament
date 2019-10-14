@@ -1,0 +1,40 @@
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+<body>
+  <h1>Enter Fish Data:</h1><br>
+  <input #picture type="file" accept="image/*" (change)="preview(picture.files)"><br>
+  <img [src]="imgURL" height='250' width='250' onerror="this.src='none'"><br><br><br>
+
+  <select class='left' #species>
+    <option value='atlantic'>Atlantic Salmon</option>
+    <option value='brown'>Brown Trout</option>
+    <option value='chinook'>Chinook/King Salmon</option>
+    <option value='coho'>Coho Salmon</option>
+    <option value='trout'>Lake Trout</option>
+    <option value='steel'>Steelhead</option>
+    <option value='perch'>Yellow Perch</option>
+    <option value='walleye'>Walleye</option>
+    <option value='sauger'>Sauger</option>
+  </select><br><br>
+
+
+  <label class='spacing'>Weight: (lbs)</label>
+  <input #weight type=text><label class="required">{{weightLabel}}</label>
+  <br>
+
+
+  <label class='spacing'>Length:  (in)</label>
+  <input #length type=text><label class="required">{{lengthLabel}}</label>
+  <br>
+
+
+  <label class='spacing'>Tag ID:     *</label>
+  <input #tagId type=text><label class="required">{{tagIdLabel}}</label>
+  <br>
+
+
+  <label class='spacing'>Date: *</label>
+  <dp-date-picker #date [(ngModel)]="selectedDate" [config]="dateConfig" theme="dp-material"></dp-date-picker>
+  <br><br>
+
+  <input type=button value="Submit" (click)="send_data(weight.value, length.value, species.value, date, tagId.value)" class="btn btn-dark">
+</body>
