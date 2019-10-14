@@ -22,8 +22,8 @@ namespace ServerDatabase.Controllers
         [HttpPost]
         public FishModel InsertFish([FromBody] FishModel body) {
             var client = new MongoClient(connection);
-            var fishDB = client.GetDatabase("fish_test");
-            var fishCollection = fishDB.GetCollection<BsonDocument>("fish_entries");
+            var fishDB = client.GetDatabase("Fish");
+            var fishCollection = fishDB.GetCollection<BsonDocument>("fish");
             var fish = new BsonDocument {
                 { "Date", body.Date},
                 { "Image", body.Image},
