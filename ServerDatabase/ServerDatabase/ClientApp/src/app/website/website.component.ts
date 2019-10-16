@@ -69,11 +69,11 @@ export class WebsiteComponent implements OnInit {
       this.lengthLabel = 'No Length Entry';
     }
 
-    if (parseFloat(tagId)) {
+    if (parseFloat(tagId) || tagId == '') {
       this.tagIdLabel = '';
       validLength = true;
     }  else {
-    this.tagIdLabel = 'Invalid TagID';
+      this.tagIdLabel = 'Invalid TagID';
     }
     if (validLength && validWeight) {
       const values = {
@@ -82,7 +82,6 @@ export class WebsiteComponent implements OnInit {
         Date: date.inputElementValue, TagID: tagId
       };
       const link = this.baseUrl + 'api/fishes';
-      console.log(values);
       const httpOptions = {
         headers: new HttpHeaders({
           'Content-Type': 'application/json'

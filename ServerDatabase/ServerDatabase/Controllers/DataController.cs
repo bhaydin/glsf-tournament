@@ -34,5 +34,16 @@ namespace ServerDatabase.Controllers
             fishCollection.InsertOne(fish);
             return body;
         }
+
+        [HttpGet]
+        public void GetFish()
+        {
+            var client = new MongoClient(connection);
+            var fishDB = client.GetDatabase("Fish");
+            var fishCollection = fishDB.GetCollection<BsonDocument>("fish");
+            var elements = fishCollection.ToJson();
+            Console.WriteLine(elements);
+       //    return fish;
+        }
     }
 }

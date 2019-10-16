@@ -1,3 +1,24 @@
 <div>
   <h1>Home Page</h1>
 </div>
+
+<div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Species</th>
+        <th>Length</th>
+        <th>Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr #table ng-repeat="fish in fishes">
+        <td><img [src]={{fish.Image}} height="100" width="100"></td>
+        <td><label>{{fish.Species}}</label></td>
+        <td><label>{{fish.Length}}</label></td>
+        <td><label>{{fish.Weight}}</label></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

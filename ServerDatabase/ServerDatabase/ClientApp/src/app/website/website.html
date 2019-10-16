@@ -2,7 +2,7 @@
 <body>
   <h1>Enter Fish Data:</h1><br>
   <input #picture type="file" accept="image/*" (change)="preview(picture.files)"><br>
-  <img [src]="imgURL" height='250' width='250' onerror="this.src='none'"><br><br><br>
+  <img [src]="imgURL" height='300' width='300'><br><br><br>
 
   <select class='left' #species>
     <option value='atlantic'>Atlantic Salmon</option>
