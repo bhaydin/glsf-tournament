@@ -18,9 +18,10 @@ select{
   margin-right: 4px;
 }
 
-img{
-  max-width:250px;
-  max-height:250px;
-  width:auto;
-  height:auto;
+img {
+  max-width: 250px;
+  max-height: 250px;
+  width: auto;
+  height: auto;
 }
+

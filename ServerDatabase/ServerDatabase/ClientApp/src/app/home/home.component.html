@@ -1,24 +1,23 @@
-<div>
-  <h1>Home Page</h1>
-</div>
-
-<div>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Image</th>
-        <th>Species</th>
-        <th>Length</th>
-        <th>Weight</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr #table ng-repeat="fish in fishes">
-        <td><img [src]={{fish.Image}} height="100" width="100"></td>
-        <td><label>{{fish.Species}}</label></td>
-        <td><label>{{fish.Length}}</label></td>
-        <td><label>{{fish.Weight}}</label></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<h1>Fish Entries</h1>
+<table class="table table-bordered table-hover table-sm">
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Species</th>
+      <th>Weight</th>
+      <th>Length</th>
+      <th>Tag ID</th>
+      <th>Date Caught</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let fish of fishes">
+      <td><img src="{{ fish.Image }}" height="80" width="80" /></td>
+      <td>{{ fish.Species }}</td>
+      <td>{{ fish.Weight }}</td>
+      <td>{{ fish.Length }}</td>
+      <td>{{ fish.TagID }}</td>
+      <td>{{ fish.Date }}</td>
+    </tr>
+  </tbody>
+</table>

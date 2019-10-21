@@ -29,6 +29,7 @@
     "core-js": "^2.5.4",
     "jquery": "3.3.1",
     "ng2-date-picker": "^2.12.0",
+    "ngx-webcam": "^0.2.6",
     "node-angular-http-client": "^1.1.7",
     "popper.js": "^1.14.3",
     "rxjs": "^6.0.0",

@@ -1,19 +1,24 @@
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 <body>
   <h1>Enter Fish Data:</h1><br>
-  <input #picture type="file" accept="image/*" (change)="preview(picture.files)"><br>
-  <img [src]="imgURL" height='300' width='300'><br><br><br>
+  <button type="button" (click)="takePicture(cam)">{{webcamLabel}}</button>
+  <div #webcam [hidden]="hideCam">
+    <webcam #cam height="300" width="300" allowCameraSwitch="true"></webcam><br>
+    <button type="button" (click)="swapCamera(cam)">Switch Camera</button><br>
+  </div>
+  <input #picture type="file" accept="image/*" (change)="preview(picture.files)">
+  <img [src]="imgURL" height='300' width='300' onload="this.style.display=''" onerror="this.style.display='none'" /><br><br>
 
   <select class='left' #species>
-    <option value='atlantic'>Atlantic Salmon</option>
-    <option value='brown'>Brown Trout</option>
-    <option value='chinook'>Chinook/King Salmon</option>
-    <option value='coho'>Coho Salmon</option>
-    <option value='trout'>Lake Trout</option>
-    <option value='steel'>Steelhead</option>
-    <option value='perch'>Yellow Perch</option>
-    <option value='walleye'>Walleye</option>
-    <option value='sauger'>Sauger</option>
+    <option value='Atlantic Salmon'>Atlantic Salmon</option>
+    <option value='Brown Trout'>Brown Trout</option>
+    <option value='Chinook Salmon'>Chinook/King Salmon</option>
+    <option value='Coho Salmon'>Coho Salmon</option>
+    <option value='Lake Trout'>Lake Trout</option>
+    <option value='Steelhead'>Steelhead</option>
+    <option value='Yellow Perch'>Yellow Perch</option>
+    <option value='Walleye'>Walleye</option>
+    <option value='Sauger'>Sauger</option>
   </select><br><br>
 
 
@@ -33,8 +38,8 @@
 
 
   <label class='spacing'>Date: *</label>
-  <dp-date-picker #date [(ngModel)]="selectedDate" [config]="dateConfig" theme="dp-material"></dp-date-picker>
+  <dp-date-picker #date [config]="dateConfig" theme="dp-material" [placeholder]="currentDate"></dp-date-picker>
   <br><br>
 
-  <input type=button value="Submit" (click)="send_data(weight.value, length.value, species.value, date, tagId.value)" class="btn btn-dark">
+  <input type="button" value="Submit" (click)="send_data(weight.value, length.value, species.value, date, tagId.value)" [class]="subStyle">
 </body>

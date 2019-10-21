@@ -9,6 +9,7 @@ import { WebsiteComponent } from './website/website.component';
 import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
 import { TournamentsComponent } from './tournaments/tournaments.component';
+import { WebcamModule } from 'ngx-webcam';
 
 @NgModule({
   declarations: [
@@ -18,18 +19,20 @@ import { TournamentsComponent } from './tournaments/tournaments.component';
     HomeComponent,
     TournamentsComponent
   ],
-  imports: [
+    imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     FormsModule,
     DpDatePickerModule,
     HttpClientModule,
+    WebcamModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'data', component: WebsiteComponent },
       { path: 'tournaments', component: TournamentsComponent },
-    ])
+    ],
+        { onSameUrlNavigation: 'reload' })
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
