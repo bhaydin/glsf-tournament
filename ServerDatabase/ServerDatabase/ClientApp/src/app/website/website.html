@@ -43,7 +43,7 @@
     <dp-date-picker #date [(ngModel)]="selectedDate" [config]="dateConfig" theme="dp-material"></dp-date-picker>
     <br><br>
 
-    <input type=button id="predict-button" value="Submit" (click)="predict(weight.value, length.value, species.value, date, tagId.value)" class="btn btn-dark">
+    <input type=button id="predict-button" value="Submit" (click)="send_data(weight.value, length.value, species.value, date, tagId.value)" class="btn btn-dark">
 
     <div class="col">
         <h2 class="ml-3">Predictions</h2>

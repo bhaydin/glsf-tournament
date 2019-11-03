@@ -72,7 +72,8 @@ export class WebsiteComponent implements OnInit {
     } 
   }
 
-  send_data(weight, length, species, date, tagId) {
+    send_data(weight, length, species, date, tagId) {
+        console.log("Sending data");
     let validLength = false;
     let validWeight = false;
     if (weight !== '') {
@@ -104,7 +105,7 @@ export class WebsiteComponent implements OnInit {
     this.tagIdLabel = 'Invalid TagID';
     }
     if (validLength && validWeight) {
-      const values = {
+      let values = {
         Weight: weight, Length: length,
         Species: species, Image: this.base64,
         Date: date.inputElementValue, TagID: tagId
@@ -115,14 +116,15 @@ export class WebsiteComponent implements OnInit {
         headers: new HttpHeaders({
           'Content-Type': 'application/json'
         })
-      }
-      //this.http.post(link, values, httpOptions).subscribe();
-      }
+        }
 
-      this.predict(weight, length, species, date, tagId);
+        console.log(values);
+        this.predict(link, values, httpOptions);
+      }
   }
 
-    async predict(weight, length, species, date, tagId) {
+    async predict(link, values, httpOptions) {
+        console.log(values);
         console.log("Predicting");
 
         let image = $("#selected-image").get(0); //<HTMLImageElement> this.dataURL;
@@ -164,14 +166,23 @@ export class WebsiteComponent implements OnInit {
         console.log("making prediction list");
         $("#prediction-list").empty();
         let prediction = predictions[0];
+        let valid = false;
 
         if (prediction >= .5) {
             $("#prediction-list").append(`<li>Fish: ${prediction}</li>`);
+            valid = true;
         } else {
             $("#prediction-list").append(`<li>Not Fish: ${prediction}</li>`);
         }
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         console.log("Made predictions");
+
+        console.log(values);
+        values.Valid = valid;
+        console.log(values);
+
+        this.http.post(link, values, httpOptions).subscribe();
+        console.log("Sent data to DB");
     }
 }
