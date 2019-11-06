@@ -1,3 +1,4 @@
+import { RegisterComponent } from './register/register.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +10,7 @@ import { WebsiteComponent } from './website/website.component';
 import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
 import { TournamentsComponent } from './tournaments/tournaments.component';
+import { LoginComponent } from './login/login.component';
 import { WebcamModule } from 'ngx-webcam';
 
 @NgModule({
@@ -17,7 +19,9 @@ import { WebcamModule } from 'ngx-webcam';
     WebsiteComponent,
     MenuComponent,
     HomeComponent,
-    TournamentsComponent
+    TournamentsComponent,
+    LoginComponent,
+    RegisterComponent
   ],
     imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -29,6 +33,8 @@ import { WebcamModule } from 'ngx-webcam';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'data', component: WebsiteComponent },
       { path: 'tournaments', component: TournamentsComponent },
+      { path: 'login', component: LoginComponent },
+      { path: 'register', component: RegisterComponent }
     ],
         { onSameUrlNavigation: 'reload' })
   ],
