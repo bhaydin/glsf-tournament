@@ -1,4 +1,5 @@
 export class Fish {
+
   //Names
 	public static fishes = [
 		"Chinook Salmon",

@@ -31,5 +31,12 @@ namespace ServerDatabase.Controllers
 			List<Fish> allFishes = await _context.Fishes.ToListAsync();
 			return JsonConvert.SerializeObject(allFishes);
 		}
+
+		[HttpGet("{queryBy}")]
+		public async Task<string> GetFishQueryBy(string queryBy)
+		{
+			List<Fish> allFishes = await _context.Fishes.ToListAsync();
+			return JsonConvert.SerializeObject(allFishes);
+		}
 	}
 }
