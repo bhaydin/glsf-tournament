@@ -1,0 +1,47 @@
+<div class="yellow">
+  <h2 class="moverightbutton">Create Fish Entry</h2><br />
+  <label class='spacing'>Species:</label>
+  <select #species class="standardwidth">
+    <option value='Atlantic Salmon'>Atlantic Salmon</option>
+    <option value='Brown Trout'>Brown Trout</option>
+    <option value='Chinook Salmon'>Chinook Salmon</option>
+    <option value='Coho Salmon'>Coho Salmon</option>
+    <option value='Lake Trout'>Lake Trout</option>
+    <option value='Rainbow Trout'>Rainbow Trout</option>
+    <option value='Sauger'>Sauger</option>
+    <option value='Walleye'>Walleye</option>
+    <option value='Yellow Perch'>Yellow Perch</option>
+  </select><br /><br />
+
+  <label class='spacing'>Weight: (lbs)</label>
+  <input #weight type=text><label class="required">{{weightLabel}}</label><br /><br />
+
+  <label class='spacing'>Length: (mm)</label>
+  <input #length type=text><label class="required">{{lengthLabel}}</label><br /><br />
+
+  <label class="spacing">Has Tag: *</label>
+  <input #hasTag (change)="tagged(hasTag.checked)" type=checkbox><br />
+
+  <label class="spacing">Sample Number: *</label>
+  <input #sampleNumber [class]='sampleStyle' type=text [disabled]="!isTagged"><label class="required">{{sampleLabel}}</label><br /><br />
+
+  <label class='spacing'>Location: *</label>
+  <input #location type=text><br /><br />
+
+  <label class='spacing'>Station Number: </label>
+  <input #stationNumber type=text><br /><br />
+  <mat-datepicker-toggle matSuffix [for]="picker" class="moveright"></mat-datepicker-toggle>
+  <mat-datepicker #picker disabled="false" ></mat-datepicker>
+  <input [matDatepicker]="picker" [value]="currentDate"  [max]="currentDate" disabled>
+  <br /><br /><br />
+
+  <button (click)="openDialog()" class="moverightbutton">Take Image</button>
+  <label class="leftrightmargin">or</label>
+  <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
+  <button (click)="picture.click()">Choose Image</button><br /><br />
+  <div class="positioning">
+    <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" /><br /><br /><br />
+    <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
+  </div>
+  <button (click)="send_data(weight.value, length.value, species.value, picker._validSelected, sampleNumber.value, location.value, stationNumber.value)" [class]="subStyle">Submit</button>
+</div>
