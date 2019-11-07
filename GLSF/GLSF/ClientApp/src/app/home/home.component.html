@@ -2,7 +2,40 @@
 <h1 class="yellowTitle">Fish Entries</h1>
 <br>
 <br>
-<Label class="yellowHeader">Search Data: </Label>
+<div class="dropdown">
+  <button id="speciesButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+    Fish Species
+  </button>
+  <ul id="speciesDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+    <li role="presentation"><a role="menuitem" href="#">All Species</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Atlantic Salmon</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Brown Trout</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Chinook Salmon</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Coho Salmon</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Lake Trout</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Rainbow Trout</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Sauger</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Walleye</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Yellow Perch</a></li>
+  </ul>
+</div>
+<br />
+<br />
+<div class="dropdown">
+  <button id="filterButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+    Apply Filters
+  </button>
+  <ul id="filterDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+    <li role="presentation"><a role="menuitem" href="#">None</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Length: High to Low</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Length: Low to High</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Weight: High to Low</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Weight: Low to High</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Sample Number</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Date Caught</a></li>
+  </ul>
+</div>
+<br />
 <div class="table-wrapper-scroll-y my-custom-scrollbar">
   <table class="table table-bordered table-hover table-sm mb-0">
     <thead class="yellowHeader">
@@ -17,7 +50,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let fish of fishes" class="yellowFont">
-        <td><img src="{{ fish.Image }}"/></td>
+        <td><img src="{{ fish.Image }}" /></td>
         <td>{{ fish.Species }}</td>
         <td>{{ fish.Weight }}</td>
         <td>{{ fish.Length }}</td>
