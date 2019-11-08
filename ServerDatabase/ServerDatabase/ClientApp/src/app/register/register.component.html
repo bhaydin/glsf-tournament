@@ -1,0 +1,21 @@
+<h1>Register</h1><br>
+<div class="col-xs-4">
+    <label>First Name: </label><br>
+    <input #firstnameInput class="form-control"  type="text" ><br>
+    <br>
+    <label>Last Name: </label><br>
+    <input #lastnameInput class="form-control" type="text" ><br>
+    <br>
+    <label>Username: </label><br>
+    <input #usernameInput class="form-control" type="text" ><br>
+    <br>
+    <label>Email: </label><br>
+    <input #emailInput class="form-control" type="text"><br>
+    <br>
+    <label>Password: </label><br>
+    <input #passwordInput class="form-control" type="text" type="password"><br>
+    <button style="margin-right: 10px;" class="btn btn-primary" (click)="submitLogin(usernameInput.value)" >Register</button>
+    <a class="" [routerLink]='["/login"]'>Cancel</a>
+
+</div>
+<label #testlabel>{{random}}</label>
