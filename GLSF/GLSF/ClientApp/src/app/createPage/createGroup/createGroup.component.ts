@@ -11,7 +11,7 @@ import { Router } from "@angular/router"
 })
 
 export class CreateGroupComponent implements OnInit {
-	tournaments: Array<Tournament> = [];
+	private tournaments: Array<Tournament> = [];
   nameLabel = '';
 	idLabel = '';
 	subStyle = "normal";

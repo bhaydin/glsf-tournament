@@ -26,7 +26,6 @@ export class DataEntryComponent implements OnInit {
 	subStyle = "normal";
 	currentDate: Date = new Date();
 	fishes = Fish.fishes;
-	dataURL: any;
 	file: any;
 	model: any;
 	modelLocation = "../assets/FishModel/FishClassifier/model.json";
@@ -34,8 +33,9 @@ export class DataEntryComponent implements OnInit {
 		0: 'Fish',
 		1: 'Not a fish',
 	};
-	tournaments: Array<Tournament> = [];
-	groups: Array<BoatGroup> = [];
+	potato = '';
+	private tournaments: Array<Tournament> = [];
+	private groups: Array<BoatGroup> = [];
 
 	constructor(private dialog: MatDialog, private pipe: DatePipe, private router: Router, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
 
@@ -46,13 +46,7 @@ export class DataEntryComponent implements OnInit {
   }
 
   async loadModel() {
-    console.log("Loading model");
-    const var1 = await fetch(this.modelLocation);
-    console.log(var1);
     this.model = await tf.loadModel(this.modelLocation);
-    console.log("Model: ");
-    console.log(this.model);
-    console.log("");
   }
 
   	private getTournaments() {
@@ -113,9 +107,7 @@ export class DataEntryComponent implements OnInit {
       reader.onload = () => {
         this.base64 = reader.result.toString();
         this.imageAvailable = true;
-        this.dataURL = reader.result;
       };
-
 		}
 	}
 
@@ -128,7 +120,7 @@ export class DataEntryComponent implements OnInit {
 		this.isTagged = isTagged;
 	}
 
-	createFish(weight, length, species, date, sampleNumber, location, stationNumber, tournamentId, boatId) {
+	async createFish(weight, length, species, date, sampleNumber, location, stationNumber, tournamentId, boatId) {
     const validLength = this.checkLength(length, species);
     const validWeight = this.checkWeight(weight, species);
 		let validID = true;
@@ -140,6 +132,11 @@ export class DataEntryComponent implements OnInit {
 		if (location === '') {
 			location = null;
 		}
+		let validFish = true;
+		if (this.base64 != null) {
+			validFish = await this.predict();
+		}
+
 		if (validLength && validWeight && validID && tournamentId != -1 && boatId != -1) {
 			const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
 			var fish = {
@@ -152,7 +149,7 @@ export class DataEntryComponent implements OnInit {
 				HasTag: this.isTagged,
 				Location: location,
 				StationNumber: parseFloat(stationNumber),
-				isValid: true,     //Ethan modify this variable based on model
+				isValid: validFish,
 				TournamentId: parseFloat(tournamentId),
 				BoatId: parseFloat(boatId),
 			};
@@ -162,59 +159,49 @@ export class DataEntryComponent implements OnInit {
   }
 
 	private checkSampleNumber(sampleNumber) {
-		if (!(sampleNumber === '')) {
-			if (parseFloat(sampleNumber)) {
-				sampleNumber = parseFloat(sampleNumber);
-				if (sampleNumber >= 0) {
-		    	this.sampleLabel = '';
-        } else {
-		     	this.sampleLabel = 'TagID Negative';
-          return false;
-        }
-      } else {
-		     this.sampleLabel = 'Invalid TagID';
-        return false;
-      }
-    }
+		const sampleNum = parseFloat(sampleNumber);
+		if (sampleNumber == '') {
+			this.sampleLabel = 'Must enter sample number';
+			return false;
+		} else if (isNaN(sampleNumber)) {
+			this.sampleLabel = 'Sample number must be a number';
+			return false;
+		} else if (sampleNum < 0) {
+			this.sampleLabel = 'Sample number must be positive';
+			return false;
+		}
+		this.sampleLabel = '';
     return true;
   }
 
-  private checkLength(length, species) {
-    if (length !== '') {
-      if (!isNaN(length)) {
-        length = parseFloat(length);
-		  if (length > 0 && length < Fish.maxLengths[species]) {
-          this.lengthLabel = '';
-          return true;
-        } else {
-          this.lengthLabel = 'Length is out of standard bounds';
-        }
-      } else {
-        this.lengthLabel = 'Invalid Length';
-      }
-    } else {
-      this.lengthLabel = 'No Length Entry';
-    }
-    return false;
+	private checkLength(length, species) {
+		if (length == '') {
+			this.lengthLabel = 'Enter a length';
+			return false;
+		} else if (isNaN(length)) {
+			this.lengthLabel = 'Invalid length';
+			return false;
+		} else if (length < 0 && length > Fish.maxLengths[species]) {
+			this.lengthLabel = 'Length out of bounds';
+			return false;
+		}
+		this.lengthLabel = '';
+		return true;
   }
 
-  private checkWeight(weight, species) {
-    if (weight !== '') {
-      if (!isNaN(weight)) {
-        weight = parseFloat(weight);
-		  if (weight > 0 && weight < Fish.maxWeights[species]) {
-          this.weightLabel = '';
-          return true;
-        } else {
-          this.weightLabel = 'Weight is out of standard bounds';
-        }
-      } else {
-        this.weightLabel = 'Invalid Weight';
-      }
-    } else {
-      this.weightLabel = 'No Weight Entry';
-    }
-    return false;
+	private checkWeight(weight, species) {
+		if (weight == '') {
+			this.weightLabel = 'Enter a weight';
+			return false;
+		} else if (isNaN(weight)) {
+			this.weightLabel = 'Invalid weight';
+			return false;
+		} else if (weight < 0 && weight > Fish.maxWeights[species]) {
+			this.weightLabel = 'Weight out of bounds';
+			return false;
+		}
+		this.weightLabel = '';
+		return true;
   }
 
   private sendRequest(values) {
@@ -224,9 +211,7 @@ export class DataEntryComponent implements OnInit {
           'Content-Type': 'application/json'
       })
     }
-
-    console.log(values);
-    this.predict(link, values, httpOptions);
+	  this.http.post<Fish>(link, values, httpOptions).subscribe();
   }
 
   private async reload() {
@@ -241,26 +226,14 @@ export class DataEntryComponent implements OnInit {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  async predict(link, values, httpOptions) {
-    console.log(values);
-    console.log("Predicting");
-
-    let image = $("#selected-image").get(0); //<HTMLImageElement> this.dataURL;
-    console.log(image);
-
-    var canvas = <HTMLCanvasElement>document.getElementById("canvas"),
-      ctx = canvas.getContext("2d"),
-      img = <HTMLImageElement>(new Image()),
-      w = canvas.width / 3;
-
-    ctx.drawImage(<HTMLImageElement>image, 0, 0);
-    var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    var data = imgData.data;
-    console.log("Image data");
-    console.log(data.length);
-    console.log(canvas.width);
-    console.log(canvas.height);
-    console.log(data);
+	private async predict() {
+		let canvas = <HTMLCanvasElement>document.getElementById("canvas");
+		let ctx = canvas.getContext("2d");
+		let image = new Image();
+		image.src = this.base64;
+    ctx.drawImage(image, 0, 0);
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let data = imgData.data;
 
     for (var i = 0; i < data.length; i += 4) {
       data[i] = data[i] / 255.0;   // Red
@@ -273,32 +246,13 @@ export class DataEntryComponent implements OnInit {
       .toFloat()
       .expandDims();
 
-    console.log(tensor.shape);
-
-    console.log("getting predictions from model");
     let predictions = await this.model.predict(tensor).data();
-    console.log("got predictions");
-    console.log(predictions);
-
-
-    console.log("making prediction list");
-    $("#prediction-list").empty();
-    let prediction = predictions[0];
-    let valid = false;
-
+		let prediction = predictions[0];
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (prediction >= .8) {
-      valid = true;
-    }
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    console.log("Made predictions");
-
-    console.log(values);
-    values.Valid = valid;
-    console.log(values);
-
-    this.http.post<Fish>(link, values, httpOptions).subscribe();
-    console.log("Sent data to DB");
+		  return await true;
+		}
+		return false;
   }
 }
 

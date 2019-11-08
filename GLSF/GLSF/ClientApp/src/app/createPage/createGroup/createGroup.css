@@ -3,9 +3,12 @@
   margin-left: 29px;
 }
 
-.split {
+.splitleft {
   float: left;
   width: 50%;
+  position: fixed;
+  left: 50px;
+  color: #ffe600;
 }
 
 .spacing {
@@ -15,10 +18,6 @@
   margin-right: 8px;
 }
 
-.left {
-  color: #ffe600;
-  right: 80px;
-}
 
 .standardwidth {
   width: 150px;

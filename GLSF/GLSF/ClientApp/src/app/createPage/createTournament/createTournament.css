@@ -2,14 +2,13 @@
   color: red;
   margin-left: 29px;
 }
-.right {
-  color: #ffe600;
-  right: 0;
-}
 
-.split {
+.splitright {
   float: right;
   width: 50%;
+  position: fixed;
+  color: #ffe600;
+  right: -100px;
 }
 
 .spacing {
@@ -21,6 +20,10 @@
 
 .standardwidth {
   width: 150px;
+}
+
+.short{
+width: 110px;
 }
 
 button, input, select {
