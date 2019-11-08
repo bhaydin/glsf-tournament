@@ -1,6 +1,6 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Fish } from '../fishModel/fish.model';
+import { Fish, Tournament, BoatGroup } from '../models/dataSchemas';
 import { Router } from "@angular/router"
 import { DatePipe } from '@angular/common';
 import { CameraDialog } from './camera';
@@ -14,19 +14,63 @@ import { MatDialog } from '@angular/material';
 	providers: [DatePipe]
 })
 
-export class DataEntryComponent {
+export class DataEntryComponent implements OnInit {
   weightLabel = '';
   lengthLabel = '';
 	sampleLabel = '';
-	base64 = '';
+	base64 = null;
 	isTagged = false;
 	imageAvailable = false;
 	subStyle = "normal";
-	sampleStyle = "disabled";
 	currentDate: Date = new Date();
-  fishes = Fish.fishes;
+	fishes = Fish.fishes;
+	tournaments: Array<Tournament> = [];
+	groups: Array<BoatGroup> = [];
 
 	constructor(private dialog: MatDialog, private pipe: DatePipe, private router: Router, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
+
+	ngOnInit() {
+		this.getGroups();
+		this.getTournaments();
+
+	}
+
+	private getTournaments() {
+		const link = this.baseUrl + 'api/database/tournament';
+		this.http.get<Tournament[]>(link).subscribe(body =>
+			body.forEach((entity) => {
+				this.tournaments.push(entity);
+			})
+		);
+		if (this.tournaments.length) {
+			const tournament: Tournament = {
+				StartDate: 'N/A',
+				EndDate: 'N/A',
+				Name: 'No Tournaments Available',
+				Location: 'N/A',
+				Id: -1,
+			}
+			this.tournaments.push(tournament)
+		}
+	}
+
+	private getGroups() {
+		const link = this.baseUrl + 'api/database/group';
+		this.http.get<BoatGroup[]>(link).subscribe(body =>
+			body.forEach((entity) => {
+				this.groups.push(entity);
+			})
+		);
+		if (this.groups.length) {
+			const group: BoatGroup = {
+				Name: 'No groups available',
+				AgeGroup: 'N/A',
+				Id: -1,
+				TournamentId: -1,
+			}
+			this.groups.push(group)
+		}
+	}
 
 	openDialog(): void {
 		const dialogRef = this.dialog.open(CameraDialog, {
@@ -53,7 +97,7 @@ export class DataEntryComponent {
 	}
 
 	removeImage() {
-		this.base64 = '';
+		this.base64 = null;
 		this.imageAvailable = false;
 	}
 
@@ -61,7 +105,7 @@ export class DataEntryComponent {
 		this.isTagged = isTagged;
 	}
 
-	send_data(weight, length, species, date, sampleNumber, location, stationNumber) {
+	createFish(weight, length, species, date, sampleNumber, location, stationNumber, tournamentId, boatId) {
     const validLength = this.checkLength(length, species);
     const validWeight = this.checkWeight(weight, species);
 		let validID = true;
@@ -73,12 +117,8 @@ export class DataEntryComponent {
 		if (location === '') {
 			location = null;
 		}
-		if (this.base64 === '') {
-			this.base64 = null;
-		}
-		if (validLength && validWeight && validID) {
+		if (validLength && validWeight && validID && tournamentId != -1 && boatId != -1) {
 			const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
-
 			var fish = {
 				Weight: parseFloat(weight),
 				Length: parseFloat(length),
@@ -88,7 +128,10 @@ export class DataEntryComponent {
 				SampleNumber: parseFloat(sampleNumber),
 				HasTag: this.isTagged,
 				Location: location,
-				StationNumber: parseFloat(stationNumber)
+				StationNumber: parseFloat(stationNumber),
+				isValid: true,     //Ethan modify this variable based on model
+				TournamentId: parseFloat(tournamentId),
+				BoatId: parseFloat(boatId),
 			};
 			this.sendRequest(fish);
       this.reload();
@@ -152,7 +195,7 @@ export class DataEntryComponent {
   }
 
   private sendRequest(values) {
-    const link = this.baseUrl + 'api/fishes';
+    const link = this.baseUrl + 'api/database/fish';
     const httpOptions = {
       headers: new HttpHeaders({
           'Content-Type': 'application/json'

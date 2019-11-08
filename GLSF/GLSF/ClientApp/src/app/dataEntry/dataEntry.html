@@ -1,5 +1,16 @@
 <div class="yellow">
   <h2 class="moverightbutton">Create Fish Entry</h2><br />
+
+  <label class='spacing'>Available Tournaments:</label>
+  <select #tournament class="standardwidth">
+    <option *ngFor="let tournament of tournaments" value="{{tournament.Id}}">{{tournament.Name}}</option>
+  </select><br /><br />
+
+  <label class='spacing'>Registered Groups:</label>
+  <select #group class="standardwidth">
+    <option *ngFor="let group of groups" value="{{group.Id}}">{{group.Name}}</option>
+  </select><br /><br />
+
   <label class='spacing'>Species:</label>
   <select #species class="standardwidth">
     <option value='Atlantic Salmon'>Atlantic Salmon</option>
@@ -31,8 +42,8 @@
   <label class='spacing'>Station Number: </label>
   <input #stationNumber type=text><br /><br />
   <mat-datepicker-toggle matSuffix [for]="picker" class="moveright"></mat-datepicker-toggle>
-  <mat-datepicker #picker disabled="false" ></mat-datepicker>
-  <input [matDatepicker]="picker" [value]="currentDate"  [max]="currentDate" disabled>
+  <mat-datepicker #picker disabled="false"></mat-datepicker>
+  <input [matDatepicker]="picker" [value]="currentDate" [max]="currentDate" disabled>
   <br /><br /><br />
 
   <button (click)="openDialog()" class="moverightbutton">Take Image</button>
@@ -43,5 +54,5 @@
     <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" /><br /><br /><br />
     <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
   </div>
-  <button (click)="send_data(weight.value, length.value, species.value, picker._validSelected, sampleNumber.value, location.value, stationNumber.value)" [class]="subStyle">Submit</button>
+  <button (click)="createFish(weight.value, length.value, species.value, picker._validSelected, sampleNumber.value, location.value, stationNumber.value, tournament.value, group.value)" [class]="subStyle">Submit</button>
 </div>
