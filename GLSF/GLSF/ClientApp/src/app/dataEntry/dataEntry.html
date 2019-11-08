@@ -15,15 +15,7 @@
 
   <label class='spacing'>Species:</label>
   <select #species class="standardwidth">
-    <option value='Atlantic Salmon'>Atlantic Salmon</option>
-    <option value='Brown Trout'>Brown Trout</option>
-    <option value='Chinook Salmon'>Chinook Salmon</option>
-    <option value='Coho Salmon'>Coho Salmon</option>
-    <option value='Lake Trout'>Lake Trout</option>
-    <option value='Rainbow Trout'>Rainbow Trout</option>
-    <option value='Sauger'>Sauger</option>
-    <option value='Walleye'>Walleye</option>
-    <option value='Yellow Perch'>Yellow Perch</option>
+    <option *ngFor="let fish of fishes" value='{{fish}}'>{{fish}}</option>
   </select><br /><br />
 
   <label class='spacing'>Weight: (lbs)</label>

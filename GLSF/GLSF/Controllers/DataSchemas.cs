@@ -19,7 +19,6 @@ namespace GLSF.Controllers
 			});
 
 		}
-
 		public DbSet<Fish> Fish { get; set; }
 		public DbSet<Tournament> Tournament { get; set; }
 		public DbSet<BoatGroup> BoatGroup { get; set; }
@@ -37,12 +36,12 @@ namespace GLSF.Controllers
 		public string? Location { set; get; }
 		public int StationNumber { set; get; }
 		public bool isValid { set; get; }
-		[ForeignKey("TournamentId"), Column(Order = 1)]
 		public int TournamentId { get; set; }
-		[ForeignKey("BoatId"), Column(Order = 0)]
 		public int BoatId { get; set; }
 		[Key]
 		public int Id { set; get; }
+		[ForeignKey("BoatId, TournamentId")]
+		public virtual BoatGroup BoatGroup { get; set; }
 	}
 
 	public class Tournament
@@ -62,6 +61,7 @@ namespace GLSF.Controllers
 		[Key, Column(Order = 0)]
 		public int Id { get; set; }
 		[Key, Column(Order = 1)]
+
 		public int TournamentId { get; set; }
 		[ForeignKey("TournamentId")]
 		public Tournament Tournament { get; set; }

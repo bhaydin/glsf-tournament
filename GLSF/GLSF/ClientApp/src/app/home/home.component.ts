@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, HostListener } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Fish } from '../models/dataSchemas';
 import * as $ from 'jquery';

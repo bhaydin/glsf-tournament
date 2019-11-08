@@ -40,8 +40,8 @@ export class DataEntryComponent implements OnInit {
 	constructor(private dialog: MatDialog, private pipe: DatePipe, private router: Router, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
 
 	ngOnInit() {
-			this.getGroups();
-			this.getTournaments();
+		this.getGroups();
+		this.getTournaments();
     this.loadModel();
   }
 
@@ -62,6 +62,7 @@ export class DataEntryComponent implements OnInit {
 				this.tournaments.push(entity);
 			})
 		);
+
 		if (this.tournaments.length) {
 			const tournament: Tournament = {
 				StartDate: 'N/A',
@@ -115,7 +116,6 @@ export class DataEntryComponent implements OnInit {
         this.dataURL = reader.result;
       };
 
-      console.log("Read file");
 		}
 	}
 
