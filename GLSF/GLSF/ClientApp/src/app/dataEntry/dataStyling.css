@@ -1,0 +1,84 @@
+.required{
+  color: red;
+  margin-left: 29px;
+}
+
+.spacing {
+  width: 130px;
+  white-space: normal;
+  text-align: right;
+  margin-right: 8px;
+}
+
+.standardwidth{
+  width: 150px;
+}
+
+button, input, select {
+  background-color: #010382;
+  border: 2px solid #ffe600;
+  color: #ffe600;
+}
+
+.normal {
+  background-color: #000000;
+  border: 2px solid #ffe600;
+  color: #ffe600;
+  height: 30px;
+  width: 100px;
+  border-radius: 4px;
+}
+
+.moveright {
+  margin-left: 98px;
+}
+
+.leftrightmargin{
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.moverightbutton{
+  margin-left:45px;
+}
+
+.success {
+  background-color: #4dff00;
+  border: 2px solid #15b800;
+  color: #ffffff;
+  border-radius: 4px;
+  height: 30px;
+  width: 100px;
+}
+
+.yellow {
+  color: #ffe600;
+}
+
+input:disabled {
+  border: 2px solid #5c5c5c;
+}
+
+img {
+  width: auto;
+  height: auto;
+  max-height: 250px;
+  max-width: 250px;
+}
+
+.positioning {
+  position: relative;
+}
+
+.removebutton {
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  top: -15px;
+  left: 30px;
+  color: #0f0f0f;
+  text-align: center;
+  border-radius: 50%;
+  border: 2px solid #0f0f0f;
+  background-color: rgba(222,222,222,0.7);
+}

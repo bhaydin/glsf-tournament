@@ -1,0 +1,50 @@
+.required{
+  color: red;
+  margin-left: 29px;
+}
+
+.split {
+  float: left;
+  width: 50%;
+}
+
+.spacing {
+  width: 130px;
+  white-space: normal;
+  text-align: right;
+  margin-right: 8px;
+}
+
+.left {
+  color: #ffe600;
+  right: 80px;
+}
+
+.standardwidth {
+  width: 150px;
+}
+
+button, input, select {
+  background-color: #010382;
+  border: 2px solid #ffe600;
+  color: #ffe600;
+}
+
+.normal {
+  background-color: #000000;
+  border: 2px solid #ffe600;
+  color: #ffe600;
+  height: 30px;
+  width: 140px;
+  border-radius: 4px;
+  margin-left: 70px;
+}
+
+.success {
+  background-color: #4dff00;
+  border: 2px solid #15b800;
+  color: #ffffff;
+  border-radius: 4px;
+  height: 30px;
+  width: 140px;
+}
