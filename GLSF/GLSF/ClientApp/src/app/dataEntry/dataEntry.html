@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.min.js"></script>
+
 <div class="yellow">
   <h2 class="moverightbutton">Create Fish Entry</h2><br />
 
@@ -50,9 +52,17 @@
   <label class="leftrightmargin">or</label>
   <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
   <button (click)="picture.click()">Choose Image</button><br /><br />
+
   <div class="positioning">
-    <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" /><br /><br /><br />
+    <img [src]="base64" id="selected-image" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" /><br /><br /><br />
     <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
   </div>
   <button (click)="createFish(weight.value, length.value, species.value, picker._validSelected, sampleNumber.value, location.value, stationNumber.value, tournament.value, group.value)" [class]="subStyle">Submit</button>
+
+  <div class="col-12">
+    <div class="progress progress-bar progress-bar-striped progress-bar-animated mb-2">Loading Model</div>
+  </div>
+  <div class="row">
+    <canvas id="canvas" hidden></canvas>
+  </div>
 </div>
