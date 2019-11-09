@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { DataEntryComponent } from './dataEntry/dataEntry.component';
 import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
+import { LoginComponent } from './login/login.component';
 import { TournamentsComponent } from './tournamentInfo/tournaments.component';
 import { WebcamModule } from 'ngx-webcam';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +22,8 @@ import { CreateGroupComponent } from './createPage/createGroup/createGroup.compo
     DataEntryComponent,
     MenuComponent,
     HomeComponent,
-		TournamentsComponent,
+    TournamentsComponent,
+    LoginComponent,
 		CameraDialog,
 		CreationPageComponent,
 		CreateTournamentComponent,
@@ -37,7 +39,8 @@ import { CreateGroupComponent } from './createPage/createGroup/createGroup.compo
 		{ path: '', component: HomeComponent, pathMatch: 'full' },
 		{ path: 'data_entry', component: DataEntryComponent },
 		{ path: 'tournaments', component: TournamentsComponent },
-		{ path: 'create', component: CreationPageComponent }
+    { path: 'create', component: CreationPageComponent },
+    { path: 'login', component: LoginComponent}
     ],
         { onSameUrlNavigation: 'reload' })
 	],
