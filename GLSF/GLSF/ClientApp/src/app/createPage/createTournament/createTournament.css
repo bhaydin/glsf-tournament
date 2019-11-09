@@ -2,14 +2,13 @@
   color: red;
   margin-left: 29px;
 }
-.right {
-  color: #ffe600;
-  right: 0;
-}
 
-.split {
+.splitright {
   float: right;
   width: 50%;
+  position: fixed;
+  color: #ffe600;
+  right: -10px;
 }
 
 .spacing {
@@ -23,6 +22,10 @@
   width: 150px;
 }
 
+.short{
+width: 110px;
+}
+
 button, input, select {
   background-color: #010382;
   border: 2px solid #ffe600;
@@ -34,8 +37,9 @@ button, input, select {
   border: 2px solid #ffe600;
   color: #ffe600;
   height: 30px;
-  width: 140px;
+  width: 150px;
   border-radius: 4px;
+  margin-left: 50px;
 }
 
 .success {
@@ -44,5 +48,6 @@ button, input, select {
   color: #ffffff;
   border-radius: 4px;
   height: 30px;
-  width: 140px;
+  width: 150px;
+  margin-left: 50px;
 }

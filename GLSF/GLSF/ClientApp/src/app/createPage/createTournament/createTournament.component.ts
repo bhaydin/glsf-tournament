@@ -43,10 +43,10 @@ export class CreateTournamentComponent {
 
 	private checkName(tournamentName) {
 		if (tournamentName == '') {
-			this.nameLabel = 'Must enter a tournament name';
+			this.nameLabel = 'Enter name';
 			return false;
 		} else if (tournamentName.length > 300) {
-			this.nameLabel = 'Tournament name too long';
+			this.nameLabel = '300 character max';
 			return false;
 		}
 		this.nameLabel = '';
@@ -58,20 +58,20 @@ export class CreateTournamentComponent {
 			this.dateLabel = '';
 			return true;
 		}
-		this.dateLabel = 'Start date must be before end date';
+		this.dateLabel = 'Start date after end date';
 		return false;
 	}
 
 	private checkId(uniqueId) {
 		const idNum = parseFloat(uniqueId);
 		if (uniqueId == '') {
-			this.idLabel = 'Must enter a tournament id';
+			this.idLabel = 'Enter Id';
 			return false;
 		} else if (isNaN(uniqueId)) {
-			this.idLabel = 'Id must be a number';
+			this.idLabel = 'Enter a number';
 			return false;
 		} else if (idNum < 0) {
-			this.idLabel = 'Tournament Id must be postivie';
+			this.idLabel = 'Must be positive';
 			return false;
 		}
 		this.idLabel = '';

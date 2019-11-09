@@ -3,22 +3,21 @@
   margin-left: 29px;
 }
 
-.split {
+.splitleft {
   float: left;
   width: 50%;
+  position: fixed;
+  left: 30px;
+  color: #ffe600;
 }
 
 .spacing {
-  width: 130px;
+  width: 100px;
   white-space: normal;
   text-align: right;
   margin-right: 8px;
 }
 
-.left {
-  color: #ffe600;
-  right: 80px;
-}
 
 .standardwidth {
   width: 150px;
@@ -37,7 +36,7 @@ button, input, select {
   height: 30px;
   width: 140px;
   border-radius: 4px;
-  margin-left: 70px;
+  margin-left: 50px;
 }
 
 .success {
@@ -47,4 +46,5 @@ button, input, select {
   border-radius: 4px;
   height: 30px;
   width: 140px;
+  margin-left: 50px;
 }

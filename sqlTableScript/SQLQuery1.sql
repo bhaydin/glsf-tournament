@@ -14,9 +14,9 @@ create table Fish(
 	isValid bit not null,
 	TournamentId int not null,
 	BoatId int not null,
-		Id int not null identity primary key,
-	
+	Id int not null identity primary key,
 );
+
 drop table if exists Tournament;
 
 create table Tournament(
@@ -37,5 +37,4 @@ create table BoatGroup(
 
 );
 alter table Fish add constraint FK_BoatId foreign key (BoatId, TournamentId) references BoatGroup (Id, TournamentId);
-alter table Fish add constraint FK_Fish_TournamentId foreign key (TournamentId) references Tournament (Id);
 alter table BoatGroup add constraint FK_Boat_TournamentId foreign key (TournamentId) references Tournament(Id);

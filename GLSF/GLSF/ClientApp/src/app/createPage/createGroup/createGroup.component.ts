@@ -11,7 +11,7 @@ import { Router } from "@angular/router"
 })
 
 export class CreateGroupComponent implements OnInit {
-	tournaments: Array<Tournament> = [];
+	private tournaments: Array<Tournament> = [];
   nameLabel = '';
 	idLabel = '';
 	subStyle = "normal";
@@ -34,7 +34,7 @@ export class CreateGroupComponent implements OnInit {
 			const tournament: Tournament = {
 				StartDate: 'N/A',
 				EndDate: 'N/A',
-				Name: 'No Tournaments Available',
+				Name: 'No tournaments created',
 				Location: 'N/A',
 				Id: -1,
 			}
@@ -59,10 +59,10 @@ export class CreateGroupComponent implements OnInit {
 
 	private checkName(groupName) {
 		if (groupName == '') {
-			this.nameLabel = 'Must enter a group name';
+			this.nameLabel = 'Enter name';
 			return false;
 		} else if (groupName.length > 300) {
-			this.nameLabel = 'Group name too long';
+			this.nameLabel = '300 characters max';
 			return false;
 		}
 		this.nameLabel = '';
@@ -72,13 +72,13 @@ export class CreateGroupComponent implements OnInit {
 	private checkId(boatId) {
 		const idNum = parseFloat(boatId);
 		if (boatId == '') {
-			this.idLabel = 'Must enter a boat Id';
+			this.idLabel = 'Enter number';
 			return false;
 		} else if (isNaN(boatId)) {
-			this.idLabel = 'Boat Id must be a number';
+			this.idLabel = 'Invalid number';
 			return false;
 		} else if (idNum < 0) {
-			this.idLabel = 'Boat Id must be postivie';
+			this.idLabel = 'Must be postivie';
 			return false;
 		}
 		this.idLabel = '';

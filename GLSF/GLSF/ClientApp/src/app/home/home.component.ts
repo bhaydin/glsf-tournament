@@ -10,7 +10,7 @@ import * as $ from 'jquery';
 })
 
 export class HomeComponent implements OnInit {
-	fishes: Array<Fish> = [];
+	private fishes: Array<Fish> = [];
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
