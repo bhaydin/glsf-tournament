@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { DataEntryComponent } from './dataEntry/dataEntry.component';
 import { HomeComponent } from './home/home.component';
@@ -15,6 +15,16 @@ import { CameraDialog } from './dataEntry/camera';
 import { CreationPageComponent } from './createPage/creationPage.component'
 import { CreateTournamentComponent } from './createPage/createTournament/createTournament.component'
 import { CreateGroupComponent } from './createPage/createGroup/createGroup.component'
+import { ReactiveFormsModule } from '@angular/forms';
+import { JwtInterceptor, ErrorInterceptor } from './_helpers';
+
+
+
+// used to create fake backend
+import { fakeBackendProvider } from './_helpers';
+import { AuthGuard } from './_helpers';
+
+
 
 @NgModule({
   declarations: [
@@ -33,10 +43,11 @@ import { CreateGroupComponent } from './createPage/createGroup/createGroup.compo
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
 		WebcamModule,
-		FormsModule,
+    FormsModule,
+    ReactiveFormsModule,
     MaterialModule,
     RouterModule.forRoot([
-		{ path: '', component: HomeComponent, pathMatch: 'full' },
+		{ path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
 		{ path: 'data_entry', component: DataEntryComponent },
 		{ path: 'tournaments', component: TournamentsComponent },
     { path: 'create', component: CreationPageComponent },
@@ -45,7 +56,14 @@ import { CreateGroupComponent } from './createPage/createGroup/createGroup.compo
         { onSameUrlNavigation: 'reload' })
 	],
 	entryComponents: [CameraDialog],
-	providers: [],
+	providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+
+    // provider used to create fake backend
+    fakeBackendProvider
+
+  ],
 	bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -6,7 +6,7 @@ input {
     font-size: 26px;
 }
 
-.pageText {
+label, h2 {
     color: #ffe600;
 }
 
