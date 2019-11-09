@@ -1,13 +1,13 @@
-<h1>Login</h1><br>
+<h1 class="pageText">Login</h1><br>
 <div class="col-xs-4">
-    <label>Username: </label><br>
+    <label class="pageText">Username: </label><br>
     <input #usernameInput class="form-control" type="text" size="30"><br>
     <br>
-    <label>Password: </label><br>
+    <label class="pageText">Password: </label><br>
     <input #passwordInput class="form-control" type="text" size="30" type="password"><br>
     <button style="margin-right: 10px;" class="btn btn-primary" (click)="submitLogin(usernameInput.value)" >Submit</button>
-    <a class="" [routerLink]='["/register"]'>Register</a><br><br>
-    <a class="" [routerLink]='["/register"]'>Forgot Password?</a>
+    <a class="pageText" [routerLink]='["/register"]'>Register</a><br><br>
+    <a class="pageText" [routerLink]='["/register"]'>Forgot Password?</a>
     <br>
     <br>
 </div>

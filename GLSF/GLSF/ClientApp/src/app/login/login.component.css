@@ -1,0 +1,18 @@
+input {
+    margin-bottom: 10px;
+}
+
+.loginHeader {
+    font-size: 26px;
+}
+
+.pageText {
+    color: #ffe600;
+}
+
+button, input, select {
+    background-color: #010382;
+    border: 2px solid #ffe600;
+    color: #ffe600;
+  }
+
