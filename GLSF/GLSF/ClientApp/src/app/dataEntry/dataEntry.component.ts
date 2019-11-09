@@ -19,6 +19,7 @@ export class DataEntryComponent implements OnInit {
   weightLabel = '';
   lengthLabel = '';
 	sampleLabel = '';
+	stationLabel = '';
 	base64 = null;
 	isTagged = false;
 	imageAvailable = false;
@@ -117,7 +118,8 @@ export class DataEntryComponent implements OnInit {
 
 	async createFish(weight, length, species, date, sampleNumber, location, stationNumber, tournamentId, boatId) {
     const validLength = this.checkLength(length, species);
-    const validWeight = this.checkWeight(weight, species);
+		const validWeight = this.checkWeight(weight, species);
+		const validStation = this.checkStationNumber(stationNumber);
 		let validID = true;
 		if (this.isTagged) {
 			validID = this.checkSampleNumber(sampleNumber);
@@ -132,7 +134,7 @@ export class DataEntryComponent implements OnInit {
 			validFish = await this.predict();
 		}
 
-		if (validLength && validWeight && validID && tournamentId != -1 && boatId != -1) {
+		if (validLength && validWeight && validID && validStation && tournamentId != -1 && boatId != -1) {
 			const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
 			var fish = {
 				Weight: parseFloat(weight),
@@ -153,10 +155,26 @@ export class DataEntryComponent implements OnInit {
     }
   }
 
+	private checkStationNumber(stationNumber) {
+		const stationNum = parseFloat(stationNumber);
+		if (stationNumber == '') {
+			this.stationLabel = 'Enter number';
+			return false;
+		} else if (isNaN(stationNumber)) {
+			this.stationLabel = 'Must be a number';
+			return false;
+		} else if (stationNum < 0) {
+			this.stationLabel = 'Must be positive';
+			return false;
+		}
+		this.stationLabel = '';
+		return true;
+	}
+
 	private checkSampleNumber(sampleNumber) {
 		const sampleNum = parseFloat(sampleNumber);
 		if (sampleNumber == '') {
-			this.sampleLabel = 'Enter sample number';
+			this.sampleLabel = 'Enter number';
 			return false;
 		} else if (isNaN(sampleNumber)) {
 			this.sampleLabel = 'Must be a number';

@@ -4,7 +4,7 @@
   <label class='spacing'>Tournament Name:</label>
   <input #name type=text><label class="required">{{nameLabel}}</label><br /><br />
 
-  <label class='spacing'>Unique Id:</label>
+  <label class='spacing'>Tournament Id:</label>
   <input #id type=text><label class="required">{{idLabel}}</label><br /><br />
 
   <label class='spacing'>Location:</label>
@@ -12,15 +12,15 @@
 
   <label class='spacing'>Starting Date:</label>
   <mat-datepicker-toggle matSuffix [for]="startDate" class="rightside"></mat-datepicker-toggle>
-  <mat-datepicker touchUi #startDate disabled="false"></mat-datepicker>
-  <input [matDatepicker]="startDate" [value]="currentDate" [min]="currentDate" class="short" disabled>
+  <mat-datepicker touchUi #startDate></mat-datepicker>
+  <input (click)="startDate.open()" [matDatepicker]="startDate" [value]="currentDate" [min]="currentDate" class="short" readonly>
   <br />
   <label class="required">{{dateLabel}}</label><br />
 
-  <label class='spacing' (click)="endDate.click">Ending Date:</label>
+  <label class='spacing'>Ending Date:</label>
   <mat-datepicker-toggle matSuffix [for]="endDate" class="rightside"></mat-datepicker-toggle>
-  <mat-datepicker touchUi #endDate disabled="false"></mat-datepicker>
-  <input [matDatepicker]="endDate" [value]="currentDate" [min]="currentDate" class="short" disabled>
+  <mat-datepicker touchUi #endDate></mat-datepicker>
+  <input (click)="endDate.open()" [matDatepicker]="endDate" [value]="currentDate" [min]="currentDate" class="short" readonly>
   <br /><br />
   <button (click)="createTournament(startDate._validSelected, endDate._validSelected, name.value, id.value, location.value)" [class]="subStyle">{{subText}}</button>
 </div>

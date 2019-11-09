@@ -44,7 +44,7 @@ button, input, select {
   height: 30px;
   width: 100px;
   border-radius: 4px;
-  margin-left: 100px;
+  margin-left: 80px;
 }
 
 .moveright {
@@ -67,7 +67,11 @@ button, input, select {
   border-radius: 4px;
   height: 30px;
   width: 100px;
-  margin-left: 100px;
+  margin-left: 80px;
+}
+
+.short{
+width: 110px;
 }
 
 .yellow {

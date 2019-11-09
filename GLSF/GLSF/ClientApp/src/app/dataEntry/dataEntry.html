@@ -53,12 +53,13 @@
   <input #location type=text><br /><br />
 
   <label class='spacing'>Station Number: </label>
-  <input #stationNumber type=text><br /><br />
+  <input #stationNumber type=text><label class="required">{{stationLabel}}</label><br /><br />
 
-  <mat-datepicker-toggle matSuffix [for]="picker" class="moveright"></mat-datepicker-toggle>
-  <mat-datepicker touchUi #picker disabled="false"></mat-datepicker>
-  <input [matDatepicker]="picker" [value]="currentDate" [max]="currentDate" disabled>
-  <br /><br /><br />
+  <label class="spacing">Date Caught:</label>
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker touchUi #picker></mat-datepicker>
+  <input (click)="picker.open()" [matDatepicker]="picker" [value]="currentDate" class="short" [max]="currentDate" readonly>
+  <br /><br />
 
   <button (click)="createFish(weight.value, length.value, species.value, picker._validSelected, sampleNumber.value, location.value, stationNumber.value, tournament.value, group.value)" [class]="subStyle">Submit</button>
 </div>
