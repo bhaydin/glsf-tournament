@@ -5,7 +5,6 @@ import { Router } from "@angular/router"
 import { DatePipe } from '@angular/common';
 import { CameraDialog } from './camera';
 import { MatDialog } from '@angular/material';
-import * as $ from 'jquery';
 import * as tf from '../../assets/tfjs.js';
 
 
@@ -26,13 +25,9 @@ export class DataEntryComponent implements OnInit {
 	subStyle = "normal";
 	currentDate: Date = new Date();
 	fishes = Fish.fishes;
-	file: any;
 	model: any;
 	modelLocation = "../assets/FishModel/FishClassifier/model.json";
-	IMAGENET_CLASSES = {
-		0: 'Fish',
-		1: 'Not a fish',
-	};
+
 	potato = '';
 	private tournaments: Array<Tournament> = [];
 	private groups: Array<BoatGroup> = [];
@@ -61,7 +56,7 @@ export class DataEntryComponent implements OnInit {
 			const tournament: Tournament = {
 				StartDate: 'N/A',
 				EndDate: 'N/A',
-				Name: 'No Tournaments Available',
+				Name: 'No tournaments created',
 				Location: 'N/A',
 				Id: -1,
 			}
@@ -78,7 +73,7 @@ export class DataEntryComponent implements OnInit {
 		);
 		if (this.groups.length) {
 			const group: BoatGroup = {
-				Name: 'No groups available',
+				Name: 'No groups registered',
 				AgeGroup: 'N/A',
 				Id: -1,
 				TournamentId: -1,
@@ -161,13 +156,13 @@ export class DataEntryComponent implements OnInit {
 	private checkSampleNumber(sampleNumber) {
 		const sampleNum = parseFloat(sampleNumber);
 		if (sampleNumber == '') {
-			this.sampleLabel = 'Must enter sample number';
+			this.sampleLabel = 'Enter sample number';
 			return false;
 		} else if (isNaN(sampleNumber)) {
-			this.sampleLabel = 'Sample number must be a number';
+			this.sampleLabel = 'Must be a number';
 			return false;
 		} else if (sampleNum < 0) {
-			this.sampleLabel = 'Sample number must be positive';
+			this.sampleLabel = 'Must be positive';
 			return false;
 		}
 		this.sampleLabel = '';
@@ -182,7 +177,7 @@ export class DataEntryComponent implements OnInit {
 			this.lengthLabel = 'Invalid length';
 			return false;
 		} else if (length < 0 && length > Fish.maxLengths[species]) {
-			this.lengthLabel = 'Length out of bounds';
+			this.lengthLabel = 'Out of bounds';
 			return false;
 		}
 		this.lengthLabel = '';
@@ -197,7 +192,7 @@ export class DataEntryComponent implements OnInit {
 			this.weightLabel = 'Invalid weight';
 			return false;
 		} else if (weight < 0 && weight > Fish.maxWeights[species]) {
-			this.weightLabel = 'Weight out of bounds';
+			this.weightLabel = 'Out of bounds';
 			return false;
 		}
 		this.weightLabel = '';
