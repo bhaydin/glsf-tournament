@@ -8,7 +8,7 @@
   width: 50%;
   position: fixed;
   color: #ffe600;
-  right: -100px;
+  right: -10px;
 }
 
 .spacing {
@@ -37,8 +37,9 @@ button, input, select {
   border: 2px solid #ffe600;
   color: #ffe600;
   height: 30px;
-  width: 140px;
+  width: 150px;
   border-radius: 4px;
+  margin-left: 50px;
 }
 
 .success {
@@ -47,5 +48,6 @@ button, input, select {
   color: #ffffff;
   border-radius: 4px;
   height: 30px;
-  width: 140px;
+  width: 150px;
+  margin-left: 50px;
 }

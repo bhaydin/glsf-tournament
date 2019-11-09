@@ -15,11 +15,12 @@
   <mat-datepicker touchUi #startDate disabled="false"></mat-datepicker>
   <input [matDatepicker]="startDate" [value]="currentDate" [min]="currentDate" class="short" disabled>
   <br />
+  <label class="required">{{dateLabel}}</label><br />
+
   <label class='spacing' (click)="endDate.click">Ending Date:</label>
   <mat-datepicker-toggle matSuffix [for]="endDate" class="rightside"></mat-datepicker-toggle>
   <mat-datepicker touchUi #endDate disabled="false"></mat-datepicker>
   <input [matDatepicker]="endDate" [value]="currentDate" [min]="currentDate" class="short" disabled>
-  <label class="required">{{dateLabel}}</label><br /><br />
-
+  <br /><br />
   <button (click)="createTournament(startDate._validSelected, endDate._validSelected, name.value, id.value, location.value)" [class]="subStyle">{{subText}}</button>
 </div>

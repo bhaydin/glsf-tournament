@@ -171,12 +171,12 @@ export class DataEntryComponent implements OnInit {
 
 	private checkLength(length, species) {
 		if (length == '') {
-			this.lengthLabel = 'Enter a length';
+			this.lengthLabel = 'Enter length';
 			return false;
 		} else if (isNaN(length)) {
 			this.lengthLabel = 'Invalid length';
 			return false;
-		} else if (length < 0 && length > Fish.maxLengths[species]) {
+		} else if (length < 0 || length > Fish.maxLengths[species]) {
 			this.lengthLabel = 'Out of bounds';
 			return false;
 		}
@@ -186,12 +186,12 @@ export class DataEntryComponent implements OnInit {
 
 	private checkWeight(weight, species) {
 		if (weight == '') {
-			this.weightLabel = 'Enter a weight';
+			this.weightLabel = 'Enter weight';
 			return false;
 		} else if (isNaN(weight)) {
 			this.weightLabel = 'Invalid weight';
 			return false;
-		} else if (weight < 0 && weight > Fish.maxWeights[species]) {
+		} else if (weight < 0 || weight > Fish.maxWeights[species]) {
 			this.weightLabel = 'Out of bounds';
 			return false;
 		}
