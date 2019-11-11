@@ -1,16 +1,40 @@
-<div class="yellow">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.min.js"></script>
+
+<div class="splitright">
+  <button (click)="openDialog()" class="moverightbutton">Take Image</button>
+  <label class="leftrightmargin">or</label>
+  <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
+  <button (click)="picture.click()">Choose Image</button><br /><br />
+
+  <div class="positioning">
+    <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" />
+    <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
+  </div>
+
+  <div class="col-12">
+    <div class="progress progress-bar progress-bar-striped progress-bar-animated mb-2">Loading Model</div>
+  </div>
+  <div class="row">
+    <canvas id="canvas" hidden></canvas>
+  </div>
+</div>
+
+<div class="splitleft">
   <h2 class="moverightbutton">Create Fish Entry</h2><br />
+
+  <label class='spacing'>Tournament:</label>
+  <select #tournament class="standardwidth">
+    <option *ngFor="let tournament of tournaments" value="{{tournament.Id}}">{{tournament.Name}}</option>
+  </select><br /><br />
+
+  <label class='spacing'>Boating Group:</label>
+  <select #group class="standardwidth">
+    <option *ngFor="let group of groups" value="{{group.Id}}">{{group.Name}}</option>
+  </select><br /><br />
+
   <label class='spacing'>Species:</label>
   <select #species class="standardwidth">
-    <option value='Atlantic Salmon'>Atlantic Salmon</option>
-    <option value='Brown Trout'>Brown Trout</option>
-    <option value='Chinook Salmon'>Chinook Salmon</option>
-    <option value='Coho Salmon'>Coho Salmon</option>
-    <option value='Lake Trout'>Lake Trout</option>
-    <option value='Rainbow Trout'>Rainbow Trout</option>
-    <option value='Sauger'>Sauger</option>
-    <option value='Walleye'>Walleye</option>
-    <option value='Yellow Perch'>Yellow Perch</option>
+    <option *ngFor="let fish of fishes" value='{{fish}}'>{{fish}}</option>
   </select><br /><br />
 
   <label class='spacing'>Weight: (lbs)</label>
@@ -29,19 +53,13 @@
   <input #location type=text><br /><br />
 
   <label class='spacing'>Station Number: </label>
-  <input #stationNumber type=text><br /><br />
-  <mat-datepicker-toggle matSuffix [for]="picker" class="moveright"></mat-datepicker-toggle>
-  <mat-datepicker #picker disabled="false" ></mat-datepicker>
-  <input [matDatepicker]="picker" [value]="currentDate"  [max]="currentDate" disabled>
-  <br /><br /><br />
+  <input #stationNumber type=text><label class="required">{{stationLabel}}</label><br /><br />
 
-  <button (click)="openDialog()" class="moverightbutton">Take Image</button>
-  <label class="leftrightmargin">or</label>
-  <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
-  <button (click)="picture.click()">Choose Image</button><br /><br />
-  <div class="positioning">
-    <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" /><br /><br /><br />
-    <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
-  </div>
-  <button (click)="send_data(weight.value, length.value, species.value, picker._validSelected, sampleNumber.value, location.value, stationNumber.value)" [class]="subStyle">Submit</button>
+  <label class="spacing">Date Caught:</label>
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker touchUi #picker></mat-datepicker>
+  <input (click)="picker.open()" [matDatepicker]="picker" [value]="currentDate" class="short" [max]="currentDate" readonly>
+  <br /><br />
+
+  <button (click)="createFish(weight.value, length.value, species.value, picker._validSelected, sampleNumber.value, location.value, stationNumber.value, tournament.value, group.value)" [class]="subStyle">Submit</button>
 </div>

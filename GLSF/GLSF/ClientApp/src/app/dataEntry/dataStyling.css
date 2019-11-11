@@ -3,6 +3,23 @@
   margin-left: 29px;
 }
 
+.splitleft {
+  float: left;
+  position: fixed;
+  width: 50%;
+  left: 40px;
+  color: #ffe600;
+}
+
+
+.splitright {
+  float: right;
+  width: 50%;
+  color: #ffe600;
+  margin-top: 80px;
+}
+
+
 .spacing {
   width: 130px;
   white-space: normal;
@@ -29,6 +46,7 @@ button, input, select {
   height: 60px;
   width: 150px;
   border-radius: 4px;
+  margin-left: 80px;
 }
 
 .moveright {
@@ -54,6 +72,11 @@ button, input, select {
   border-radius: 4px;
   height: 30px;
   width: 100px;
+  margin-left: 80px;
+}
+
+.short{
+width: 110px;
 }
 
 .yellow {
