@@ -6,7 +6,16 @@ input {
     font-size: 26px;
 }
 
+.content {
+    max-width: 500px;
+    margin: auto;
+  }
+
 label, h2 {
+    color: #ffe600;
+}
+
+.hi-vis-yellow {
     color: #ffe600;
 }
 

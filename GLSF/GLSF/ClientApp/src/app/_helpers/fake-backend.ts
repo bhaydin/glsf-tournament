@@ -3,7 +3,7 @@ import { HttpRequest, HttpResponse, HttpHandler, HttpEvent, HttpInterceptor, HTT
 import { Observable, of, throwError } from 'rxjs';
 import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
 
-let users = [{ id: 1, firstName: 'Dylan', lastName: 'Critz', username: 'test', password: 'test' }];
+let users = [{ id: 1, firstName: 'Dylan', lastName: 'Critz', username: 'critzd', password: 'password' }];
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
