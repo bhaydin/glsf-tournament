@@ -20,7 +20,7 @@
   <input #length type=text><label class="required">{{lengthLabel}}</label><br /><br />
 
   <label class="spacing">Has Tag: *</label>
-  <input #hasTag (change)="tagged(hasTag.checked)" type=checkbox><br />
+  <input #hasTag (change)="tagged(hasTag.checked)" type=checkbox class="container"><br />
 
   <label class="spacing">Sample Number: *</label>
   <input #sampleNumber [class]='sampleStyle' type=text [disabled]="!isTagged"><label class="required">{{sampleLabel}}</label><br /><br />
