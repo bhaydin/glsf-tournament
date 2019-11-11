@@ -19,25 +19,27 @@
 }
 
 .standardwidth {
-  width: 150px;
+  width: 300px;
 }
 
 .short{
-width: 110px;
+width: 220px;
 }
 
 button, input, select {
-  background-color: #010382;
-  border: 2px solid #ffe600;
-  color: #ffe600;
+    background-color: #010382;
+    border: 2px solid #ffe600;
+    color: #ffe600;
+    font-size: 40px;
+    width: 30%;
 }
 
 .normal {
   background-color: #000000;
   border: 2px solid #ffe600;
   color: #ffe600;
-  height: 30px;
-  width: 150px;
+  height: 120px;
+  width: 250px;
   border-radius: 4px;
   margin-left: 50px;
 }
