@@ -48,9 +48,9 @@ import { AuthGuard } from './_helpers';
     MaterialModule,
     RouterModule.forRoot([
 		{ path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-		{ path: 'data_entry', component: DataEntryComponent },
-		{ path: 'tournaments', component: TournamentsComponent },
-    { path: 'create', component: CreationPageComponent },
+		{ path: 'data_entry', component: DataEntryComponent, canActivate: [AuthGuard] },
+		{ path: 'tournaments', component: TournamentsComponent, canActivate: [AuthGuard] },
+    { path: 'create', component: CreationPageComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent}
     ],
         { onSameUrlNavigation: 'reload' })
