@@ -1,65 +1,67 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.min.js"></script>
 
 <div class="splitright">
-  <button (click)="openDialog()" class="moverightbutton">Take Image</button>
-  <label class="leftrightmargin">or</label>
-  <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
-  <button (click)="picture.click()">Choose Image</button><br /><br />
+    <button (click)="openDialog()" class="moverightbutton">Take Image</button>
+    <label class="leftrightmargin">or</label>
+    <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
+    <button (click)="picture.click()">Choose Image</button><br /><br />
 
-  <div class="positioning">
-    <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" />
-    <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
-  </div>
+    <div class="positioning">
+        <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" />
+        <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
+    </div>
 
-  <div class="col-12">
-    <div class="progress progress-bar progress-bar-striped progress-bar-animated mb-2">Loading Model</div>
-  </div>
-  <div class="row">
-    <canvas id="canvas" hidden></canvas>
-  </div>
+    <div class="col-12">
+        <div class="progress progress-bar progress-bar-striped progress-bar-animated mb-2">Loading Model</div>
+    </div>
+    <div class="row">
+        <canvas id="canvas" hidden></canvas>
+    </div>
+
+    <button (click)="createFish(weight.value, length.value, species.value, picker._validSelected, sampleNumber.value, location.value, stationNumber.value, tournament.value, group.value)" [class]="subStyle">Submit</button>
 </div>
 
 <div class="splitleft">
-  <h2 class="moverightbutton">Create Fish Entry</h2><br />
+    <h2 class="moverightbutton">Create Fish Entry</h2><br />
 
-  <label class='spacing'>Tournament:</label>
-  <select #tournament class="standardwidth">
-    <option *ngFor="let tournament of tournaments" value="{{tournament.Id}}">{{tournament.Name}}</option>
-  </select><br /><br />
+    <label class='spacing'>Tournament:</label>
+    <select #tournament class="standardwidth">
+        <option *ngFor="let tournament of tournaments" value="{{tournament.Id}}">{{tournament.Name}}</option>
+    </select><br /><br />
 
-  <label class='spacing'>Boating Group:</label>
-  <select #group class="standardwidth">
-    <option *ngFor="let group of groups" value="{{group.Id}}">{{group.Name}}</option>
-  </select><br /><br />
+    <label class='spacing'>Boating Group:</label>
+    <select #group class="standardwidth">
+        <option *ngFor="let group of groups" value="{{group.Id}}">{{group.Name}}</option>
+    </select><br /><br />
 
-  <label class='spacing'>Species:</label>
-  <select #species class="standardwidth">
-    <option *ngFor="let fish of fishes" value='{{fish}}'>{{fish}}</option>
-  </select><br /><br />
+    <label class='spacing'>Species:</label>
+    <select #species class="standardwidth">
+        <option *ngFor="let fish of fishes" value='{{fish}}'>{{fish}}</option>
+    </select><br /><br />
 
-  <label class='spacing'>Weight: (lbs)</label>
-  <input #weight type=text><label class="required">{{weightLabel}}</label><br /><br />
+    <label class='spacing'>Weight: (lbs)</label>
+    <input #weight type=text><label class="required">{{weightLabel}}</label><br /><br />
 
-  <label class='spacing'>Length: (mm)</label>
-  <input #length type=text><label class="required">{{lengthLabel}}</label><br /><br />
+    <label class='spacing'>Length: (mm)</label>
+    <input #length type=text><label class="required">{{lengthLabel}}</label><br /><br />
 
-  <label class="spacing">Has Tag: *</label>
-  <input #hasTag (change)="tagged(hasTag.checked)" type=checkbox><br />
+    <label class="spacing">Has Tag: *</label>
+    <input #hasTag (change)="tagged(hasTag.checked)" type=checkbox class="container"><br />
 
-  <label class="spacing">Sample Number: *</label>
-  <input #sampleNumber [class]='sampleStyle' type=text [disabled]="!isTagged"><label class="required">{{sampleLabel}}</label><br /><br />
+    <label class="spacing">Sample Number: *</label>
+    <input #sampleNumber [class]='sampleStyle' type=text [disabled]="!isTagged"><label class="required">{{sampleLabel}}</label><br /><br />
 
-  <label class='spacing'>Location: *</label>
-  <input #location type=text><br /><br />
+    <label class='spacing'>Location: *</label>
+    <input #location type=text><br /><br />
 
-  <label class='spacing'>Station Number: </label>
-  <input #stationNumber type=text><label class="required">{{stationLabel}}</label><br /><br />
+    <label class='spacing'>Station Number: </label>
+    <input #stationNumber type=text><label class="required">{{stationLabel}}</label><br /><br />
 
-  <label class="spacing">Date Caught:</label>
-  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker touchUi #picker></mat-datepicker>
-  <input (click)="picker.open()" [matDatepicker]="picker" [value]="currentDate" class="short" [max]="currentDate" readonly>
-  <br /><br />
-
-  <button (click)="createFish(weight.value, length.value, species.value, picker._validSelected, sampleNumber.value, location.value, stationNumber.value, tournament.value, group.value)" [class]="subStyle">Submit</button>
+    <label class="spacing">Date Caught:</label>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker touchUi #picker></mat-datepicker>
+    <input (click)="picker.open()" [matDatepicker]="picker" [value]="currentDate" class="short" [max]="currentDate" readonly>
+    <br /><br />
 </div>
+
+

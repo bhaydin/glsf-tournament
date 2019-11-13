@@ -28,27 +28,32 @@
 }
 
 .standardwidth{
-  width: 150px;
+  width: 330px;
 }
 
 button, input, select {
   background-color: #010382;
   border: 2px solid #ffe600;
   color: #ffe600;
+  font-size: 40px;
+  width: 30%;
 }
 
 .normal {
   background-color: #000000;
   border: 2px solid #ffe600;
   color: #ffe600;
-  height: 30px;
-  width: 100px;
+  height: 60px;
+  width: 150px;
   border-radius: 4px;
   margin-left: 80px;
 }
 
 .moveright {
   margin-left: 98px;
+  height: 70px;
+  width: 70px;
+  font-size: 50px;
 }
 
 .leftrightmargin{
@@ -71,7 +76,7 @@ button, input, select {
 }
 
 .short{
-width: 110px;
+width: 220px;
 }
 
 .yellow {
@@ -95,8 +100,8 @@ img {
 
 .removebutton {
   position: absolute;
-  height: 30px;
-  width: 30px;
+  height: 60px;
+  width: 60px;
   top: -15px;
   left: 30px;
   color: #0f0f0f;
@@ -104,4 +109,9 @@ img {
   border-radius: 50%;
   border: 2px solid #0f0f0f;
   background-color: rgba(222,222,222,0.7);
+}
+
+.container {
+    height: 70px;
+    width: 70px;
 }
