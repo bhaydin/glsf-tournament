@@ -2,6 +2,7 @@ a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
+  margin: 10px;
 }
 
 html {
@@ -18,3 +19,11 @@ html {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
+.toprightexit {
+  background-color: #000000;
+  color: #ffe600;
+  height: 30px;
+  width: 80px;
+  margin-right: 0px;
+  margin-top: 0px;
+}
