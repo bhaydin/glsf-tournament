@@ -39,7 +39,8 @@ export class DataEntryComponent implements OnInit {
 		this.getGroups();
 		this.getTournaments();
     this.loadModel();
-  }
+    }
+
 
   async loadModel() {
     this.model = await tf.loadModel(this.modelLocation);
@@ -169,7 +170,8 @@ export class DataEntryComponent implements OnInit {
 		}
 		this.stationLabel = '';
 		return true;
-	}
+    }
+
 
 	private checkSampleNumber(sampleNumber) {
 		const sampleNum = parseFloat(sampleNumber);
@@ -266,8 +268,9 @@ export class DataEntryComponent implements OnInit {
 		  return await true;
 		}
 		return false;
-  }
+    }
 }
+
 
 
 
