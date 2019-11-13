@@ -243,7 +243,11 @@ export class DataEntryComponent implements OnInit {
 		let canvas = <HTMLCanvasElement>document.getElementById("canvas");
 		let ctx = canvas.getContext("2d");
 		let image = new Image();
-		image.src = this.base64;
+    image.src = this.base64;
+
+    canvas.width = image.width;
+    canvas.height = image.height;
+
     ctx.drawImage(image, 0, 0);
     const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     let data = imgData.data;
@@ -252,6 +256,7 @@ export class DataEntryComponent implements OnInit {
       data[i] = data[i] / 255.0;   // Red
       data[i + 1] = data[i + 1] / 255.0; // Green
       data[i + 2] = data[i + 2] / 255.0; // Blue
+      data[i + 3] = data[i + 3] / 255.0; // Alpha
     }
 
     let tensor = tf.fromPixels(imgData)
@@ -260,8 +265,10 @@ export class DataEntryComponent implements OnInit {
       .expandDims();
 
     let predictions = await this.model.predict(tensor).data();
-		let prediction = predictions[0];
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let prediction = 1 - predictions[0];
+    console.log(prediction);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     if (prediction >= .8) {
 		  return await true;
 		}
