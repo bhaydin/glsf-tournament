@@ -3,7 +3,7 @@
 <div class="yellow">
 
   <label >Tournament:</label><br />
-  <select #tournament class="standardwidth moveright">
+  <select #tournament [disabled]="noAvailableTournaments" class="standardwidth moveright">
     <option *ngFor="let tournament of this.request.tournaments" (click)="filter($event.srcElement.value)" value="{{tournament.Id}}">{{tournament.Name}}</option>
   </select><br />
 

@@ -25,6 +25,8 @@ export class DataEntryComponent implements OnInit {
 	noAvailableBoats = false;
 	noAvailableStations = false;
 	hasTag = false;
+	validFish = true;
+	validFishLabel = '';
 	sampleNumber = '';
 	port = '';
 	base64 = '';
@@ -63,7 +65,7 @@ export class DataEntryComponent implements OnInit {
 
 	}
 
-	openDialog(): void {
+	openDialog() {
 		const dialogRef = this.dialog.open(CameraDialog, {
 			panelClass: 'custom-dialog-container'
 		});
@@ -72,24 +74,29 @@ export class DataEntryComponent implements OnInit {
 			if (result != undefined) {
 				this.base64 = result.toString();
 				this.imageAvailable = true;
+				this.predict();
 			}
 		});
 	}
 
-	preview(image) {
+	async preview(image) {
 		if (image.length !== 0) {
 			const reader = new FileReader();
 			reader.readAsDataURL(image[0]);
       reader.onload = () => {
         this.base64 = reader.result.toString();
-        this.imageAvailable = true;
-      };
+		    this.imageAvailable = true;
+			};
+			this.predict();
+
 		}
 	}
 
 	removeImage() {
 		this.base64 = '';
 		this.imageAvailable = false;
+		this.validFishLabel = '';
+
 	}
 
 	async createFish(species, date, station, tournamentId, boatId) {
@@ -97,7 +104,6 @@ export class DataEntryComponent implements OnInit {
 		const validWeight = this.checkWeight(species);
 		const validIds = this.checkIds(station[0], tournamentId, boatId);
 		let validID = true;
-		let validFish = true;
 		if (this.hasTag) {
 			validID = this.checkSampleNumber();
 		}
@@ -105,9 +111,6 @@ export class DataEntryComponent implements OnInit {
 			this.port = station[1];
 		}
 		if (validLength && validWeight && validID && validIds) {
-			if (this.base64 != '') {
-				validFish = await this.predict();
-			}
 			const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
 			const fish: Fish = {
 				Weight: parseFloat(this.weight),
@@ -118,7 +121,7 @@ export class DataEntryComponent implements OnInit {
 				SampleNumber: parseFloat(this.sampleNumber),
 				HasTag: this.hasTag,
 				Port: this.port,
-				isValid: validFish,
+				isValid: this.validFish,
 				StationNumber: parseFloat(station[0]),
 				Id: null, //This value is auto incremented in the DB
 				TournamentId: parseFloat(tournamentId),
@@ -235,11 +238,15 @@ export class DataEntryComponent implements OnInit {
     let prediction = 1 - predictions[0];
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (prediction >= .8) {
-		  return await true;
+		if (prediction >= .8) {
+			this.validFishLabel = 'Looks like a fish!';
+
+			this.validFish = true;
+		} else {
+			this.validFish = false;
+			this.validFishLabel = 'Try another picture';
 		}
-		return await false;
-    }
+  }
 }
 
 

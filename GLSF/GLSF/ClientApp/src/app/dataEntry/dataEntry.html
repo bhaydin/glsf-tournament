@@ -6,11 +6,11 @@
   <label class="leftrightmargin">or</label>
   <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
   <button (click)="picture.click()">Choose Image</button><br /><br /><br /><br />
-
   <div style="position: relative;">
     <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" />
     <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
   </div>
+  <label>{{validFishLabel}}</label>
   <canvas id="canvas" hidden></canvas>
 </div>
 
