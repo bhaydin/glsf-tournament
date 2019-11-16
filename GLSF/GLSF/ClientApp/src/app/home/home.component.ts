@@ -62,73 +62,39 @@ export class HomeComponent implements OnInit {
   private filter() {
     let species = HomeComponent.speciesFilter;
     let value = HomeComponent.valueFilter;
-
-    console.log(species);
-    console.log(value);
     this.fishes = [];
 
-    if (!(species == undefined || species === "All Species")) {
-      if (value == undefined || value === "None") {
-        this.unfilteredFishes.forEach((fish: Fish) => {
-          if (fish.Species === species) {
-            this.fishes.push(fish);
-          }
-        })
-      } else if (value === "Length: High to Low") {
-        this.filterByLengthHighLow(species);
-      } else if (value === "Length: Low to High") {
-        this.filterByLengthLowHigh(species);
-      } else if (value === "Weight: High to Low") {
-        this.filterByWeightHighLow(species);
-      } else if (value === "Weight: Low to High") {
-        this.filterByWeightLowHigh(species);
-      } else if (value === "Sample Number") {
-        this.filterBySampleNum(species);
-      } else if (value === "Date Caught") {
-        this.filterByDateCaught(species);
-      }
+    // Filter by species
+    if (species == undefined || species === "All Species") {
+      this.unfilteredFishes.forEach((fish: Fish) => {
+        this.fishes.push(fish);
+      })
     } else {
-      if (value == undefined || value === "None") {
-        this.unfilteredFishes.forEach((fish: Fish) => {
+      this.unfilteredFishes.forEach((fish: Fish) => {
+        if (fish.Species === species) {
           this.fishes.push(fish);
-        })
-      } else if (value === "Length: High to Low") {
-        this.filterByLengthHighLow("All Species");
-      } else if (value === "Length: Low to High") {
-        this.filterByLengthLowHigh("All Species");
-      } else if (value === "Weight: High to Low") {
-        this.filterByWeightHighLow("All Species");
-      } else if (value === "Weight: Low to High") {
-        this.filterByWeightLowHigh("All Species");
-      } else if (value === "Sample Number") {
-        this.filterBySampleNum("All Species");
-      } else if (value === "Date Caught") {
-        this.filterByDateCaught("All Species");
-      }
+        }
+      })
+    }
+
+    // Sort by fish properties
+    if (value === "Length: High to Low") {
+      this.fishes.sort((fish1, fish2) => (fish1.Length > fish2.Length) ? -1 : 1);
+    } else if (value === "Length: Low to High") {
+      this.fishes.sort((fish1, fish2) => (fish1.Length > fish2.Length) ? 1 : -1);
+    } else if (value === "Weight: High to Low") {
+      this.fishes.sort((fish1, fish2) => (fish1.Weight > fish2.Weight) ? -1 : 1);
+    } else if (value === "Weight: Low to High") {
+      this.fishes.sort((fish1, fish2) => (fish1.Weight > fish2.Weight) ? 1 : -1);
+    } else if (value === "Sample Number") {
+      this.fishes = this.fishes.filter(this.checkSampleNumber);
+      this.fishes.sort((fish1, fish2) => (fish1.SampleNumber > fish2.SampleNumber) ? 1 : -1);
+    } else if (value === "Date Caught") {
+      this.fishes.sort((fish1, fish2) => (new Date(fish1.Date) > new Date(fish2.Date)) ? -1 : 1);
     }
   }
 
-  private filterByWeightLowHigh(species: String) {
-
-  }
-
-  private filterByWeightHighLow(species: String) {
-
-  }
-
-  private filterByLengthLowHigh(species: String) {
-
-  }
-
-  private filterByLengthHighLow(species: String) {
-
-  }
-
-  private filterBySampleNum(species: String) {
-
-  }
-
-  private filterByDateCaught(species: String) {
-
+  private checkSampleNumber(fish: Fish) {
+    return fish.SampleNumber !== "N/A";
   }
 }
