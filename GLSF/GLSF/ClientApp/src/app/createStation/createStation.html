@@ -1,0 +1,16 @@
+<h2 class="yellowTitle">Register Station to Tournament</h2>
+<div class="yellow">
+  <label>Tournament:</label><br />
+  <select #tournament class="standardwidth moveright">
+    <option *ngFor="let tournament of this.request.tournaments" (click)="filter($event.srcElement.value)" value="{{tournament.Id}}">{{tournament.Name}}</option>
+  </select><br />
+
+  <label>Station Label:</label><br />
+  <input [(ngModel)]="stationNumber" type=text placeholder="Station Number" class="standardwidth moveright"><label class="required">{{nameLabel}}</label><br />
+
+  <label>Port:</label><br />
+  <input [(ngModel)]="portName" type=text placeholder="Default Port" class="standardwidth moveright"><label class="required">{{idLabel}}</label>
+  <br /><br />
+
+  <button (click)="createStation(tournament.value)" [class]="subStyle">{{subText}}</button>
+</div>

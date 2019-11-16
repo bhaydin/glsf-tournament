@@ -1,0 +1,23 @@
+<h2 class="yellowTitle">Register Boat to Tournament</h2>
+
+<div class="yellow">
+
+  <label >Tournament:</label><br />
+  <select #tournament class="standardwidth moveright">
+    <option *ngFor="let tournament of this.request.tournaments" (click)="filter($event.srcElement.value)" value="{{tournament.Id}}">{{tournament.Name}}</option>
+  </select><br />
+
+  <label>Boat Name:</label><br />
+  <input [(ngModel)]="boatName" type=text placeholder="Name" class="standardwidth moveright"><label class="required">{{nameLabel}}</label><br />
+
+  <label>Boat Number:</label><br />
+  <input [(ngModel)]="boatId" type=text placeholder="Boat Id" class="standardwidth moveright"><label class="required">{{idLabel}}</label><br />
+
+  <label>Length:</label><br />
+  <input [(ngModel)]="boatLength" type=text placeholder="Length (ft)" class="standardwidth moveright"><label class="required">{{lengthLabel}}</label><br />
+
+  <label>Members:</label><br />
+  <input [(ngModel)]="members" type=text placeholder="Members" class="standardwidth moveright"><br /><br />
+
+  <button (click)="createBoat(tournament.value)" [class]="subStyle">{{subText}}</button>
+</div>

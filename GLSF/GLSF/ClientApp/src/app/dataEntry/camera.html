@@ -5,7 +5,7 @@
   <img [hidden]="!previewed" class="cameracenter" [src]="base64" />
   <button class="retakeimage" (click)="retakeImage()" [hidden]="!previewed">X</button>
   <webcam class="cameracenter"
-          height="350" width="350"
+          height="300" width="300"
           allowCameraSwitch="noOtherWebcam"
           *ngIf="toggleWebcam"
           [trigger]="triggerObservable"

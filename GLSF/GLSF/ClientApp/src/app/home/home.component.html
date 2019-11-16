@@ -1,11 +1,8 @@
 
 <h1 class="yellowTitle">Fish Entries</h1>
 <br>
-<br>
 <div class="dropdown">
-  <button id="speciesButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-    Fish Species
-  </button>
+  <button id="speciesButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Fish Species</button>
   <ul id="speciesDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
     <li role="presentation"><a role="menuitem" href="#">All Species</a></li>
     <li role="presentation"><a role="menuitem" href="#">Atlantic Salmon</a></li>
@@ -19,12 +16,8 @@
     <li role="presentation"><a role="menuitem" href="#">Yellow Perch</a></li>
   </ul>
 </div>
-<br />
-<br />
 <div class="dropdown">
-  <button id="filterButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-    Apply Filters
-  </button>
+  <button id="filterButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Apply Filters</button>
   <ul id="filterDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
     <li role="presentation"><a role="menuitem" href="#">None</a></li>
     <li role="presentation"><a role="menuitem" href="#">Length: High to Low</a></li>
@@ -34,29 +27,31 @@
     <li role="presentation"><a role="menuitem" href="#">Sample Number</a></li>
     <li role="presentation"><a role="menuitem" href="#">Date Caught</a></li>
   </ul>
-</div>
-<br />
-<div class="table-wrapper-scroll-y my-custom-scrollbar">
-  <table class="table table-bordered table-hover table-sm mb-0">
-    <thead class="yellowHeader">
-      <tr>
-        <th>Image</th>
-        <th>Species</th>
-        <th>Weight</th>
-        <th>Length</th>
-        <th>Sample Number</th>
-        <th>Date Caught</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let fish of fishes" class="yellowFont">
-        <td><img src="{{ fish.Image }}" /></td>
-        <td>{{ fish.Species }}</td>
-        <td>{{ fish.Weight }}</td>
-        <td>{{ fish.Length }}</td>
-        <td>{{ fish.SampleNumber }}</td>
-        <td>{{ fish.Date }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+  </div>
+  <br />
+  <div class="table-wrapper-scroll-y my-custom-scrollbar">
+    <table class="table table-bordered table-hover table-sm mb-0">
+      <thead class="yellowHeader">
+        <tr>
+          <th>Image</th>
+          <th>Species</th>
+          <th>Weight</th>
+          <th>Length</th>
+          <th>Sample Number</th>
+          <th>Date Caught</th>
+          <th>Is Valid?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fish of fishes" class="yellowFont">
+          <td><img src="{{ fish.Image }}" /></td>
+          <td>{{ fish.Species }}</td>
+          <td>{{ fish.Weight }}</td>
+          <td>{{ fish.Length }}</td>
+          <td>{{ fish.SampleNumber }}</td>
+          <td>{{ fish.Date }}</td>
+          <td>{{ fish.isValid }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

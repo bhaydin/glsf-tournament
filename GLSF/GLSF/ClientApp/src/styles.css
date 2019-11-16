@@ -1,16 +1,22 @@
 @import 'custom.css';
 
-
 .mat-datepicker-content {
   color: #ffe600;
   background: #010382;
 }
 
+input, label, button, select {
+font-size: 20px;
+}
+
+::placeholder { /* Most modern browsers support this now. */
+  color: #ffe600;
+  opacity: .75;
+}
 /*Calendar day cells*/
 .mat-calendar-body-cell-content {
   color: #ffe600;
   border: 2px solid #ffe600;
-  font-size: 12px;
 }
 
 /*Border between table and table header*/
@@ -49,6 +55,7 @@
   background-color: #ffe600;
 }
 
+/*Dialog container*/
 .custom-dialog-container .mat-dialog-container {
   padding: 0px;
 }

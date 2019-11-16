@@ -2,7 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Fish } from '../models/dataSchemas';
 import * as $ from 'jquery';
-import { IButton } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-home',
@@ -49,7 +48,7 @@ export class HomeComponent implements OnInit {
 
 	private analyzeBody(body) {
 		body.forEach((entity) => {
-			if (entity.Image == null) {
+			if (entity.Image == '') {
 				entity.Image = Fish.defaultImage;
 			}
 			if (entity.SampleNumber === null) {

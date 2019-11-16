@@ -8,30 +8,33 @@
 
 .takepicture {
   position: absolute;
-  top: 75px;
-  left: 75px;
+  top: 50px;
+  left: 100px;
 }
 
 .swapcamera {
   position: absolute;
-  top: 345px;
-  right: 110px;
+  top: 50px;
+  right: 100px;
 }
 
 .useimage {
   position: absolute;
-  top: 475px;
-  left: 207px;
+  width: 100px;
+  top: 430px;
+  left: 200px;
 }
 
 .retakeimage {
   position: absolute;
+  font-size: 16px;
   height: 30px;
   width: 30px;
-  top: 110px;
-  left: 60px;
+  top: 105px;
+  left: 85px;
   color: #0f0f0f;
   text-align: center;
+  font-weight: bolder;
   border-radius: 50%;
   border: 2px solid #0f0f0f;
   background-color: rgba(222,222,222,0.7);
@@ -44,7 +47,7 @@
   height: 30px;
   width: 30px;
   font-size: 16px;
-  text-align: center;
+  text-align: left;
   color: #c40000;
   border-radius: 50%;
   border: 2px solid #c40000;
@@ -54,23 +57,22 @@
   position: absolute;
   top: 190px;
   left: 149px;
-  color: #000000;
+  color: #ffe600;
   text-align: center;
-  border: 2px solid black;
-  background-color: #f2f2f2;
+  background-color: #010382;
 }
 
 .cameracenter {
   position: absolute;
-  top: 125px;
-  left: 75px;
+  top: 120px;
+  left: 100px;
 }
 
 img {
   width: auto;
   height: auto;
-  max-height: 350px;
-  max-width: 350px;
+  max-height: 300px;
+  max-width: 300px;
   border: solid 2px rgba(87, 87, 87, .7);
 }
 

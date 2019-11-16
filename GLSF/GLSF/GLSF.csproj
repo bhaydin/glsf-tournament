@@ -27,12 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\app\createPage\creationPage.component.ts" />
+    <None Remove="ClientApp\src\app\http\Requests.ts" />
     <None Remove="ClientApp\src\app\material.module.ts" />
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\app\createPage\creationPage.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\http\Requests.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\material.module.ts" />
   </ItemGroup>
 

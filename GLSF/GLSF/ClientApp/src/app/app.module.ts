@@ -1,7 +1,9 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { DataEntryComponent } from './dataEntry/dataEntry.component';
 import { HomeComponent } from './home/home.component';
@@ -9,15 +11,13 @@ import { MenuComponent } from './menu/menu.component';
 import { LoginComponent } from './login/login.component';
 import { TournamentsComponent } from './tournamentInfo/tournaments.component';
 import { WebcamModule } from 'ngx-webcam';
-import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './material.module';
 import { CameraDialog } from './dataEntry/camera';
-import { CreationPageComponent } from './createPage/creationPage.component'
-import { CreateTournamentComponent } from './createPage/createTournament/createTournament.component'
-import { CreateGroupComponent } from './createPage/createGroup/createGroup.component'
-import { ReactiveFormsModule } from '@angular/forms';
+import { CreateTournamentComponent } from './createTournament/createTournament.component'
+import { CreateBoatComponent } from './createBoat/createBoat.component'
+import { CreateStationComponent } from './createStation/createStation.component'
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
-
+import { Requests } from './http/Requests'
 
 
 // used to create fake backend
@@ -35,9 +35,9 @@ import { AuthGuard } from './_helpers';
     TournamentsComponent,
     LoginComponent,
 		CameraDialog,
-		CreationPageComponent,
 		CreateTournamentComponent,
-    CreateGroupComponent,
+		CreateBoatComponent,
+		CreateStationComponent,
   ],
     imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -50,7 +50,9 @@ import { AuthGuard } from './_helpers';
 		{ path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
 		{ path: 'data_entry', component: DataEntryComponent, canActivate: [AuthGuard] },
 		{ path: 'tournaments', component: TournamentsComponent, canActivate: [AuthGuard] },
-    { path: 'create', component: CreationPageComponent, canActivate: [AuthGuard] },
+		{ path: 'tournament', component: CreateTournamentComponent, canActivate: [AuthGuard] },
+		{ path: 'boat', component: CreateBoatComponent, canActivate: [AuthGuard] },
+		{ path: 'station', component: CreateStationComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent}
     ],
         { onSameUrlNavigation: 'reload' })

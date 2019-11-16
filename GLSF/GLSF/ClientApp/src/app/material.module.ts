@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import { MatDatepickerModule, MatFormFieldModule, MatNativeDateModule, MatInputModule } from '@angular/material';
+import { MatDatepickerModule, MatFormFieldModule, MatNativeDateModule, MatCheckboxModule, MatSelectModule, MatInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox'; 
+
 @NgModule({
 	imports: [
 		MatDatepickerModule,
@@ -11,7 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 		MatFormFieldModule,
 		MatNativeDateModule,
 		MatInputModule,
-		BrowserAnimationsModule
+		BrowserAnimationsModule,
 	],
 	exports: [
 		MatDatepickerModule,
@@ -20,7 +19,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 		MatFormFieldModule,
 		MatNativeDateModule,
 		MatInputModule,
-		BrowserAnimationsModule
+		BrowserAnimationsModule,
 	],
 	providers: [
 		MatDatepickerModule,

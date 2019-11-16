@@ -21,7 +21,7 @@ namespace ServerDatabase.Controllers
 		[HttpPost]
 		public async Task<Fish> InsertFish([FromBody]Fish fish)
 		{
-			await _context.Fish.AddAsync(fish);
+			await _context.Fishes.AddAsync(fish);
 			await _context.SaveChangesAsync();
 			return fish;
 		}
@@ -30,7 +30,7 @@ namespace ServerDatabase.Controllers
 		[HttpGet]
 		public async Task<string> GetFish()
 		{
-			List<Fish> allFishes = await _context.Fish.ToListAsync();
+			List<Fish> allFishes = await _context.Fishes.ToListAsync();
 			return JsonConvert.SerializeObject(allFishes);
 		}
 
@@ -38,26 +38,26 @@ namespace ServerDatabase.Controllers
 		[HttpGet("{queryBy}")]
 		public async Task<string> GetFishQueryBy(string queryBy)
 		{
-			List<Fish> allFishes = await _context.Fish.ToListAsync();
+			List<Fish> allFishes = await _context.Fishes.ToListAsync();
 			return JsonConvert.SerializeObject(allFishes);
 		}
 
 		//Boats
-		[Route("group")]
+		[Route("boat")]
 		[HttpPost]
-		public async Task<BoatGroup> InsertGroup([FromBody]BoatGroup group)
+		public async Task<Boat> InsertBoat([FromBody]Boat group)
 		{
-			await _context.BoatGroup.AddAsync(group);
+			await _context.Boats.AddAsync(group);
 			await _context.SaveChangesAsync();
 			return group;
 		}
 
-		[Route("group")]
+		[Route("boat")]
 		[HttpGet]
-		public async Task<string> GetGroups()
+		public async Task<string> GetBoats()
 		{
-			List<BoatGroup> allGroups = await _context.BoatGroup.ToListAsync();
-			return JsonConvert.SerializeObject(allGroups);
+			List<Boat> allBoats = await _context.Boats.ToListAsync();
+			return JsonConvert.SerializeObject(allBoats);
 		}
 
 		//Tournaments
@@ -65,7 +65,7 @@ namespace ServerDatabase.Controllers
 		[HttpPost]
 		public async Task<Tournament> InsertTournament([FromBody]Tournament tournament)
 		{
-			await _context.Tournament.AddAsync(tournament);
+			await _context.Tournaments.AddAsync(tournament);
 			await _context.SaveChangesAsync();
 			return tournament;
 		}
@@ -74,8 +74,26 @@ namespace ServerDatabase.Controllers
 		[HttpGet]
 		public async Task<string> GetTournaments()
 		{
-			List<Tournament> allTournaments = await _context.Tournament.ToListAsync();
+			List<Tournament> allTournaments = await _context.Tournaments.ToListAsync();
 			return JsonConvert.SerializeObject(allTournaments);
+		}
+
+		//Stations
+		[Route("station")]
+		[HttpPost]
+		public async Task<Station> InsertStation([FromBody]Station station)
+		{
+			await _context.Stations.AddAsync(station);
+			await _context.SaveChangesAsync();
+			return station;
+		}
+
+		[Route("station")]
+		[HttpGet]
+		public async Task<string> GetStations()
+		{
+			List<Station> allStations = await _context.Stations.ToListAsync();
+			return JsonConvert.SerializeObject(allStations);
 		}
 	}
 }

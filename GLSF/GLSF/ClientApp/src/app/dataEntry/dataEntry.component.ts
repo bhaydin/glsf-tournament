@@ -1,87 +1,66 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Fish, Tournament, BoatGroup } from '../models/dataSchemas';
-import { Router } from "@angular/router"
+import { Fish } from '../models/dataSchemas';
 import { DatePipe } from '@angular/common';
 import { CameraDialog } from './camera';
 import { MatDialog } from '@angular/material';
+import { Requests } from '../http/Requests';
 import * as tf from '../../assets/tfjs.js';
 
 
 @Component({
 	selector: 'app-dataEntry',
 	templateUrl: './dataEntry.html',
-	styleUrls: ['./dataStyling.css'],
+	styleUrls: ['../componentStyle.css'],
 	providers: [DatePipe]
 })
 
 export class DataEntryComponent implements OnInit {
   weightLabel = '';
-  lengthLabel = '';
+	lengthLabel = '';
 	sampleLabel = '';
-	stationLabel = '';
-	base64 = null;
-	isTagged = false;
+	idLabel = '';
+	weight = '';
+	length = '';
+	noAvailableTournaments = false;
+	noAvailableBoats = false;
+	noAvailableStations = false;
+	hasTag = false;
+	sampleNumber = '';
+	port = '';
+	base64 = '';
 	imageAvailable = false;
 	subStyle = "normal";
 	currentDate: Date = new Date();
 	fishes = Fish.fishes;
 	model: any;
 	modelLocation = "../assets/FishModel/FishClassifier/model.json";
-
-	potato = '';
-	private tournaments: Array<Tournament> = [];
-	private groups: Array<BoatGroup> = [];
-
-	constructor(private dialog: MatDialog, private pipe: DatePipe, private router: Router, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
+	constructor(private request: Requests, private dialog: MatDialog, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) {}
 
 	ngOnInit() {
-		this.getGroups();
-		this.getTournaments();
-    this.loadModel();
-    }
+		this.loadModel();
+		this.hasTournaments();
+	}
 
+	private async hasTournaments() {
+		this.noAvailableTournaments = await this.request.noTournamentsAvailable;
+	}
 
-  async loadModel() {
+  private async loadModel() {
     this.model = await tf.loadModel(this.modelLocation);
   }
 
-  	private getTournaments() {
-		const link = this.baseUrl + 'api/database/tournament';
-		this.http.get<Tournament[]>(link).subscribe(body =>
-			body.forEach((entity) => {
-				this.tournaments.push(entity);
-			})
-		);
-
-		if (this.tournaments.length) {
-			const tournament: Tournament = {
-				StartDate: 'N/A',
-				EndDate: 'N/A',
-				Name: 'No tournaments created',
-				Location: 'N/A',
-				Id: -1,
-			}
-			this.tournaments.push(tournament)
+	filter(value) {
+		this.request.filterBoats(value);
+		this.request.filterStations(value);
+		this.noAvailableStations = false;
+		this.noAvailableBoats = false;
+		if (this.request.boats[0].Id == null) {
+			this.noAvailableBoats = true;
 		}
-	}
-
-	private getGroups() {
-		const link = this.baseUrl + 'api/database/group';
-		this.http.get<BoatGroup[]>(link).subscribe(body =>
-			body.forEach((entity) => {
-				this.groups.push(entity);
-			})
-		);
-		if (this.groups.length) {
-			const group: BoatGroup = {
-				Name: 'No groups registered',
-				AgeGroup: 'N/A',
-				Id: -1,
-				TournamentId: -1,
-			}
-			this.groups.push(group)
+		if (this.request.stations[0].Id == null) {
+			this.noAvailableStations = true;
 		}
+
 	}
 
 	openDialog(): void {
@@ -109,76 +88,64 @@ export class DataEntryComponent implements OnInit {
 	}
 
 	removeImage() {
-		this.base64 = null;
+		this.base64 = '';
 		this.imageAvailable = false;
 	}
 
-	tagged(isTagged) {
-		this.isTagged = isTagged;
-	}
-
-	async createFish(weight, length, species, date, sampleNumber, location, stationNumber, tournamentId, boatId) {
-    const validLength = this.checkLength(length, species);
-		const validWeight = this.checkWeight(weight, species);
-		const validStation = this.checkStationNumber(stationNumber);
+	async createFish(species, date, station, tournamentId, boatId) {
+		const validLength = this.checkLength(species);
+		const validWeight = this.checkWeight(species);
+		const validIds = this.checkIds(station[0], tournamentId, boatId);
 		let validID = true;
-		if (this.isTagged) {
-			validID = this.checkSampleNumber(sampleNumber);
-		} else {
-			sampleNumber = null;
-		}
-		if (location === '') {
-			location = null;
-		}
 		let validFish = true;
-		if (this.base64 != null) {
-			validFish = await this.predict();
+		if (this.hasTag) {
+			validID = this.checkSampleNumber();
 		}
-
-		if (validLength && validWeight && validID && validStation && tournamentId != -1 && boatId != -1) {
+		if (this.port == '') {
+			this.port = station[1];
+		}
+		if (validLength && validWeight && validID && validIds) {
+			if (this.base64 != '') {
+				validFish = await this.predict();
+			}
 			const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
-			var fish = {
-				Weight: parseFloat(weight),
-				Length: parseFloat(length),
+			const fish: Fish = {
+				Weight: parseFloat(this.weight),
+				Length: parseFloat(this.length),
 				Species: species,
 				Image: this.base64,
 				Date: formattedDate,
-				SampleNumber: parseFloat(sampleNumber),
-				HasTag: this.isTagged,
-				Location: location,
-				StationNumber: parseFloat(stationNumber),
+				SampleNumber: parseFloat(this.sampleNumber),
+				HasTag: this.hasTag,
+				Port: this.port,
 				isValid: validFish,
+				StationNumber: parseFloat(station[0]),
+				Id: null, //This value is auto incremented in the DB
 				TournamentId: parseFloat(tournamentId),
 				BoatId: parseFloat(boatId),
 			};
 			this.sendRequest(fish);
-      this.reload();
-    }
-  }
+			this.reload();
+		} else {
+			this.port = '';
+		}
+	}
 
-	private checkStationNumber(stationNumber) {
-		const stationNum = parseFloat(stationNumber);
-		if (stationNumber == '') {
-			this.stationLabel = 'Enter number';
-			return false;
-		} else if (isNaN(stationNumber)) {
-			this.stationLabel = 'Must be a number';
-			return false;
-		} else if (stationNum < 0) {
-			this.stationLabel = 'Must be positive';
+	private checkIds(stationId, tournamentId, boatId) {
+		if (tournamentId == '' || stationId == '' || boatId == '') {
+			this.idLabel = 'Must have valid tournament, boat, and station';
 			return false;
 		}
-		this.stationLabel = '';
-		return true;
-    }
+		this.idLabel = '';
+    return true;
+	}
 
-
-	private checkSampleNumber(sampleNumber) {
-		const sampleNum = parseFloat(sampleNumber);
-		if (sampleNumber == '') {
+	private checkSampleNumber() {
+		const sampleNum = parseFloat(this.sampleNumber);
+		if (this.sampleNumber == '') {
 			this.sampleLabel = 'Enter number';
 			return false;
-		} else if (isNaN(sampleNumber)) {
+		} else if (isNaN(sampleNum)) {
 			this.sampleLabel = 'Must be a number';
 			return false;
 		} else if (sampleNum < 0) {
@@ -189,14 +156,15 @@ export class DataEntryComponent implements OnInit {
     return true;
   }
 
-	private checkLength(length, species) {
-		if (length == '') {
+	private checkLength(species) {
+		const lengthNum = parseFloat(this.length);
+		if (this.length == '') {
 			this.lengthLabel = 'Enter length';
 			return false;
-		} else if (isNaN(length)) {
+		} else if (isNaN(lengthNum)) {
 			this.lengthLabel = 'Invalid length';
 			return false;
-		} else if (length < 0 || length > Fish.maxLengths[species]) {
+		} else if (lengthNum < 0 || lengthNum > Fish.maxLengths[species]) {
 			this.lengthLabel = 'Out of bounds';
 			return false;
 		}
@@ -204,14 +172,15 @@ export class DataEntryComponent implements OnInit {
 		return true;
   }
 
-	private checkWeight(weight, species) {
-		if (weight == '') {
+	private checkWeight(species) {
+		const weightNum = parseFloat(this.weight);
+		if (this.weight == '') {
 			this.weightLabel = 'Enter weight';
 			return false;
-		} else if (isNaN(weight)) {
+		} else if (isNaN(weightNum)) {
 			this.weightLabel = 'Invalid weight';
 			return false;
-		} else if (weight < 0 || weight > Fish.maxWeights[species]) {
+		} else if (weightNum < 0 || weightNum > Fish.maxWeights[species]) {
 			this.weightLabel = 'Out of bounds';
 			return false;
 		}
@@ -219,26 +188,22 @@ export class DataEntryComponent implements OnInit {
 		return true;
   }
 
-  private sendRequest(values) {
-    const link = this.baseUrl + 'api/database/fish';
-    const httpOptions = {
-      headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-      })
-    }
-	  this.http.post<Fish>(link, values, httpOptions).subscribe();
-  }
+	private sendRequest(values) {
+		const link = this.baseUrl + 'api/database/fish';
+		this.request.post(values, link);
+	}
 
   private async reload() {
     this.subStyle = "success";
-    await this.wait(300);
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      this.router.navigate(['/data_entry']);
-    });
-  }
-
-  private wait(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    await this.request.wait(200);
+	  this.subStyle = "normal";
+	  this.currentDate = new Date();
+	  this.removeImage();
+	  this.length = '';
+	  this.weight = '';
+	  this.sampleNumber = '';
+	  this.hasTag = false;
+	  this.port = '';
   }
 
 	private async predict() {
@@ -268,13 +233,12 @@ export class DataEntryComponent implements OnInit {
 
     let predictions = await this.model.predict(tensor).data();
     let prediction = 1 - predictions[0];
-    console.log(prediction);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (prediction >= .8) {
 		  return await true;
 		}
-		return false;
+		return await false;
     }
 }
 

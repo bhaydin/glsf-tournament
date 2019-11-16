@@ -1,21 +1,11 @@
-<header>
-  <nav class='navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3' *ngIf="currentUser">
-    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse" [ngClass]='{"show": isExpanded}'>
-      <ul class="navbar-nav flex-grow">
-        <li class="nav-item" [routerLinkActive]='["link-active"]' [routerLinkActiveOptions]='{ exact: true }'>
-          <a class="nav-link text-dark" [routerLink]='["/"]'>Home</a>
-        </li>
-        <li class="nav-item" [routerLinkActive]='["link-active"]'>
-          <a class="nav-link text-dark" [routerLink]='["/data_entry"]'>Fish Data</a>
-        </li>
-        <li class="nav-item" [routerLinkActive]='["link-active"]'>
-          <a class="nav-link text-dark" [routerLink]='["/create"]'>Create Tournament</a>
-        </li>
-        <li class="nav-item" [routerLinkActive]='["link-active"]'>
-          <a class="nav-link text-dark" [routerLink]='["/tournaments"]'>Upcoming Tournaments</a>
-        </li>
-      </ul>
-    </div>
+<header *ngIf="currentUser">
+  <div class="headRectangle">
+    <button [routerLink]='["/"]'>Home</button>
+    <button [routerLink]='["/data_entry"]'>Fish</button>
+    <button [routerLink]='["/boat"]'>Boat</button>
+    <button [routerLink]='["/station"]'>Station</button>
+    <button [routerLink]='["/tournament"]'>Tournament</button>
+    <!-- Add once needed(View tournaments)<button [routerLink]='["/tournaments"]'>Upcoming Tournaments</button>-->
     <button class="toprightexit" (click)="logout()">Log Out</button>
-  </nav>
+  </div>
 </header>

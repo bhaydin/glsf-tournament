@@ -9,20 +9,15 @@ import { AuthenticationService } from '../_services';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-  currentUser: any;
-  constructor(
-    private router: Router,
-    private authenticationService: AuthenticationService
-  ) {
+	currentUser: any;
+
+  constructor(private router: Router, private authenticationService: AuthenticationService) {
     this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
   }
-
+	ngOnInit() {}
 
   logout() {
     this.authenticationService.logout();
     this.router.navigate(['/login']);
-}
-
-  ngOnInit() {
-  }
+	}
 }

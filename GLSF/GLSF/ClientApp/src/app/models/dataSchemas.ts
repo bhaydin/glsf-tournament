@@ -1,6 +1,13 @@
-export class BoatGroup {
+export class Station {
+	Port: string;
+	Id: number;
+	TournamentId: number;
+}
+
+export class Boat {
 	Name: string;
-	AgeGroup: string;
+	Members: string;
+	Length: number
 	Id: number;
 	TournamentId: number;
 }
@@ -22,9 +29,9 @@ export class Fish {
 	Date: string;
 	SampleNumber: any;
 	HasTag: boolean;
-	Location: any;
-	StationNumber: number;
+	Port: string;
 	isValid: boolean;
+	StationNumber: number;
 	TournamentId: number;
 	BoatId: number;
 	Id: number;
@@ -59,16 +66,16 @@ export class Fish {
 		"Sauger": 20,
 	};
 
-	//mm
+	//in
 	public static maxLengths = {
-		"Chinook Salmon": 1524,
-		"Coho Salmon": 1498.6,
-		"Atlantic Salmon": 1778,
-		"Brown Trout": 1524,
-		"Lake Trout": 1524,
-		"Rainbow Trout": 1498.6,
-		"Yellow Perch": 381,
-		"Walleye": 1498.6,
-		"Sauger": 1016,
+		"Chinook Salmon": 60,
+		"Coho Salmon": 60,
+		"Atlantic Salmon": 70,
+		"Brown Trout": 60,
+		"Lake Trout": 60,
+		"Rainbow Trout": 60,
+		"Yellow Perch": 15,
+		"Walleye": 60,
+		"Sauger": 40,
 	};
 }
