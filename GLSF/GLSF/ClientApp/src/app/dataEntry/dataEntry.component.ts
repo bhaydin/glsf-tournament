@@ -61,16 +61,16 @@ export class DataEntryComponent implements OnInit {
 		this.noAvailableStations = await this.request.filterStations(value);
 	}
 
-	openDialog() {
+	async openDialog() {
 		const dialogRef = this.dialog.open(CameraDialog, {
 			panelClass: 'custom-dialog-container'
 		});
 
-		dialogRef.afterClosed().subscribe(result => {
+		dialogRef.afterClosed().subscribe(async result => {
 			if (result != undefined) {
 				this.base64 = result;
 				this.imageAvailable = true;
-				this.predict();
+				this.validFish = await this.predict();
 			}
 		});
 	}
@@ -82,7 +82,8 @@ export class DataEntryComponent implements OnInit {
       reader.onload = async () => {
 		    this.base64 = await reader.result.toString();
 		    this.imageAvailable = true;
-		    this.predict();
+		    this.validFish = await this.predict();
+
 			};
 		}
 	}
@@ -237,11 +238,10 @@ export class DataEntryComponent implements OnInit {
 
 		if (prediction >= .8) {
 			this.validFishLabel = 'Looks like a fish!';
-
-			this.validFish = true;
+			return true;
 		} else {
-			this.validFish = false;
 			this.validFishLabel = 'Try another picture';
+			return false;
 		}
   }
 }
