@@ -207,11 +207,22 @@ export class DataEntryComponent implements OnInit {
 	  this.port = '';
   }
 
+  private async sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 	private async predict() {
 		let canvas = <HTMLCanvasElement>document.getElementById("canvas");
 		let ctx = canvas.getContext("2d");
 		let image = new Image();
     image.src = this.base64;
+
+    let totalTime = 0;
+    while (image.width == 0 && totalTime < 1000) {
+      console.log("sleeping");
+      await this.sleep(100);
+      totalTime += 100;
+    }
 
     canvas.width = image.width;
     canvas.height = image.height;
