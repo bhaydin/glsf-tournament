@@ -1,0 +1,56 @@
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.min.js"></script>
+
+<h2 class="yellowTitle">Enter Fish to Database</h2>
+<div class="splitright">
+  <button (click)="openDialog()" class="moverightbutton">Take Image</button>
+  <label class="leftrightmargin">or</label>
+  <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
+  <button (click)="picture.click()">Choose Image</button><br /><br /><br /><br />
+  <div style="position: relative;">
+    <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" />
+    <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
+  </div>
+  <label>{{validFishLabel}}</label>
+  <canvas id="canvas" hidden></canvas>
+</div>
+
+<div class="splitleft">
+  <label class="required">{{idLabel}}</label><br />
+  <label>Tournament:</label><label style="margin-left:125px;">Boat:</label><br />
+  <select #tournament [disabled]="noAvailableTournaments" class="moveright standardwidth">
+    <option *ngFor="let tournament of this.request.tournaments" (click)="filter($event.srcElement.value)" value="{{tournament.Id}}">{{tournament.Name}}</option>
+  </select>
+  <select #boat [disabled]="noAvailableBoats" style="margin-left:45px;" class="standardwidth">
+    <option *ngFor="let boat of this.request.boats" value="{{boat.Id}}">{{boat.Name}}</option>
+  </select><br />
+
+  <label>Station:</label><label style="margin-left:175px;">Species:</label><br />
+  <select #station [disabled]="noAvailableStations" class="moveright standardwidth">
+    <option *ngFor="let station of this.request.stations" value='{"Id":{{station.Id}}, "Name":"{{station.Port}}"}'>{{station.Id}}: {{station.Port}}</option>
+  </select>
+  <select #species style="margin-left:45px;" class="standardwidth">
+    <option *ngFor="let fish of fishes" value='{{fish}}'>{{fish}}</option>
+  </select><br />
+
+  <label>Weight (Lbs):</label><br />
+  <input [(ngModel)]="weight" type=text placeholder="Weight" class="moveright standardwidth"><label class="required">{{weightLabel}}</label><br />
+
+  <label>Length (in):</label><br />
+  <input [(ngModel)]="length" type=text placeholder="Length" class="moveright standardwidth"><label class="required">{{lengthLabel}}</label><br />
+
+  <label style="margin-right: 10px;">Tagged</label>
+  <input [(ngModel)]="hasTag" type=checkbox><br />
+
+  <input [(ngModel)]="sampleNumber" class='moveright standardwidth' placeholder="Sample Number" type=text [disabled]="!hasTag"><label class="required">{{sampleLabel}}</label><br />
+
+  <label>Port Name:</label><br />
+  <input [(ngModel)]="port" type=text placeholder="Port" class="moveright standardwidth"><br />
+
+  <label>Date Caught:</label><br />
+  <mat-datepicker-toggle class="moveright" matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker touchUi #picker></mat-datepicker>
+  <input (click)="picker.open()" [matDatepicker]="picker" [value]="currentDate" class="short" [max]="currentDate" readonly><br /><br />
+  <button (click)="createFish(species.value, picker._validSelected, station.value, tournament.value, boat.value)" [class]="subStyle">Submit</button>
+</div>
+
+

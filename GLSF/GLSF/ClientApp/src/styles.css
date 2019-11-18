@@ -1,0 +1,61 @@
+@import 'custom.css';
+
+.mat-datepicker-content {
+  color: #ffe600;
+  background: #010382;
+}
+
+input, label, button, select {
+font-size: 20px;
+}
+
+::placeholder { /* Most modern browsers support this now. */
+  color: #ffe600;
+  opacity: .75;
+}
+/*Calendar day cells*/
+.mat-calendar-body-cell-content {
+  color: #ffe600;
+  border: 2px solid #ffe600;
+}
+
+/*Border between table and table header*/
+.mat-calendar-table-header-divider{
+  display:none;
+}
+
+.mat-calendar-arrow {
+  border-top-color: #ffe600;
+}
+
+.mat-icon-button:disabled {
+  color: #ffe600;
+}
+
+/*Header css*/
+.mat-calendar-table-header {
+  color: #ffe600;
+}
+
+/*Current date css*/
+.mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  color: #ffff00;
+  border: 2px solid #ffff00;
+}
+
+/*Disabled dates css*/
+.mat-calendar-body-disabled > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+  color: #696202;
+  border: 2px solid rgba(105, 98, 2, .8);
+}
+
+/*Currently selected cell*/
+.mat-calendar-body-selected {
+  color: #0003de;
+  background-color: #ffe600;
+}
+
+/*Dialog container*/
+.custom-dialog-container .mat-dialog-container {
+  padding: 0px;
+}
