@@ -5,11 +5,11 @@
     <option *ngFor="let tournament of this.request.tournaments" (click)="filter($event.srcElement.value)" value="{{tournament.Id}}">{{tournament.Name}}</option>
   </select><br />
 
-  <label>Station Label:</label><br />
-  <input [(ngModel)]="stationNumber" type=text placeholder="Station Number" class="standardwidth moveright"><label class="required">{{nameLabel}}</label><br />
+  <label>Station Number:</label><br />
+  <input [(ngModel)]="stationNumber" type=text placeholder="Station Number" class="standardwidth moveright"><label class="required">{{idLabel}}</label><br />
 
   <label>Port:</label><br />
-  <input [(ngModel)]="portName" type=text placeholder="Default Port" class="standardwidth moveright"><label class="required">{{idLabel}}</label>
+  <input [(ngModel)]="portName" type=text placeholder="Default Port" class="standardwidth moveright"><br />
   <br /><br />
 
   <button (click)="createStation(tournament.value)" [class]="subStyle">{{subText}}</button>

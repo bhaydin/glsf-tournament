@@ -11,7 +11,6 @@ import { Requests } from '../http/Requests';
 
 export class CreateStationComponent implements OnInit {
 	noAvailableTournaments = false;
-  nameLabel = '';
 	idLabel = '';
 	stationNumber = '';
 	portName = '';
@@ -21,11 +20,9 @@ export class CreateStationComponent implements OnInit {
 	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {}
 
 	ngOnInit() {
-		this.hasTournaments();
-	}
-
-	private async hasTournaments() {
-		this.noAvailableTournaments = await this.request.noTournamentsAvailable;
+		this.request.initialize().then(() => {
+			this.noAvailableTournaments = this.request.noTournamentsAvailable;
+		});
 	}
 
 	filter(value) {
@@ -40,10 +37,12 @@ export class CreateStationComponent implements OnInit {
 				Id: parseFloat(this.stationNumber),
 				Port: this.portName,
 			};
-			await this.sendRequest(station);
-			await this.reload();
-			await this.request.getStations();
-			await this.filter(tournamentId);
+			this.sendRequest(station).then(() => {
+				this.reload();
+				this.request.getStations().then(() => {
+					this.filter(tournamentId);
+				});
+			});
     }
   }
 
@@ -72,7 +71,7 @@ export class CreateStationComponent implements OnInit {
 
 	private sendRequest(values) {
 		const link = this.baseUrl + 'api/database/station';
-		this.request.post(values, link);
+		return this.request.post(values, link);
 	}
 
   private async reload() {

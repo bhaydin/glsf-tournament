@@ -26,7 +26,7 @@
 
   <label>Station:</label><label style="margin-left:175px;">Species:</label><br />
   <select #station [disabled]="noAvailableStations" class="moveright standardwidth">
-    <option *ngFor="let station of this.request.stations" value="[{{station.Id}},{{station.Port}}]">{{station.Id}} {{station.Port}}</option>
+    <option *ngFor="let station of this.request.stations" value='{"Id":{{station.Id}}, "Name":"{{station.Port}}"}'>{{station.Id}}: {{station.Port}}</option>
   </select>
   <select #species style="margin-left:45px;" class="standardwidth">
     <option *ngFor="let fish of fishes" value='{{fish}}'>{{fish}}</option>

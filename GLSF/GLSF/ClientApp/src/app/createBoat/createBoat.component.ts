@@ -24,11 +24,9 @@ export class CreateBoatComponent implements OnInit {
 	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {}
 
 	ngOnInit() {
-		this.hasTournaments();
-	}
-
-	private async hasTournaments() {
-		this.noAvailableTournaments = await this.request.noTournamentsAvailable;
+		this.request.initialize().then(() => {
+			this.noAvailableTournaments = this.request.noTournamentsAvailable;
+		});
 	}
 
 	filter(value) {
@@ -47,10 +45,12 @@ export class CreateBoatComponent implements OnInit {
 				TournamentId: parseFloat(tournamentId),
 				Length: parseFloat(this.boatLength),
 			};
-			await this.sendRequest(boat);
-			await this.reload();
-			await this.request.getBoats();
-			await this.filter(tournamentId);
+			this.sendRequest(boat).then(() => {
+				this.reload();
+				this.request.getBoats().then(() => {
+					this.filter(tournamentId);
+				});
+			});
     }
   }
 
@@ -107,7 +107,7 @@ export class CreateBoatComponent implements OnInit {
 
 	private sendRequest(values) {
 		const link = this.baseUrl + 'api/database/boat';
-		this.request.post(values, link);
+		return this.request.post(values, link);
 	}
 
   private async reload() {

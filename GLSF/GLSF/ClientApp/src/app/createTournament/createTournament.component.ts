@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Tournament } from '../models/dataSchemas';
 import { DatePipe } from '@angular/common';
 import { Requests } from '../http/Requests';
@@ -11,7 +11,7 @@ import { Requests } from '../http/Requests';
 	providers: [DatePipe]
 })
 
-export class CreateTournamentComponent {
+export class CreateTournamentComponent implements OnInit {
 	nameLabel = '';
 	dateLabel = '';
 	idLabel = '';
@@ -23,6 +23,10 @@ export class CreateTournamentComponent {
 	currentDate: Date = new Date();
 
 	constructor(private request: Requests, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) { }
+
+	ngOnInit() {
+		this.request.initialize();
+	}
 
 	createTournament(startDate, endDate) {
     const validName = this.checkName();
@@ -38,9 +42,10 @@ export class CreateTournamentComponent {
 				Location: this.tournamentLocation,
 				Id: parseFloat(this.tournamentId),
 			};
-			this.sendRequest(tournament);
-			this.reload();
-			this.request.getTournaments();
+			this.sendRequest(tournament).then(() => {
+				this.reload();
+				this.request.getTournaments();
+			});
     }
   }
   
@@ -89,9 +94,9 @@ export class CreateTournamentComponent {
 		return true;
   }
 
-	private sendRequest(values) {
+	private async sendRequest(values) {
 		const link = this.baseUrl + 'api/database/tournament';
-		this.request.post(values, link);
+		return this.request.post(values, link);
   }
 
   private async reload() {

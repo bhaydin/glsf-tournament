@@ -25,7 +25,7 @@ export class DataEntryComponent implements OnInit {
 	noAvailableBoats = false;
 	noAvailableStations = false;
 	hasTag = false;
-	validFish = true;
+	validFish = false;
 	validFishLabel = '';
 	sampleNumber = '';
 	port = '';
@@ -40,29 +40,25 @@ export class DataEntryComponent implements OnInit {
 
 	ngOnInit() {
 		this.loadModel();
-		this.hasTournaments();
+		this.availability();
 	}
 
-	private async hasTournaments() {
-		this.noAvailableTournaments = await this.request.noTournamentsAvailable;
+	private async loadModel() {
+		this.model = await tf.loadModel(this.modelLocation);
 	}
 
-  private async loadModel() {
-    this.model = await tf.loadModel(this.modelLocation);
-  }
+	private async availability() {
+		this.request.initialize().then(() => {
+			this.noAvailableTournaments = this.request.noTournamentsAvailable;
+			this.noAvailableBoats = this.request.noBoatsAvailable;
+			this.noAvailableStations = this.request.noStationsAvailable;
+		});
+		return true;
+	}
 
-	filter(value) {
-		this.request.filterBoats(value);
-		this.request.filterStations(value);
-		this.noAvailableStations = false;
-		this.noAvailableBoats = false;
-		if (this.request.boats[0].Id == null) {
-			this.noAvailableBoats = true;
-		}
-		if (this.request.stations[0].Id == null) {
-			this.noAvailableStations = true;
-		}
-
+	async filter(value) {
+		this.noAvailableBoats = await this.request.filterBoats(value);
+		this.noAvailableStations = await this.request.filterStations(value);
 	}
 
 	openDialog() {
@@ -72,23 +68,22 @@ export class DataEntryComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe(result => {
 			if (result != undefined) {
-				this.base64 = result.toString();
+				this.base64 = result;
 				this.imageAvailable = true;
 				this.predict();
 			}
 		});
 	}
 
-	async preview(image) {
+	preview(image) {
 		if (image.length !== 0) {
 			const reader = new FileReader();
 			reader.readAsDataURL(image[0]);
-      reader.onload = () => {
-        this.base64 = reader.result.toString();
+      reader.onload = async () => {
+		    this.base64 = await reader.result.toString();
 		    this.imageAvailable = true;
+		    this.predict();
 			};
-			this.predict();
-
 		}
 	}
 
@@ -100,6 +95,7 @@ export class DataEntryComponent implements OnInit {
 	}
 
 	async createFish(species, date, station, tournamentId, boatId) {
+		station = JSON.parse(station);
 		const validLength = this.checkLength(species);
 		const validWeight = this.checkWeight(species);
 		const validIds = this.checkIds(station[0], tournamentId, boatId);
@@ -108,7 +104,7 @@ export class DataEntryComponent implements OnInit {
 			validID = this.checkSampleNumber();
 		}
 		if (this.port == '') {
-			this.port = station[1];
+			this.port = station.Name;
 		}
 		if (validLength && validWeight && validID && validIds) {
 			const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
@@ -122,11 +118,12 @@ export class DataEntryComponent implements OnInit {
 				HasTag: this.hasTag,
 				Port: this.port,
 				isValid: this.validFish,
-				StationNumber: parseFloat(station[0]),
+				StationNumber: parseFloat(station.Id),
 				Id: null, //This value is auto incremented in the DB
 				TournamentId: parseFloat(tournamentId),
 				BoatId: parseFloat(boatId),
 			};
+			console.log(fish);
 			this.sendRequest(fish);
 			this.reload();
 		} else {

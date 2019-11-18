@@ -8,30 +8,32 @@ import { Inject, Injectable } from "@angular/core";
 })
 export class Requests {
 	noTournamentsAvailable = false;
+	noBoatsAvailable = false;
+	noStationsAvailable = false;
 	tournaments: Array<Tournament> = [];
 	allBoats: Array<Boat> = [];
 	boats: Array<Boat> = [];
 	stations: Array<Station> = [];
 	allStations: Array<Station> = [];
 
-	constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
-		this.initialize();
-	}
+	constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
 
-	private async initialize() {
-		await this.getTournaments();
-		await this.getBoats();
-		await this.getStations();
-		this.filterBoats(this.tournaments[0].Id);
-		this.filterStations(this.tournaments[0].Id);
-		this.noTournamentsAvailable = (this.tournaments[0].Id == null);
-
+	async initialize() {
+		this.getTournaments().then(() => {
+			this.getBoats().then(() => {
+				this.filterBoats(this.tournaments[0].Id);
+			});
+			this.getStations().then(() => {
+				this.filterStations(this.tournaments[0].Id);
+			});
+		});
+		return true;
 	}
 
 	async getTournaments() {
 		const link = this.baseUrl + 'api/database/tournament';
 		this.tournaments = await this.http.get<Tournament[]>(link).toPromise();
-		if (this.tournaments.length === 0) {
+		if (this.tournaments.length == 0) {
 			const tournament: Tournament = {
 				StartDate: 'N/A',
 				EndDate: 'N/A',
@@ -41,18 +43,22 @@ export class Requests {
 			}
 			this.tournaments.push(tournament)
 		}
+		this.noTournamentsAvailable = (this.tournaments[0].Id == null);
 		this.filterStations(this.tournaments[0].Id);
 		this.filterBoats(this.tournaments[0].Id);
+		return true;
 	}
 
 	async getBoats() {
 		const link = this.baseUrl + 'api/database/boat';
 		this.allBoats = await this.http.get<Boat[]>(link).toPromise();
+		return true;
 	}
 
 	async getStations() {
 		const link = this.baseUrl + 'api/database/station';
 		this.allStations = await this.http.get<Station[]>(link).toPromise();
+		return true;
 	}
 
 
@@ -60,8 +66,8 @@ export class Requests {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
-	filterStations(value) {
-		this.stations = this.allStations.filter(station =>
+	async filterStations(value) {
+		this.stations = await this.allStations.filter(station =>
 			station.TournamentId == value
 		);
 		if (this.stations.length == 0) {
@@ -72,11 +78,13 @@ export class Requests {
 			}
 			this.stations.push(station)
 		}
+		this.noStationsAvailable = (this.stations[0].Id == null);
+		return this.noStationsAvailable;
 	}
 
 
-	filterBoats(value) {
-		this.boats = this.allBoats.filter(boat =>
+	async filterBoats(value) {
+		this.boats = await this.allBoats.filter(boat =>
 			boat.TournamentId == value
 		);
 		if (this.boats.length == 0) {
@@ -89,6 +97,8 @@ export class Requests {
 			}
 			this.boats.push(boat)
 		}
+		this.noBoatsAvailable = (this.boats[0].Id == null);
+		return this.noBoatsAvailable;
 	}
 
 	async post(values, link) {
@@ -97,6 +107,6 @@ export class Requests {
 				'Content-Type': 'application/json'
 			})
 		}
-		await this.http.post(link, values, httpOptions).toPromise();
+		return await this.http.post(link, values, httpOptions).toPromise();
 	}
 }

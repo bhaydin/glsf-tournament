@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
       $("#speciesButton").html($(this).text());
     });
 
-    $("#speciesDropDown li a").on('click', (e) => {
+    $("#speciesDropDown li a").on('click', () => {
       this.filter();
     });
 
@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
       $("#filterButton").html($(this).text());
     });
 
-    $("#filterDropDown a").on('click', (e) => {
+    $("#filterDropDown a").on('click', () => {
       this.filter();
     });
   }
