@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { DataEntryComponent } from './dataEntry/dataEntry.component';
+import { UnverifiedDataComponent } from './unverifiedData/unverifiedData.component';
 import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
 import { LoginComponent } from './login/login.component';
@@ -30,6 +31,7 @@ import { AuthGuard } from './_helpers';
   declarations: [
     AppComponent,
     DataEntryComponent,
+    UnverifiedDataComponent,
     MenuComponent,
     HomeComponent,
     TournamentsComponent,
@@ -47,7 +49,8 @@ import { AuthGuard } from './_helpers';
     ReactiveFormsModule,
     MaterialModule,
     RouterModule.forRoot([
-		{ path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+    { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+    { path: 'unverifiedData', component: UnverifiedDataComponent, pathMatch: 'full', canActivate: [AuthGuard] },
 		{ path: 'data_entry', component: DataEntryComponent, canActivate: [AuthGuard] },
 		{ path: 'tournaments', component: TournamentsComponent, canActivate: [AuthGuard] },
 		{ path: 'tournament', component: CreateTournamentComponent, canActivate: [AuthGuard] },

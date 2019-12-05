@@ -10,7 +10,7 @@ export class Requests {
 	noTournamentsAvailable = false;
 	noBoatsAvailable = false;
 	noStationsAvailable = false;
-	tournaments: Array<Tournament> = [];
+  tournaments: Array<Tournament> = [];
 	allBoats: Array<Boat> = [];
 	boats: Array<Boat> = [];
 	stations: Array<Station> = [];
@@ -41,7 +41,7 @@ export class Requests {
 				Location: 'N/A',
 				Id: null,
 			}
-			this.tournaments.push(tournament)
+      this.tournaments.push(tournament);
 		}
 		this.noTournamentsAvailable = (this.tournaments[0].Id == null);
 		this.filterStations(this.tournaments[0].Id);
@@ -80,8 +80,7 @@ export class Requests {
 		}
 		this.noStationsAvailable = (this.stations[0].Id == null);
 		return this.noStationsAvailable;
-	}
-
+  }
 
 	async filterBoats(value) {
 		this.boats = await this.allBoats.filter(boat =>
