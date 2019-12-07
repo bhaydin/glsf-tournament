@@ -34,6 +34,33 @@ export class UnverifiedDataComponent implements OnInit {
     this.unfilteredFishes.forEach(fish => this.filterOneFish(value, fish));
   }
 
+  async validateFish(value) {
+    var checkBox = document.getElementById("validateCheckBox" + value) as HTMLInputElement;
+
+    if (checkBox.checked) {
+      let validFish = this.fishes[value];
+      this.fishes.splice(value, 1);
+      validFish.isValid = true;
+
+      let validFishIndex = this.unfilteredFishes.indexOf(validFish);
+      this.unfilteredFishes.splice(validFishIndex, 1);
+
+      const link = this.baseUrl + 'api/database/fish';
+      this.http.get<Fish[]>(link).subscribe(body =>
+        this.removeFish(body, validFish)
+      );
+    }
+  }
+
+  private removeFish(body, fish) {
+    body.forEach((entity) => {
+      if (entity.Id == fish.Id) {
+        console.log("Found a match");
+        entity.isValid = true;
+      }
+    })
+  }
+
   async filterOneFish(value, fish) {
     if (value == fish.TournamentId) {
       this.fishes.push(fish);
@@ -61,9 +88,5 @@ export class UnverifiedDataComponent implements OnInit {
     if (this.request.tournaments[0] != undefined) {
       this.filter(this.request.tournaments[0].Id);
     }
-  }
-
-  public async validateFish(value) {
-    console.log(value);
   }
 }

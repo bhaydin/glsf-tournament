@@ -30,7 +30,7 @@
         <td>{{ fish.Length }}</td>
         <td>{{ fish.SampleNumber }}</td>
         <td>{{ fish.Date }}</td>
-        <td><input type="checkbox" onclick="this.validateFish('i')"></td>
+        <td><input type="checkbox" id="validateCheckBox{{ i }}" (click)="validateFish(i)"></td>
       </tr>
     </tbody>
   </table>
