@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Tournament, Boat, Station } from "../models/dataSchemas";
+import { Tournament, Boat, Station, Fish } from "../models/dataSchemas";
 import { Inject, Injectable } from "@angular/core";
 
 
@@ -107,5 +107,16 @@ export class Requests {
 			})
 		}
 		return await this.http.post(link, values, httpOptions).toPromise();
-	}
+  }
+
+  async updateFish(fish, link) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    console.log(fish);
+    return await this.http.put<Fish>(link, fish, httpOptions).toPromise();
+  }
 }

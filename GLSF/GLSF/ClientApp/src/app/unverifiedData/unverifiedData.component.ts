@@ -15,6 +15,7 @@ export class UnverifiedDataComponent implements OnInit {
   private fishes: Array<Fish> = [];
   public static speciesFilter: String;
   public static valueFilter: String;
+  private link = this.baseUrl + 'api/database/fish';
 
   constructor(private request: Requests, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
@@ -45,8 +46,7 @@ export class UnverifiedDataComponent implements OnInit {
       let validFishIndex = this.unfilteredFishes.indexOf(validFish);
       this.unfilteredFishes.splice(validFishIndex, 1);
 
-      const link = this.baseUrl + 'api/database/fish';
-      this.http.get<Fish[]>(link).subscribe(body =>
+      this.http.get<Fish[]>(this.link).subscribe(body =>
         this.removeFish(body, validFish)
       );
     }
@@ -55,8 +55,9 @@ export class UnverifiedDataComponent implements OnInit {
   private removeFish(body, fish) {
     body.forEach((entity) => {
       if (entity.Id == fish.Id) {
-        console.log("Found a match");
         entity.isValid = true;
+        fish.isValid = true;
+        this.request.updateFish(fish, this.link);
       }
     })
   }
