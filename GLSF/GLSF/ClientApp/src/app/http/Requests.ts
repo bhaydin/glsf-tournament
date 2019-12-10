@@ -116,7 +116,6 @@ export class Requests {
       })
     }
 
-    console.log(fish);
-    return await this.http.put<Fish>(link, fish, httpOptions).toPromise();
+    return await this.http.put(link, fish, httpOptions).toPromise();
   }
 }

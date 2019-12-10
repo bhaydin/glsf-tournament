@@ -34,7 +34,15 @@ namespace ServerDatabase.Controllers
 			return JsonConvert.SerializeObject(allFishes);
 		}
 
-		[Route("fish")]
+    [Route("fish")]
+    [HttpPut]
+    public async Task<Fish> UpdateFish([FromBody]Fish fish)
+    {
+      _context.Fishes.Update(fish);
+      return fish;
+    }
+
+    [Route("fish")]
 		[HttpGet("{queryBy}")]
 		public async Task<string> GetFishQueryBy(string queryBy)
 		{
