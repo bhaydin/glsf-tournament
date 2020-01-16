@@ -1,0 +1,64 @@
+<div class="dialog">
+  <button class="exitbutton" (click)="onNoClick()">X</button>
+  <div class="splitleft">
+    <button (click)="openCameraDialog()">Take Image</button>
+    <label class="leftrightmargin">or</label>
+    <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
+    <button (click)="picture.click()">Choose Image</button><br /><br /><br />
+    <div style="position: relative; height:234px; width:234px; ">
+      <img [src]="this.fishInEdit.Image" onload="this.style.display=''" onerror="this.style.display='none'" />
+      <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
+    </div><br />
+
+    <label>Valid</label>
+    <input [(ngModel)]="this.fishInEdit.IsValid" class="leftmargin" type=checkbox><br /><br />
+
+    <label>Weight (Lbs):</label><br />
+    <input [(ngModel)]="this.fishInEdit.Weight" type=text placeholder="Weight" class="standardwidth"><label class="required">{{weightLabel}}</label><br /><br />
+
+    <label>Length (in):</label><br />
+    <input [(ngModel)]="this.fishInEdit.Length" type=text placeholder="Length" class="standardwidth"><label class="required">{{lengthLabel}}</label><br /><br />
+  </div>
+
+  <div class="splitright">
+    <label>Tournament:</label><br />
+    <select #tournament class="standardwidth">
+      <option *ngFor="let tournament of this.request.tournaments" [selected]="this.fishInEdit.TournamentId == tournament.Id" value='{{tournament.Id}}'>{{tournament.Name}}</option>
+    </select><br /><br />
+
+    <label>Boat:</label><br />
+    <select #boat class="standardwidth">
+      <option *ngFor="let boat of this.request.boats" [selected]="this.fishInEdit.BoatId == boat.Id" value='{{boat.Id}}'>{{boat.Name}}</option>
+    </select><br /><br />
+
+    <label>Members:</label><br />
+    <select #member class="standardwidth">
+      <option *ngFor="let member of this.request.members" [selected]="this.fishInEdit.MemberId == member.Id" value='{{member.Id}}'>{{member.Name}}</option>
+    </select><br />
+
+    <label>Station:</label><br />
+    <select #station class="standardwidth">
+      <option *ngFor="let station of this.request.stations" [selected]="this.fishInEdit.StationNumber == station.Id" value='{{station.Id}}'>{{station.Id}} : {{station.Port}}</option>
+    </select><br /><br />
+
+    <label>Species:</label><br />
+    <select #species class="standardwidth">
+      <option *ngFor="let fish of fishes" [selected]="this.fishInEdit.Species == fish" value='{{fish}}'>{{fish}}</option>
+    </select><br /><br />
+
+    <label>Tagged</label>
+    <input [(ngModel)]="this.fishInEdit.HasTag" class="leftmargin" type=checkbox><br />
+
+    <input [(ngModel)]="this.fishInEdit.SampleNumber" class='standardwidth' placeholder="Sample Number" type=text [disabled]="!this.fishInEdit.HasTag"><label class="required">{{sampleLabel}}</label><br /><br />
+
+    <label>Port Name:</label><br />
+    <input [(ngModel)]="this.fishInEdit.Port" type=text placeholder="Port" class="standardwidth"><br /><br />
+
+    <label>Date Caught:</label><br />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker touchUi #picker></mat-datepicker>
+    <input (click)="picker.open()" [matDatepicker]="picker" [value]="dateCaught" class="short" [max]="currentDate" readonly><br /><br />
+  </div>
+  <button class="saveButton" (click)="saveChanges(species.value, picker._validSelected, tournament.value, boat.value, member.value, station.value)">Save Changes</button>
+  <button class="deleteButton" (click)="deleteFish()" [disabled]="this.fishInEdit.isValid">Delete Entry</button>
+</div>

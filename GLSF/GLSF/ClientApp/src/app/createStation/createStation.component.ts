@@ -10,39 +10,50 @@ import { Requests } from '../http/Requests';
 })
 
 export class CreateStationComponent implements OnInit {
-	noAvailableTournaments = false;
 	idLabel = '';
 	stationNumber = '';
 	portName = '';
+	nameLabel = '';
 	subStyle = "normal";
 	subText = "Submit";
 
-	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {}
+	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) { }
 
 	ngOnInit() {
-		this.request.initialize().then(() => {
-			this.noAvailableTournaments = this.request.noTournamentsAvailable;
-		});
+		this.request.initialize();
 	}
 
-	filter(value) {
-		this.request.filterStations(value);
+	filter(tournament) {
+		try {
+			tournament = JSON.parse(tournament);
+			this.request.filterStations(tournament.Id);
+		} catch (e) {}
 	}
 
-	async createStation(tournamentId) {
+	async createStation(tournament) {
+		let validDropdowns = true;
+		try {
+			tournament = JSON.parse(tournament);
+		} catch (e) {
+			validDropdowns = false;
+		}
 		const validId = this.checkNumber();
-		if (validId && tournamentId != -1) {
-			const station: Station = {
-				TournamentId: parseFloat(tournamentId),
-				Id: parseFloat(this.stationNumber),
-				Port: this.portName,
-			};
-			this.sendRequest(station).then(() => {
-				this.reload();
-				this.request.getStations().then(() => {
-					this.filter(tournamentId);
+		const validName = this.checkName();
+		if (validId && validName && validDropdowns) {
+			const validTournament = this.request.checkDropdownTournament(tournament);
+			if (validTournament) {
+				const station: Station = {
+					TournamentId: parseFloat(tournament.Id),
+					Id: parseFloat(this.stationNumber),
+					Port: this.portName,
+				};
+				this.sendRequest(station).then(() => {
+					this.reload();
+					this.request.getStations().then(() => {
+						this.request.filterStations(tournament.Id);
+					});
 				});
-			});
+			}
     }
   }
 
@@ -66,6 +77,18 @@ export class CreateStationComponent implements OnInit {
 			}
 		}
 		this.idLabel = '';
+		return true;
+	}
+
+	private checkName() {
+		if (this.portName == '') {
+			this.nameLabel = 'Enter name';
+			return false;
+		} else if (this.portName.length > 300) {
+			this.nameLabel = '300 characters max';
+			return false;
+		}
+		this.nameLabel = '';
 		return true;
 	}
 

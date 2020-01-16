@@ -6,7 +6,7 @@
 }
 
 input, label, button, select {
-font-size: 20px;
+  font-size: 20px;
 }
 
 ::placeholder { /* Most modern browsers support this now. */

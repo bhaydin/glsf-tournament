@@ -8,7 +8,7 @@
   <button (click)="picture.click()">Choose Image</button><br /><br /><br /><br />
   <div style="position: relative;">
     <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" />
-    <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
+    <button (click)="removeImage()" [hidden]="!imageAvailable" class="removeimage">X</button>
   </div>
   <label>{{validFishLabel}}</label>
   <canvas id="canvas" hidden></canvas>
@@ -17,28 +17,33 @@
 <div class="splitleft">
   <label class="required">{{idLabel}}</label><br />
   <label>Tournament:</label><label style="margin-left:125px;">Boat:</label><br />
-  <select #tournament [disabled]="noAvailableTournaments" class="moveright standardwidth">
-    <option *ngFor="let tournament of this.request.tournaments" (click)="filter($event.srcElement.value)" value="{{tournament.Id}}">{{tournament.Name}}</option>
+  <select #tournamentSelect [disabled]="this.request.noTournamentsAvailable" class="moveright standardwidth">
+    <option *ngFor="let tournament of this.request.tournaments" (click)="filterTournament(tournamentSelect.value, juniorCheckbox.checked)" value='{"Id":{{tournament.Id}}, "Name":"{{tournament.Name}}"}'>{{tournament.Name}}</option>
   </select>
-  <select #boat [disabled]="noAvailableBoats" style="margin-left:45px;" class="standardwidth">
-    <option *ngFor="let boat of this.request.boats" value="{{boat.Id}}">{{boat.Name}}</option>
+  <select #boatSelect [disabled]="this.request.noBoatsAvailable" style="margin-left:45px;" class="standardwidth">
+    <option *ngFor="let boat of this.request.boats" (click)="filterBoat(boatSelect.value, juniorCheckbox.checked)" value='{"Id":{{boat.Id}}, "TournamentId":"{{boat.TournamentId}}", "Name":"{{boat.Name}}"}'>{{boat.Name}}</option>
   </select><br />
 
-  <label>Station:</label><label style="margin-left:175px;">Species:</label><br />
-  <select #station [disabled]="noAvailableStations" class="moveright standardwidth">
+  <label>Station:</label><label style="margin-left:170px;">Members:</label><label style="margin-left:100px;">Junior: </label><br />
+  <select #stationSelect [disabled]="this.request.noStationsAvailable" class="moveright standardwidth">
     <option *ngFor="let station of this.request.stations" value='{"Id":{{station.Id}}, "Name":"{{station.Port}}"}'>{{station.Id}}: {{station.Port}}</option>
   </select>
-  <select #species style="margin-left:45px;" class="standardwidth">
+  <select #memberSelect [disabled]="this.request.noMembersAvailable" style="margin-left:45px;" class="standardwidth">
+    <option *ngFor="let member of this.request.members" value='{"Id":{{member.Id}}, "Name":"{{member.Name}}"}'>{{member.Name}}</option>
+  </select>
+  <input style="margin-left:20px;" #juniorCheckbox type="checkbox" (change)="filterBoat(boatSelect.value, juniorCheckbox.checked)"/>
+  <br />
+
+  <label>Weight:</label><label style="margin-left:170px;">Species:</label><br />
+  <input [(ngModel)]="weight" type=text placeholder="Weight (Lbs)" class="moveright standardwidth"><label class="required">{{weightLabel}}</label>
+  <select #speciesSelect style="margin-left:30px;" class="standardwidth">
     <option *ngFor="let fish of fishes" value='{{fish}}'>{{fish}}</option>
   </select><br />
 
-  <label>Weight (Lbs):</label><br />
-  <input [(ngModel)]="weight" type=text placeholder="Weight" class="moveright standardwidth"><label class="required">{{weightLabel}}</label><br />
+  <label>Length:</label><br />
+  <input [(ngModel)]="length" type=text placeholder="Length (in)" class="moveright standardwidth"><label class="required">{{lengthLabel}}</label><br />
 
-  <label>Length (in):</label><br />
-  <input [(ngModel)]="length" type=text placeholder="Length" class="moveright standardwidth"><label class="required">{{lengthLabel}}</label><br />
-
-  <label style="margin-right: 10px;">Tagged</label>
+  <label style="margin-right: 10px;">Tagged:</label>
   <input [(ngModel)]="hasTag" type=checkbox><br />
 
   <input [(ngModel)]="sampleNumber" class='moveright standardwidth' placeholder="Sample Number" type=text [disabled]="!hasTag"><label class="required">{{sampleLabel}}</label><br />
@@ -50,7 +55,7 @@
   <mat-datepicker-toggle class="moveright" matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker touchUi #picker></mat-datepicker>
   <input (click)="picker.open()" [matDatepicker]="picker" [value]="currentDate" class="short" [max]="currentDate" readonly><br /><br />
-  <button (click)="createFish(species.value, picker._validSelected, station.value, tournament.value, boat.value)" [class]="subStyle">Submit</button>
+  <button (click)="createFish(speciesSelect.value, picker._validSelected, stationSelect.value, tournamentSelect.value, boatSelect.value, memberSelect.value)" [class]="subStyle">Submit</button>
 </div>
 
 

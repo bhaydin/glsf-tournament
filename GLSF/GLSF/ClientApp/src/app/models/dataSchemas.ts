@@ -6,12 +6,25 @@ export class Station {
 
 export class Boat {
 	Name: string;
-	Members: string;
-	Length: number
+	Length: number;
 	Id: number;
 	TournamentId: number;
 }
 
+export class Member {
+	Name: string;
+	Age: any;
+	IsCaptain: boolean;
+	IsJunior: boolean;
+	Id: number;
+	BoatId: number;
+	TournamentId: number;
+}
+
+export class Group {
+	Boat: Boat;
+	Members: Array<Member>;
+}
 
 export class Tournament {
 	StartDate: string;
@@ -30,8 +43,9 @@ export class Fish {
 	SampleNumber: any;
 	HasTag: boolean;
 	Port: string;
-	isValid: boolean;
+	IsValid: boolean;
 	StationNumber: number;
+	MemberId: number;
 	TournamentId: number;
 	BoatId: number;
 	Id: number;

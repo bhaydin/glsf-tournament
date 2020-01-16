@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Boat } from '../models/dataSchemas';
+import { Boat, Member, Group } from '../models/dataSchemas';
 import { Requests } from '../http/Requests';
-
 
 @Component({
 	selector: 'app-createBoat',
@@ -16,43 +15,110 @@ export class CreateBoatComponent implements OnInit {
 	lengthLabel = '';
 	boatLength = '';
 	boatId = '';
-	members = '';
 	boatName = '';
 	subStyle = "normal";
 	subText = "Submit";
+	membersLabel = '';
+	members: Array<Member> = [];
 
-	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {}
+	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {
+		this.addMember();
+	}
 
 	ngOnInit() {
-		this.request.initialize().then(() => {
-			this.noAvailableTournaments = this.request.noTournamentsAvailable;
-		});
+		this.request.initialize();
 	}
 
-	filter(value) {
-		this.request.filterBoats(value)
+	addMember() {
+		const member: Member = { Name: "", Age: null, IsCaptain: false, IsJunior: false, Id: 0, BoatId: 0, TournamentId: 0};
+		this.members.push(member);
 	}
 
-	async createBoat(tournamentId) {
+
+	removeMember(i) {
+		this.members.splice(i, 1);
+	}
+
+	selectedCaptain(index) {
+		for (let i = 0; i < this.members.length; i++) {
+			if (i == index) {
+				this.members[i].IsCaptain = true;
+			} else {
+				this.members[i].IsCaptain = false;
+			}
+		}
+	}
+
+	filter(tournament) {
+		try {
+			tournament = JSON.parse(tournament);
+			this.request.filterBoats(tournament.Id)
+		} catch (e) {}
+	}
+
+	async createBoat(tournament) {
+		let validDropdowns = true;
+		try {
+			tournament = JSON.parse(tournament);
+		} catch (e) {
+			validDropdowns = false;
+		}
+		this.members = this.getValidMembers(tournament.Id);
 		const validName = this.checkName();
 		const validLength = this.checkLength();
 		const validId = this.checkId();
-		if (validName && validId && validLength && tournamentId != -1) {
-			const boat: Boat = {
-				Name: this.boatName,
-				Members: this.members,
-				Id: parseFloat(this.boatId),
-				TournamentId: parseFloat(tournamentId),
-				Length: parseFloat(this.boatLength),
-			};
-			this.sendRequest(boat).then(() => {
-				this.reload();
-				this.request.getBoats().then(() => {
-					this.filter(tournamentId);
+		const validMembers = this.membersAvailable();
+		if (validName && validId && validLength && validMembers && validDropdowns) {
+			const validTournament = this.request.checkDropdownTournament(tournament);
+			if (validTournament) {
+				const boat: Boat = {
+					Name: this.boatName,
+					Length: parseFloat(this.boatLength),
+					Id: parseFloat(this.boatId),
+					TournamentId: parseFloat(tournament.Id),
+				};
+				const group: Group = {
+					Boat: boat,
+					Members: this.members,
+				};
+				this.sendRequest(group).then(() => {
+					this.reload();
+					this.request.getBoats().then(() => {
+						this.request.filterBoats(tournament.Id);
+					});
 				});
-			});
+			}
     }
   }
+
+	private membersAvailable() {
+		if (this.members.length == 0) {
+			this.membersLabel = 'Must have at least one registered person on a boat.'
+			this.addMember();
+			return false;
+		}
+		this.membersLabel = '';
+		return true;
+	}
+
+	private getValidMembers(tournamentId) {
+		let i = 1;
+		let validMembers: Array<Member> = [];
+		this.members.forEach(member => {
+			if (member.Age != null && member.Name != '') {
+				member.IsJunior = false;
+				if (member.Age < 16) {
+					member.IsJunior = true;
+				}
+				member.Age = parseFloat(member.Age);
+				member.TournamentId = parseFloat(tournamentId);
+				member.BoatId = parseFloat(this.boatId);
+				member.Id = i++;
+				validMembers.push(member);
+			}
+		});
+		return validMembers;
+	}
 
 	private checkName() {
 		if (this.boatName == '') {
@@ -106,8 +172,8 @@ export class CreateBoatComponent implements OnInit {
 	}
 
 	private sendRequest(values) {
-		const link = this.baseUrl + 'api/database/boat';
-		return this.request.post(values, link);
+		const boatLink = this.baseUrl + 'api/database/boat';
+		return this.request.post(values, boatLink);
 	}
 
   private async reload() {
@@ -119,7 +185,8 @@ export class CreateBoatComponent implements OnInit {
 	  this.boatId = '';
 	  this.boatLength = '';
 	  this.boatName = '';
-	  this.members = '';
+	  this.members = [];
+	  this.addMember();
   }
 }
 

@@ -34,28 +34,36 @@ namespace ServerDatabase.Controllers
 			return JsonConvert.SerializeObject(allFishes);
 		}
 
-    [Route("fish")]
-    [HttpPut]
-    public async Task<Fish> UpdateFish([FromBody]Fish fish)
-    {
-      _context.Fishes.Update(fish);
-      return fish;
-    }
-
-    [Route("fish")]
-		[HttpGet("{queryBy}")]
-		public async Task<string> GetFishQueryBy(string queryBy)
+		[Route("fish")]
+		[HttpPut]
+		public async Task<Fish> UpdateFish([FromBody]Fish fish)
 		{
-			List<Fish> allFishes = await _context.Fishes.ToListAsync();
-			return JsonConvert.SerializeObject(allFishes);
+			if (fish != null)
+			{
+				_context.Fishes.Update(fish);
+				await _context.SaveChangesAsync();
+			}
+			return fish;
+		}
+
+		[Route("fish/{id}")]
+		[HttpDelete]
+		public async Task<int> DeleteFish(int id)
+		{
+			Fish fish = new Fish () { Id = id };
+			_context.Fishes.Attach(fish);
+			_context.Fishes.Remove(fish);
+			await _context.SaveChangesAsync();
+			return id;
 		}
 
 		//Boats
 		[Route("boat")]
 		[HttpPost]
-		public async Task<Boat> InsertBoat([FromBody]Boat group)
+		public async Task<Group> InsertGroup([FromBody]Group group)
 		{
-			await _context.Boats.AddAsync(group);
+			await _context.Members.AddRangeAsync(group.Members);
+			await _context.Boats.AddAsync(group.Boat);
 			await _context.SaveChangesAsync();
 			return group;
 		}
@@ -66,6 +74,14 @@ namespace ServerDatabase.Controllers
 		{
 			List<Boat> allBoats = await _context.Boats.ToListAsync();
 			return JsonConvert.SerializeObject(allBoats);
+		}
+
+		[Route("member")]
+		[HttpGet]
+		public async Task<string> GetMembers()
+		{
+			List<Member> allMembers = await _context.Members.ToListAsync();
+			return JsonConvert.SerializeObject(allMembers);
 		}
 
 		//Tournaments

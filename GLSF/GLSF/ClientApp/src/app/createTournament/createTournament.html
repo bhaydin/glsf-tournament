@@ -3,9 +3,6 @@
   <label>Tournament Name:</label><br />
   <input type=text class="moveright standardwidth" [(ngModel)]="tournamentName" placeholder="Name"><label class="required">{{nameLabel}}</label><br />
 
-  <label>Tournament Id:</label><br />
-  <input type=text class="moveright standardwidth" [(ngModel)]="tournamentId" placeholder="Id"><label class="required">{{idLabel}}</label><br />
-
   <label>Location:</label><br />
   <input type=text class="moveright standardwidth" [(ngModel)]="tournamentLocation" placeholder="Location"><br />
 
@@ -13,11 +10,15 @@
   <mat-datepicker-toggle matSuffix [for]="startDate" class="moveright"></mat-datepicker-toggle>
   <mat-datepicker touchUi #startDate></mat-datepicker>
   <input (click)="startDate.open()" [matDatepicker]="startDate" [value]="currentDate" [min]="currentDate" class="short" readonly>
-  <label class="required">{{dateLabel}}</label><br />
+  <label class="required">{{dateLabel}}</label>
+  <input [ngxTimepicker]="picker">
+  <ngx-material-timepicker #pickerStart></ngx-material-timepicker><br />
 
   <label>End Date:</label><br />
   <mat-datepicker-toggle matSuffix [for]="endDate" class="moveright"></mat-datepicker-toggle>
   <mat-datepicker touchUi #endDate></mat-datepicker>
-  <input (click)="endDate.open()" [matDatepicker]="endDate" [value]="currentDate" [min]="currentDate" class="short" readonly><br /><br />
+  <input (click)="endDate.open()" [matDatepicker]="endDate" [value]="currentDate" [min]="currentDate" class="short" readonly>
+  <input [ngxTimepicker]="picker">
+  <ngx-material-timepicker #pickerEnd></ngx-material-timepicker><br /><br />
   <button (click)="createTournament(startDate._validSelected, endDate._validSelected)" [class]="subStyle">{{subText}}</button>
 </div>

@@ -14,13 +14,13 @@ import { Requests } from '../http/Requests';
 export class CreateTournamentComponent implements OnInit {
 	nameLabel = '';
 	dateLabel = '';
-	idLabel = '';
 	tournamentName = '';
-	tournamentId = '';
 	tournamentLocation = '';
 	subStyle = "normal";
 	subText = "Submit";
 	currentDate: Date = new Date();
+	startTime;
+	endTime;
 
 	constructor(private request: Requests, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) { }
 
@@ -30,9 +30,8 @@ export class CreateTournamentComponent implements OnInit {
 
 	createTournament(startDate, endDate) {
     const validName = this.checkName();
-		const validId = this.checkId();
 		const validDateRange = this.checkDates(startDate, endDate);
-		if (validName && validId && validDateRange) {
+		if (validName && validDateRange) {
 			const formattedStartDate = this.pipe.transform(startDate, 'MM/dd/yyyy');
 			const formattedEndDate = this.pipe.transform(endDate, 'MM/dd/yyyy');
 			const tournament:Tournament = {
@@ -40,7 +39,7 @@ export class CreateTournamentComponent implements OnInit {
 				EndDate: formattedEndDate,
 				Name: this.tournamentName,
 				Location: this.tournamentLocation,
-				Id: parseFloat(this.tournamentId),
+				Id: null,
 			};
 			this.sendRequest(tournament).then(() => {
 				this.reload();
@@ -71,29 +70,6 @@ export class CreateTournamentComponent implements OnInit {
 		return false;
 	}
 
-	private checkId() {
-		const idNum = parseFloat(this.tournamentId);
-		if (this.tournamentId == '') {
-			this.idLabel = 'Enter Id';
-			return false;
-		} else if (isNaN(idNum)) {
-			this.idLabel = 'Enter a number';
-			return false;
-		} else if (idNum < 0) {
-			this.idLabel = 'Must be positive';
-			return false;
-		}
-		for (let i = 0; i < this.request.tournaments.length; i++) {
-			if (this.request.tournaments[i].Id == idNum) {
-				this.idLabel = 'Tournament with id ' + this.request.tournaments[i].Id +
-					' and name ' + this.request.tournaments[i].Name + ' already created.'
-				return false;
-			}
-		}
-		this.idLabel = '';
-		return true;
-  }
-
 	private async sendRequest(values) {
 		const link = this.baseUrl + 'api/database/tournament';
 		return this.request.post(values, link);
@@ -105,7 +81,6 @@ export class CreateTournamentComponent implements OnInit {
     await this.request.wait(200);
 	  this.subStyle = "normal";
 	  this.subText = "Submit";
-	  this.tournamentId = null;
 	  this.tournamentName = null;
 	  this.tournamentLocation = null;
 	  this.currentDate = new Date();

@@ -21,11 +21,8 @@ export class DataEntryComponent implements OnInit {
 	idLabel = '';
 	weight = '';
 	length = '';
-	noAvailableTournaments = false;
-	noAvailableBoats = false;
-	noAvailableStations = false;
 	hasTag = false;
-	validFish = false;
+	validFish = true;
 	validFishLabel = '';
 	sampleNumber = '';
 	port = '';
@@ -36,29 +33,32 @@ export class DataEntryComponent implements OnInit {
 	fishes = Fish.fishes;
 	model: any;
 	modelLocation = "../assets/FishModel/FishClassifier/model.json";
+
 	constructor(private request: Requests, private dialog: MatDialog, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) {}
 
 	ngOnInit() {
 		this.loadModel();
-		this.availability();
+		this.request.initialize()
 	}
 
 	private async loadModel() {
 		this.model = await tf.loadModel(this.modelLocation);
 	}
 
-	private async availability() {
-		this.request.initialize().then(() => {
-			this.noAvailableTournaments = this.request.noTournamentsAvailable;
-			this.noAvailableBoats = this.request.noBoatsAvailable;
-			this.noAvailableStations = this.request.noStationsAvailable;
-		});
-		return true;
+	async filterTournament(tournament, isJunior) {
+		try {
+			tournament = JSON.parse(tournament);
+			this.request.filterStations(tournament.Id);
+			await this.request.filterBoats(tournament.Id);
+			await this.request.filterMembers(tournament.Id, this.request.boats[0].Id, isJunior);
+		} catch (e) {}
 	}
 
-	async filter(value) {
-		this.noAvailableBoats = await this.request.filterBoats(value);
-		this.noAvailableStations = await this.request.filterStations(value);
+	filterBoat(boat, isJunior) {
+		try {
+			boat = JSON.parse(boat);
+			this.request.filterMembers(boat.TournamentId, boat.Id, isJunior);
+		} catch (e) {}
 	}
 
 	async openDialog() {
@@ -68,9 +68,10 @@ export class DataEntryComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe(async result => {
 			if (result != undefined) {
+				this.validFishLabel = '';
 				this.base64 = result;
 				this.imageAvailable = true;
-				this.validFish = await this.predict();
+				this.validFish = await this.predict();				
 			}
 		});
 	}
@@ -79,79 +80,109 @@ export class DataEntryComponent implements OnInit {
 		if (image.length !== 0) {
 			const reader = new FileReader();
 			reader.readAsDataURL(image[0]);
-      reader.onload = async () => {
-		    this.base64 = await reader.result.toString();
-		    this.imageAvailable = true;
-		    this.validFish = await this.predict();
-
+			reader.onload = async () => {
+				this.validFishLabel = '';
+				this.base64 = reader.result.toString();
+				this.imageAvailable = true;
+				this.validFish = await this.predict();
 			};
 		}
+	}
+
+	//Makes the image 300*300 so its smaller for storage.
+  //Returns the base64 string of the 300x300 image
+	resizeImage(imageString) {
+		const dimension = 250;
+		let image = new Image();
+		image.src = imageString;
+		const canvas = document.createElement('canvas');
+		const ctx = canvas.getContext('2d');
+		let ratio = dimension/image.width;
+		if (image.height >= image.width) {
+			ratio = dimension / image.height;
+			canvas.width = image.width * ratio
+			canvas.height = dimension;
+		} else {
+			canvas.width = dimension;
+			canvas.height = image.height * ratio
+		}
+		ctx.drawImage(image, 0, 0, image.width * ratio, image.height * ratio);
+		return canvas.toDataURL().toString();
 	}
 
 	removeImage() {
 		this.base64 = '';
 		this.imageAvailable = false;
 		this.validFishLabel = '';
-
+		this.validFish = true;
 	}
 
-	async createFish(species, date, station, tournamentId, boatId) {
-		station = JSON.parse(station);
+	async createFish(species, date, station, tournament, boat, member) {
+		let validItems = true;
+		let validSampleNumber = true;
+		try {
+			station = JSON.parse(station);
+			tournament = JSON.parse(tournament);
+			boat = JSON.parse(boat);
+			member = JSON.parse(member);
+			if (this.port == '') {
+				this.port = station.Name;
+			}
+			this.idLabel = '';
+		} catch (e) {
+			validItems = false;
+			this.idLabel = 'Must have valid tournament, boat, station, and species';
+		}
+		if (this.hasTag) {
+			validSampleNumber = this.checkSampleNumber();
+		} else {
+			this.sampleNumber = '';
+		}
 		const validLength = this.checkLength(species);
 		const validWeight = this.checkWeight(species);
-		const validIds = this.checkIds(station[0], tournamentId, boatId);
-		let validID = true;
-		if (this.hasTag) {
-			validID = this.checkSampleNumber();
-		}
-		if (this.port == '') {
-			this.port = station.Name;
-		}
-		if (validLength && validWeight && validID && validIds) {
-			const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
-			const fish: Fish = {
-				Weight: parseFloat(this.weight),
-				Length: parseFloat(this.length),
-				Species: species,
-				Image: this.base64,
-				Date: formattedDate,
-				SampleNumber: parseFloat(this.sampleNumber),
-				HasTag: this.hasTag,
-				Port: this.port,
-				isValid: this.validFish,
-				StationNumber: parseFloat(station.Id),
-				Id: null, //This value is auto incremented in the DB
-				TournamentId: parseFloat(tournamentId),
-				BoatId: parseFloat(boatId),
-			};
-			console.log(fish);
-			this.sendRequest(fish);
-			this.reload();
+
+		if (validLength && validWeight && validSampleNumber && validItems) {
+			const validStation = this.request.checkDropdownStation(station);
+			const validSpecies = this.request.checkDropdownSpecies(species);
+			const validTournament = this.request.checkDropdownTournament(tournament);
+			const validBoat = this.request.checkDropdownBoat(boat);
+			const validMember = this.request.checkDropdownMember(member);
+			if (validSpecies && validBoat && validStation && validTournament && validMember) {
+				this.idLabel = '';
+				const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
+				const fish: Fish = {
+					Weight: parseFloat(this.weight),
+					Length: parseFloat(this.length),
+					Species: species,
+					Image: this.resizeImage(this.base64),
+					Date: formattedDate,
+					SampleNumber: this.sampleNumber,
+					HasTag: this.hasTag,
+					Port: this.port,
+					IsValid: this.validFish,
+					StationNumber: parseFloat(station.Id),
+					MemberId: parseFloat(member.Id),
+					Id: null, //This value is auto incremented in the DB
+					TournamentId: parseFloat(tournament.Id),
+					BoatId: parseFloat(boat.Id),
+				};
+				this.sendRequest(fish);
+				this.reload();
+			} else {
+				this.idLabel = 'Error occured in checking dropdowns, invalid values';
+				this.port = '';
+			}
 		} else {
 			this.port = '';
 		}
 	}
 
-	private checkIds(stationId, tournamentId, boatId) {
-		if (tournamentId == '' || stationId == '' || boatId == '') {
-			this.idLabel = 'Must have valid tournament, boat, and station';
-			return false;
-		}
-		this.idLabel = '';
-    return true;
-	}
-
 	private checkSampleNumber() {
-		const sampleNum = parseFloat(this.sampleNumber);
-		if (this.sampleNumber == '') {
-			this.sampleLabel = 'Enter number';
-			return false;
-		} else if (isNaN(sampleNum)) {
-			this.sampleLabel = 'Must be a number';
-			return false;
-		} else if (sampleNum < 0) {
-			this.sampleLabel = 'Must be positive';
-			return false;
+		if (this.hasTag) {
+			if (this.sampleNumber.length > 300) {
+				this.sampleLabel = 'Too long';
+				return false;
+			}
 		}
 		this.sampleLabel = '';
     return true;
@@ -211,18 +242,18 @@ export class DataEntryComponent implements OnInit {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+
 	private async predict() {
 		let canvas = <HTMLCanvasElement>document.getElementById("canvas");
 		let ctx = canvas.getContext("2d");
 		let image = new Image();
     image.src = this.base64;
-
-    let totalTime = 0;
-    while (image.width == 0 && totalTime < 1000) {
-      console.log("sleeping");
-      await this.sleep(100);
-      totalTime += 100;
-    }
+		let totalTime = 0;
+		while (image.width == 0 && totalTime < 1000) {
+			console.log("sleeping");
+			await this.sleep(100);
+			totalTime += 100;
+		}
 
     canvas.width = image.width;
     canvas.height = image.height;
@@ -256,9 +287,3 @@ export class DataEntryComponent implements OnInit {
 		}
   }
 }
-
-
-
-
-
-
