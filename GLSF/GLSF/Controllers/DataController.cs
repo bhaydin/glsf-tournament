@@ -2,6 +2,7 @@ using GLSF.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -70,12 +71,20 @@ namespace ServerDatabase.Controllers
 			return tournament;
 		}
 
+    private DateTime ConvertToDate(string date)
+    {
+      DateTime myDate = DateTime.ParseExact(date, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+      return myDate;
+    }
+
 		[Route("tournament")]
 		[HttpGet]
 		public async Task<string> GetTournaments()
 		{
 			List<Tournament> allTournaments = await _context.Tournaments.ToListAsync();
-			return JsonConvert.SerializeObject(allTournaments);
+      allTournaments.Sort((x, y) => ConvertToDate(x.StartDate).CompareTo(ConvertToDate(y.StartDate)));
+      allTournaments.Reverse();
+      return JsonConvert.SerializeObject(allTournaments);
 		}
 
 		//Stations

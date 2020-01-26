@@ -28,6 +28,14 @@
     <li role="presentation"><a role="menuitem" href="#">Date Caught</a></li>
   </ul>
   </div>
+<div class="dropdown">
+  <button id="tournamentFilter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Tournament Filter</button>
+  <ul id="tournamentDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+    <li *ngFor="let tournament of tournaments" role="presentation">
+      <a role="menuitem" href="#" (click)="newTournamentFilter(tournament.Name)">{{ tournament.Name }}</a>
+    </li>
+  </ul>
+</div>
   <br />
   <div class="table-wrapper-scroll-y my-custom-scrollbar">
     <table class="table table-bordered table-hover table-sm mb-0">
