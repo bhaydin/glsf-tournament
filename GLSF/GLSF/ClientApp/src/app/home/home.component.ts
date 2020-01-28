@@ -21,7 +21,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.getFish();
-    this.getTournaments();
 
     $("#speciesDropDown li a").click(function () {
       HomeComponent.speciesFilter = $(this).text();
@@ -104,16 +103,18 @@ export class HomeComponent implements OnInit {
 	}
 
 	private analyzeBody(body) {
-		body.forEach((entity) => {
-			if (entity.Image == '') {
-				entity.Image = Fish.defaultImage;
-			}
-			if (entity.SampleNumber === null) {
-				entity.SampleNumber = 'N/A'
-			}
+    body.forEach((entity) => {
+      if (entity.Image == '') {
+        entity.Image = Fish.defaultImage;
+      }
+      if (entity.SampleNumber === null) {
+        entity.SampleNumber = 'N/A'
+      }
       this.fishes.push(entity);
       this.unfilteredFishes.push(entity);
-		})
+    });
+
+    this.getTournaments();
   }
 
   private filter() {
