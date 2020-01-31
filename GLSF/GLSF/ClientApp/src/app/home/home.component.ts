@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Fish, Tournament } from '../models/dataSchemas';
+import { Fish, Tournament, Boat } from '../models/dataSchemas';
 import * as $ from 'jquery';
 
 @Component({
@@ -13,9 +13,14 @@ export class HomeComponent implements OnInit {
   private unfilteredFishes: Array<Fish> = [];
   private fishes: Array<Fish> = [];
   private tournaments: Array<Tournament> = [];
+  private unfilteredBoats: Array<Boat> = [];
+  private boats: Array<Boat> = [];
+
   public static speciesFilter: String;
   public static valueFilter: String;
   public static tournamentFilter: String;
+  public static boatFilter: String;
+  public static validFishFilter: String;
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
@@ -39,11 +44,52 @@ export class HomeComponent implements OnInit {
     $("#filterDropDown a").on('click', () => {
       this.filter();
     });
+
+    $("#validFishDropDown a").click(function () {
+      HomeComponent.validFishFilter = $(this).text();
+      $("#validFishButton").html($(this).text());
+    });
+
+    $("#validFishrDropDown a").on('click', () => {
+      this.filter();
+    });
   }
 
   public newTournamentFilter(filter) {
     $("#tournamentFilter").html(filter);
     HomeComponent.tournamentFilter = filter;
+    this.getTournamentBoats();
+    this.filter();
+  }
+
+  private getTournamentBoats() {
+    this.boats = [];
+    let tid = -1;
+    let filter = HomeComponent.tournamentFilter;
+
+    for (let i = 0; i < this.tournaments.length; i++) {
+      let t = this.tournaments[i];
+      
+      if (t.Name == filter) {
+        tid = t.Id;
+      }
+    }
+
+    for (let j = 0; j < this.unfilteredBoats.length; j++) {
+      let boat = this.unfilteredBoats[j];
+
+      if (boat.TournamentId == tid) {
+        this.boats.push(boat);
+      }
+    }
+
+    HomeComponent.boatFilter = "All Boats";
+    $("#boatFilter").html("All Boats");
+  }
+
+  public newBoatFilter(filter) {
+    $("#boatFilter").html(filter);
+    HomeComponent.boatFilter = filter;
     this.filter();
   }
 
@@ -52,6 +98,22 @@ export class HomeComponent implements OnInit {
     this.http.get<Tournament[]>(link).subscribe(body =>
       this.analyzeTournamentBody(body)
     );
+  }
+
+  private getBoats() {
+    const link = this.baseUrl + 'api/database/boat';
+    this.http.get<Tournament[]>(link).subscribe(body =>
+      this.analyzeBoatBody(body)
+    );
+  }
+
+  private analyzeBoatBody(body) {
+    body.forEach((entity) => {
+      this.unfilteredBoats.push(entity);
+    });
+
+    this.getTournamentBoats();
+    this.filter();
   }
 
   private analyzeTournamentBody(body) {
@@ -83,7 +145,7 @@ export class HomeComponent implements OnInit {
 
     HomeComponent.tournamentFilter = this.tournaments[foundId].Name;
     $("#tournamentFilter").html(this.tournaments[foundId].Name);
-    this.filter();
+    this.getBoats();
   }
 
   private stringToDate(dateStr) {
@@ -120,8 +182,10 @@ export class HomeComponent implements OnInit {
   private filter() {
     this.fishes = [];
     this.speciesFilter();
-    this.tournamentFilter();
+    this.filterByTournaments();
     this.fishPropFilter();
+    this.boatFilter();
+    this.validFishFilter();
   }
 
   private speciesFilter() {
@@ -159,9 +223,8 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  private tournamentFilter() {
+  private filterByTournaments() {
     let tournamentFilter = HomeComponent.tournamentFilter;
-    console.log(tournamentFilter);
     let id = 0;
 
     for (let i = 0; i < this.tournaments.length; i++) {
@@ -178,6 +241,50 @@ export class HomeComponent implements OnInit {
         this.fishes.splice(i, 1);
       }
     }
+  }
+
+  private boatFilter() {
+    let filter = HomeComponent.boatFilter;
+
+    if (filter != undefined && filter != "All Boats") {
+      let id = 0;
+
+      for (let i = 0; i < this.unfilteredBoats.length; i++) {
+        if (this.unfilteredBoats[i].Name == filter) {
+          id = this.unfilteredBoats[i].Id;
+          break;
+        }
+      }
+
+      for (let i = this.fishes.length - 1; i >= 0; i--) {
+        let fish = this.fishes[i];
+
+        if (fish.BoatId != id) {
+          this.fishes.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  private validFishFilter() {
+    // TODO
+  }
+
+  public resetFilters() {
+    HomeComponent.speciesFilter = "All Species";
+    $("#speciesButton").html("All Species");
+
+    HomeComponent.valueFilter = "None";
+    $("#filterButton").html("None");
+
+    HomeComponent.validFishFilter = "Both";
+    $("#validFishButton").html("Both");
+
+    HomeComponent.boatFilter = "All Boats";
+    $("#boatFilter").html("All Boats");
+
+    this.getDefaultTournament();
+    this.filter();
   }
 
   private checkSampleNumber(fish: Fish) {

@@ -27,7 +27,15 @@
     <li role="presentation"><a role="menuitem" href="#">Sample Number</a></li>
     <li role="presentation"><a role="menuitem" href="#">Date Caught</a></li>
   </ul>
-  </div>
+</div>
+<div class="dropdown">
+  <button id="validFishButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Valid Fish Filter</button>
+  <ul id="validFishDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+    <li role="presentation"><a role="menuitem" href="#">Both</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Valid</a></li>
+    <li role="presentation"><a role="menuitem" href="#">Invalid</a></li>
+  </ul>
+</div>
 <div class="dropdown">
   <button id="tournamentFilter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Tournament Filter</button>
   <ul id="tournamentDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
@@ -36,7 +44,18 @@
     </li>
   </ul>
 </div>
-  <br />
+<div class="dropdown">
+  <button id="boatFilter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Boat Filter</button>
+  <ul id="boatDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+    <li role="presentation"><a role="menuitem" href="#">All Boats</a></li>
+    <li *ngFor="let boat of boats" role="presentation">
+      <a role="menuitem" href="#" (click)="newBoatFilter(boat.Name)">{{ boat.Name }}</a>
+    </li>
+  </ul>
+</div>
+<button class="btn btn-default" type="button" onclick="resetFilters()">Reset Filters</button>
+<br />
+<br />
   <div class="table-wrapper-scroll-y my-custom-scrollbar">
     <table class="table table-bordered table-hover table-sm mb-0">
       <thead class="yellowHeader">
