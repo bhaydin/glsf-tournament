@@ -44,3 +44,11 @@ table.table-bordered > tbody > tr > td {
   font-size: 14px;
   font-weight: bold;
 }
+
+.fa {
+  font-size: 20px;
+  color: yellow;
+  padding-left: 30px;
+  padding-top: 10px;
+  visibility: hidden;
+}

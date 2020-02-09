@@ -22,6 +22,15 @@ export class HomeComponent implements OnInit {
   public static boatFilter: String;
   public static validFishFilter: String;
 
+  private species = false;
+  private weight = false;
+  private length = false;
+  private number = false;
+  private date = false;
+  private valid = false;
+  private lastCaretClass = "";
+  private lastSort = "";
+
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
   ngOnInit() {
@@ -50,7 +59,7 @@ export class HomeComponent implements OnInit {
       $("#validFishButton").html($(this).text());
     });
 
-    $("#validFishrDropDown a").on('click', () => {
+    $("#validFishDropDown a").on('click', () => {
       this.filter();
     });
   }
@@ -183,9 +192,10 @@ export class HomeComponent implements OnInit {
     this.fishes = [];
     this.speciesFilter();
     this.filterByTournaments();
-    this.fishPropFilter();
     this.boatFilter();
-    this.validFishFilter();
+
+    this.sortBy(this.lastSort);
+    this.sortBy(this.lastSort);
   }
 
   private speciesFilter() {
@@ -204,23 +214,78 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  private fishPropFilter() {
-    let value = HomeComponent.valueFilter;
-
-    if (value === "Length: High to Low") {
-      this.fishes.sort((fish1, fish2) => (fish1.Length > fish2.Length) ? -1 : 1);
-    } else if (value === "Length: Low to High") {
-      this.fishes.sort((fish1, fish2) => (fish1.Length > fish2.Length) ? 1 : -1);
-    } else if (value === "Weight: High to Low") {
-      this.fishes.sort((fish1, fish2) => (fish1.Weight > fish2.Weight) ? -1 : 1);
-    } else if (value === "Weight: Low to High") {
-      this.fishes.sort((fish1, fish2) => (fish1.Weight > fish2.Weight) ? 1 : -1);
-    } else if (value === "Sample Number") {
-      this.fishes = this.fishes.filter(this.checkSampleNumber);
-      this.fishes.sort((fish1, fish2) => (fish1.SampleNumber > fish2.SampleNumber) ? 1 : -1);
-    } else if (value === "Date Caught") {
-      this.fishes.sort((fish1, fish2) => (new Date(fish1.Date) > new Date(fish2.Date)) ? -1 : 1);
+  public sortBy(value) {
+    if (this.lastCaretClass !== "") {
+      document.getElementById(this.lastCaretClass).style.visibility = "hidden";
     }
+
+    this.lastSort = value;
+    let sort = 0;
+    let caretClass = "";
+
+    if (value === "Species") {
+      this.species = !this.species;
+      sort = this.species ? -1 : 1;
+      caretClass = "speciesCaret";
+
+      this.fishes.sort(function (fish1, fish2) {
+        var f1 = fish1.Species.toUpperCase();
+        var f2 = fish2.Species.toUpperCase();
+
+        return (f1 < f2) ? sort : -sort;
+      });
+    } else if (value === "Length") {
+      this.length = !this.length;
+      sort = this.length ? -1 : 1;
+      caretClass = "lengthCaret";
+
+      this.fishes.sort((fish1, fish2) => (fish1.Length > fish2.Length) ? sort : -sort);
+    } else if (value === "Weight") {
+      this.weight = !this.weight;
+      sort = this.weight ? -1 : 1;
+      caretClass = "weightCaret";
+
+      this.fishes.sort((fish1, fish2) => (fish1.Weight > fish2.Weight) ? sort : -sort);
+    } else if (value === "Valid") {
+      this.valid = !this.valid;
+      sort = this.valid ? -1 : 1;
+      caretClass = "validCaret";
+
+      this.fishes.sort((fish1) => (fish1.isValid) ? sort : -sort);
+    } else if (value === "Number") {
+      this.number = !this.number;
+      sort = this.number ? -1 : 1;
+      caretClass = "numberCaret";
+
+      let fishWithNumbers = this.fishes.filter(this.checkSampleNumber);
+      let fishWithoutNumbers = this.fishes.filter(this.checkSampleNumberNa);
+
+      fishWithNumbers.sort(function (fish1, fish2) {
+          return fish1.SampleNumber > fish2.SampleNumber ? sort : -sort;
+      });
+
+      if (sort == -1) {
+        this.fishes = fishWithNumbers.concat(fishWithoutNumbers);
+      } else {
+        this.fishes = fishWithoutNumbers.concat(fishWithNumbers);
+      }
+    } else if (value === "Date") {
+      this.date = !this.date;
+      sort = this.date ? -1 : 1;
+      caretClass = "dateCaret";
+
+      this.fishes.sort((fish1, fish2) => (new Date(fish1.Date) > new Date(fish2.Date)) ? sort : -sort);
+    }
+
+    if (sort == 1) {
+      document.getElementById(caretClass).style.visibility = "visible";
+      document.getElementById(caretClass).className = "fa fa-caret-down";
+    } else if (sort == -1) {
+      document.getElementById(caretClass).style.visibility = "visible";
+      document.getElementById(caretClass).className = "fa fa-caret-up";
+    }
+
+    this.lastCaretClass = caretClass;
   }
 
   private filterByTournaments() {
@@ -266,10 +331,6 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  private validFishFilter() {
-    // TODO
-  }
-
   public resetFilters() {
     HomeComponent.speciesFilter = "All Species";
     $("#speciesButton").html("All Species");
@@ -289,5 +350,9 @@ export class HomeComponent implements OnInit {
 
   private checkSampleNumber(fish: Fish) {
     return fish.SampleNumber !== "N/A";
+  }
+
+  private checkSampleNumberNa(fish: Fish) {
+    return fish.SampleNumber === "N/A";
   }
 }
