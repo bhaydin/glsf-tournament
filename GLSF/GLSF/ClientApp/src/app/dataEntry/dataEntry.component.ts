@@ -18,11 +18,11 @@ export class DataEntryComponent implements OnInit {
   weightLabel = '';
 	lengthLabel = '';
 	sampleLabel = '';
-	idLabel = '';
 	weight = '';
 	length = '';
 	hasTag = false;
 	validFish = true;
+	submissionInProcess = false;
 	validFishLabel = '';
 	sampleNumber = '';
 	port = '';
@@ -31,47 +31,41 @@ export class DataEntryComponent implements OnInit {
 	subStyle = "normal";
 	currentDate: Date = new Date();
 	fishes = Fish.fishes;
+	fishClips = Fish.finClips;
+	valueSelected = false;
+	clipStatus = 'Unspecified';
 	model: any;
 	modelLocation = "../assets/FishModel/FishClassifier/model.json";
 
-	constructor(private request: Requests, private dialog: MatDialog, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) {}
-
-	ngOnInit() {
+	constructor(private request: Requests, private dialog: MatDialog, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) {
+		this.request.initialize();
 		this.loadModel();
-		this.request.initialize()
 	}
+
+	ngOnInit() { }
 
 	private async loadModel() {
 		this.model = await tf.loadModel(this.modelLocation);
 	}
 
-	async filterTournament(tournament, isJunior) {
-		try {
-			tournament = JSON.parse(tournament);
-			this.request.filterStations(tournament.Id);
-			await this.request.filterBoats(tournament.Id);
-			await this.request.filterMembers(tournament.Id, this.request.boats[0].Id, isJunior);
-		} catch (e) {}
+	async filterTournament(tournamentId, isJunior) {
+		this.request.getBoats(tournamentId)
+		this.request.getStations(tournamentId);
+		await this.request.getMembers(tournamentId);
+		this.request.filterMembers(this.request.boats[0].Id, isJunior);
 	}
 
-	filterBoat(boat, isJunior) {
-		try {
-			boat = JSON.parse(boat);
-			this.request.filterMembers(boat.TournamentId, boat.Id, isJunior);
-		} catch (e) {}
+	filterBoat(boatId, isJunior) {
+		this.request.filterMembers(boatId, isJunior);
 	}
 
 	async openDialog() {
 		const dialogRef = this.dialog.open(CameraDialog, {
 			panelClass: 'custom-dialog-container'
 		});
-
-		dialogRef.afterClosed().subscribe(async result => {
+		dialogRef.afterClosed().subscribe(result => {
 			if (result != undefined) {
-				this.validFishLabel = '';
-				this.base64 = result;
-				this.imageAvailable = true;
-				this.validFish = await this.predict();				
+				this.setImage(result);			
 			}
 		});
 	}
@@ -80,17 +74,21 @@ export class DataEntryComponent implements OnInit {
 		if (image.length !== 0) {
 			const reader = new FileReader();
 			reader.readAsDataURL(image[0]);
-			reader.onload = async () => {
-				this.validFishLabel = '';
-				this.base64 = reader.result.toString();
-				this.imageAvailable = true;
-				this.validFish = await this.predict();
+			reader.onload = () => {
+				this.setImage(reader.result.toString());
 			};
 		}
 	}
 
-	//Makes the image 300*300 so its smaller for storage.
-  //Returns the base64 string of the 300x300 image
+	private async setImage(image) {
+		this.validFishLabel = '';
+		this.base64 = image;
+		this.imageAvailable = true;
+		this.validFish = await this.predict();
+	}
+
+	//Makes the image 250*250 so its smaller for storage.
+  //Returns the base64 string of the 250x250 image
 	resizeImage(imageString) {
 		const dimension = 250;
 		let image = new Image();
@@ -117,38 +115,29 @@ export class DataEntryComponent implements OnInit {
 		this.validFish = true;
 	}
 
-	async createFish(species, date, station, tournament, boat, member) {
-		let validItems = true;
-		let validSampleNumber = true;
-		try {
-			station = JSON.parse(station);
-			tournament = JSON.parse(tournament);
-			boat = JSON.parse(boat);
-			member = JSON.parse(member);
-			if (this.port == '') {
-				this.port = station.Name;
-			}
-			this.idLabel = '';
-		} catch (e) {
-			validItems = false;
-			this.idLabel = 'Must have valid tournament, boat, station, and species';
+	selectedOption(boolValue) {
+		this.valueSelected = boolValue;
+	}
+
+	async createFish(species, date, clipInfo, stationId, tournamentId, boatId, memberId) {
+		this.submissionInProcess = true;
+		if (this.port == '') {
+			this.port = this.request.getStation(stationId).Port;
 		}
-		if (this.hasTag) {
-			validSampleNumber = this.checkSampleNumber();
-		} else {
-			this.sampleNumber = '';
+
+		if (this.clipStatus == 'No Fin Clips' || this.clipStatus == 'Unspecified') {
+			clipInfo = 'Unspecified';
 		}
+
+	  const validSampleNumber = this.checkSampleNumber();
 		const validLength = this.checkLength(species);
 		const validWeight = this.checkWeight(species);
-
-		if (validLength && validWeight && validSampleNumber && validItems) {
-			const validStation = this.request.checkDropdownStation(station);
-			const validSpecies = this.request.checkDropdownSpecies(species);
-			const validTournament = this.request.checkDropdownTournament(tournament);
-			const validBoat = this.request.checkDropdownBoat(boat);
-			const validMember = this.request.checkDropdownMember(member);
-			if (validSpecies && validBoat && validStation && validTournament && validMember) {
-				this.idLabel = '';
+		const validStation = this.request.checkDropdownStation(stationId);
+		const validSpecies = this.request.checkDropdownSpecies(species);
+		const validTournament = this.request.checkDropdownTournament(tournamentId);
+		const validBoat = this.request.checkDropdownBoat(boatId);
+		const validMember = this.request.checkDropdownMember(memberId);
+		if (validLength && validWeight && validSampleNumber && validSpecies && validBoat && validStation && validTournament && validMember) {
 				const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
 				const fish: Fish = {
 					Weight: parseFloat(this.weight),
@@ -160,27 +149,26 @@ export class DataEntryComponent implements OnInit {
 					HasTag: this.hasTag,
 					Port: this.port,
 					IsValid: this.validFish,
-					StationNumber: parseFloat(station.Id),
-					MemberId: parseFloat(member.Id),
-					Id: null, //This value is auto incremented in the DB
-					TournamentId: parseFloat(tournament.Id),
-					BoatId: parseFloat(boat.Id),
+					FinClip: this.clipStatus,
+					FinsClipped: clipInfo,
+					StationNumber: parseFloat(stationId),
+					MemberId: parseFloat(memberId),
+					Id: null, //This value is a GUID in the DB
+					TournamentId: tournamentId,
+					BoatId: parseFloat(boatId),
 				};
 				this.sendRequest(fish);
 				this.reload();
-			} else {
-				this.idLabel = 'Error occured in checking dropdowns, invalid values';
-				this.port = '';
-			}
-		} else {
+	  }else {
 			this.port = '';
+			this.submissionInProcess = false;
 		}
 	}
 
 	private checkSampleNumber() {
 		if (this.hasTag) {
-			if (this.sampleNumber.length > 300) {
-				this.sampleLabel = 'Too long';
+			if (this.sampleNumber.length > this.request.MAX_STRING_LENGTH) {
+				this.sampleLabel = this.request.MAX_STRING_LENGTH + ' characters max';
 				return false;
 			}
 		}
@@ -236,12 +224,8 @@ export class DataEntryComponent implements OnInit {
 	  this.sampleNumber = '';
 	  this.hasTag = false;
 	  this.port = '';
+	  this.submissionInProcess = false;
   }
-
-  private async sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
 
 	private async predict() {
 		let canvas = <HTMLCanvasElement>document.getElementById("canvas");
@@ -249,10 +233,9 @@ export class DataEntryComponent implements OnInit {
 		let image = new Image();
     image.src = this.base64;
 		let totalTime = 0;
-		while (image.width == 0 && totalTime < 1000) {
-			console.log("sleeping");
-			await this.sleep(100);
-			totalTime += 100;
+		while ((image.width == 0 || this.model == undefined) && totalTime <= 2) {
+			await this.request.wait(200);
+			totalTime += 0.2;
 		}
 
     canvas.width = image.width;
@@ -281,9 +264,8 @@ export class DataEntryComponent implements OnInit {
 		if (prediction >= .8) {
 			this.validFishLabel = 'Looks like a fish!';
 			return true;
-		} else {
-			this.validFishLabel = 'Try another picture';
-			return false;
 		}
+		this.validFishLabel = 'Try another picture';
+		return false;
   }
 }

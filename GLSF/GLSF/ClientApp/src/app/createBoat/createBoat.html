@@ -4,7 +4,7 @@
 
   <label>Tournament:</label><br />
   <select #tournamentSelect [disabled]="this.request.noTournamentsAvailable" class="standardwidth moveright">
-    <option *ngFor="let tournament of this.request.tournaments" (click)="filter(tournamentSelect.value)" value='{"Id":{{tournament.Id}}, "Name":"{{tournament.Name}}"}'>{{tournament.Name}}</option>
+    <option *ngFor="let tournament of this.request.tournaments" (click)="filter(tournamentSelect.value)" value='{{tournament.Id}}'>{{tournament.Name}}</option>
   </select><br />
 
   <label>Boat Name:</label><br />
@@ -32,5 +32,5 @@
     <button class="addmember moveright" (click)="addMember()">+</button>
   </div><br />
 
-  <button (click)="createBoat(tournamentSelect.value)" [class]="subStyle">{{subText}}</button>
+  <button [disabled]="submissionInProcess" (click)="createBoat(tournamentSelect.value)" [class]="subStyle">{{subText}}</button>
 </div>

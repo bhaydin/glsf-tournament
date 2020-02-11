@@ -17,6 +17,12 @@
   margin-left: 8px;
 }
 
+select:disabled {
+  background-color: #010382;
+  border: 2px solid #ff0000;
+  color: #ffe600;
+}
+
 .exitbutton {
   position: absolute;
   top: 3px;
@@ -150,6 +156,10 @@ input:disabled {
 .saveButton {
   position: absolute;
   bottom: 20px;
-  left: 242.5px;
+  left: 190px;
   width: 115px;
+  font-size: 14px;
+  background-color: #010382;
+  border: 2px solid #15b800;
+  color: #ffffff;
 }

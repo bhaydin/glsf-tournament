@@ -2,7 +2,7 @@
 <div class="yellow">
   <label>Tournament:</label><br />
   <select #tournamentSelect [disabled]="this.request.noTournamentsAvailable" class="standardwidth moveright">
-    <option *ngFor="let tournament of this.request.tournaments" (click)="filter(tournamentSelect.value)" value='{"Id":{{tournament.Id}}, "Name":"{{tournament.Name}}"}'>{{tournament.Name}}</option>
+    <option *ngFor="let tournament of this.request.tournaments" (click)="filter(tournamentSelect.value)" value='{{tournament.Id}}'>{{tournament.Name}}</option>
   </select><br />
 
   <label>Station Number:</label><br />
@@ -12,5 +12,5 @@
   <input [(ngModel)]="portName" type=text placeholder="Default Port" class="standardwidth moveright"><label class="required">{{nameLabel}}</label><br />
   <br /><br />
 
-  <button (click)="createStation(tournamentSelect.value)" [class]="subStyle">{{subText}}</button>
+  <button [disabled]="submissionInProcess" (click)="createStation(tournamentSelect.value)" [class]="subStyle">{{subText}}</button>
 </div>

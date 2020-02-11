@@ -14,42 +14,42 @@
     <input [(ngModel)]="this.fishInEdit.IsValid" class="leftmargin" type=checkbox><br /><br />
 
     <label>Weight (Lbs):</label><br />
-    <input [(ngModel)]="this.fishInEdit.Weight" type=text placeholder="Weight" class="standardwidth"><label class="required">{{weightLabel}}</label><br /><br />
+    <input [(ngModel)]="this.fishInEdit.Weight" type=text placeholder="Weight" class="standardwidth"><br /><br />
 
     <label>Length (in):</label><br />
-    <input [(ngModel)]="this.fishInEdit.Length" type=text placeholder="Length" class="standardwidth"><label class="required">{{lengthLabel}}</label><br /><br />
+    <input [(ngModel)]="this.fishInEdit.Length" type=text placeholder="Length" class="standardwidth"><br /><br />
   </div>
 
   <div class="splitright">
     <label>Tournament:</label><br />
-    <select #tournament class="standardwidth">
-      <option *ngFor="let tournament of this.request.tournaments" [selected]="this.fishInEdit.TournamentId == tournament.Id" value='{{tournament.Id}}'>{{tournament.Name}}</option>
+    <select #tournamentSelect class="standardwidth" [disabled]="this.request.noTournamentsAvailable">
+      <option *ngFor="let tournament of this.request.tournaments" (click)="filterTournament(tournamentSelect.value)" [selected]="this.fishInEdit.TournamentId == tournament.Id" value='{{tournament.Id}}'>{{tournament.Name}}</option>
     </select><br /><br />
 
     <label>Boat:</label><br />
-    <select #boat class="standardwidth">
-      <option *ngFor="let boat of this.request.boats" [selected]="this.fishInEdit.BoatId == boat.Id" value='{{boat.Id}}'>{{boat.Name}}</option>
+    <select #boatSelect class="standardwidth" [disabled]="this.request.noBoatsAvailable">
+      <option *ngFor="let boat of this.request.boats" (click)="filterBoat(boatSelect.value)" [selected]="this.fishInEdit.BoatId == boat.Id" value='{{boat.Id}}'>{{boat.Name}}</option>
     </select><br /><br />
 
-    <label>Members:</label><br />
-    <select #member class="standardwidth">
+    <label>Caught By:</label><br />
+    <select #memberSelect class="standardwidth" [disabled]="this.request.noBoatsAvailable || this.request.noMembersAvailable">
       <option *ngFor="let member of this.request.members" [selected]="this.fishInEdit.MemberId == member.Id" value='{{member.Id}}'>{{member.Name}}</option>
-    </select><br />
+    </select><br /><br />
 
     <label>Station:</label><br />
-    <select #station class="standardwidth">
+    <select #stationSelect class="standardwidth" [disabled]="this.request.noStationsAvailable">
       <option *ngFor="let station of this.request.stations" [selected]="this.fishInEdit.StationNumber == station.Id" value='{{station.Id}}'>{{station.Id}} : {{station.Port}}</option>
     </select><br /><br />
 
     <label>Species:</label><br />
-    <select #species class="standardwidth">
+    <select #speciesSelect class="standardwidth">
       <option *ngFor="let fish of fishes" [selected]="this.fishInEdit.Species == fish" value='{{fish}}'>{{fish}}</option>
     </select><br /><br />
 
-    <label>Tagged</label>
+    <label>Tagged:</label>
     <input [(ngModel)]="this.fishInEdit.HasTag" class="leftmargin" type=checkbox><br />
 
-    <input [(ngModel)]="this.fishInEdit.SampleNumber" class='standardwidth' placeholder="Sample Number" type=text [disabled]="!this.fishInEdit.HasTag"><label class="required">{{sampleLabel}}</label><br /><br />
+    <input [(ngModel)]="this.fishInEdit.SampleNumber" class='standardwidth' placeholder="Sample Number" type=text><br /><br />
 
     <label>Port Name:</label><br />
     <input [(ngModel)]="this.fishInEdit.Port" type=text placeholder="Port" class="standardwidth"><br /><br />
@@ -59,6 +59,6 @@
     <mat-datepicker touchUi #picker></mat-datepicker>
     <input (click)="picker.open()" [matDatepicker]="picker" [value]="dateCaught" class="short" [max]="currentDate" readonly><br /><br />
   </div>
-  <button class="saveButton" (click)="saveChanges(species.value, picker._validSelected, tournament.value, boat.value, member.value, station.value)">Save Changes</button>
+  <button class="saveButton" [disabled]="this.request.noBoatsAvailable || this.request.noTournamentsAvailable || this.request.noStationsAvailable || this.request.noMembersAvailable" (click)="saveChanges(speciesSelect.value, picker._validSelected, tournamentSelect.value, boatSelect.value, memberSelect.value, stationSelect.value)">Save Changes</button>
   <button class="deleteButton" (click)="deleteFish()" [disabled]="this.fishInEdit.isValid">Delete Entry</button>
 </div>

@@ -59,3 +59,20 @@ input, label, button, select {
 .custom-dialog-container .mat-dialog-container {
   padding: 0px;
 }
+
+.ngx-timepicker-control__input, .period-control__button, .ngx-timepicker__control--second, .period__btn--default, .period-selector {
+  background-color: #010382 !important;
+  font-size: 20px !important;
+}
+
+.ngx-timepicker-control__arrow, .period-control__arrow {
+  color: #ffff00 !important;
+}
+
+.period-selector__button--active {
+  color: #ffff00 !important;
+}
+
+.period-selector__button {
+  color: rgba(199, 199, 2, .8);
+}

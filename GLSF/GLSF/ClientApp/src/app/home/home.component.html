@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <h1 class="yellowTitle">Fish Entries</h1>
 <br>
-<div class="dropdown">
+<div class="dropdown" style="display:inline-block;">
   <button id="speciesButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Fish Species</button>
   <ul id="speciesDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
     <li role="presentation"><a role="menuitem" href="#">All Species</a></li>
@@ -16,7 +16,7 @@
     <li role="presentation"><a role="menuitem" href="#">Yellow Perch</a></li>
   </ul>
 </div>
-<div class="dropdown">
+<div class="dropdown" style="display:inline-block;">
   <button id="filterButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Apply Filters</button>
   <ul id="filterDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
     <li role="presentation"><a role="menuitem" href="#">None</a></li>
@@ -27,30 +27,28 @@
     <li role="presentation"><a role="menuitem" href="#">Sample Number</a></li>
     <li role="presentation"><a role="menuitem" href="#">Date Caught</a></li>
   </ul>
-  </div>
-  <br />
+</div><br />
+<button class="saveButton" (click)="saveAsCSV()" style="display:inline-block;">Export as CSV</button>
   <div class="table-wrapper-scroll-y table-hover my-custom-scrollbar">
     <table class="table table-bordered table-sm mb-0">
       <thead class="yellowHeader">
         <tr>
-          <th>Image</th>
-          <th>Species</th>
+          <th>Fish</th>
           <th>Weight (lbs)</th>
           <th>Length (in)</th>
           <th>Sample Number</th>
-          <th>Date Caught</th>
-          <th>Is Valid?</th>
+          <th>Port</th>
+          <th>Caught On</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let fish of this.request.fishes; let i = index" (click)="editRow(i)" class="yellowFont">
-          <td><img src="{{ fish.Image }}" [ngClass]="{'blur': !fish.IsValid, 'previewimage': true}"/></td>
-          <td>{{ fish.Species }}</td>
+          <td><img src="{{ fish.Image }}" [ngClass]="{'blur': !fish.IsValid, 'previewimage': true}" /><br />{{ fish.Species }}</td>
           <td>{{ fish.Weight }}</td>
           <td>{{ fish.Length }}</td>
           <td>{{ fish.SampleNumber }}</td>
+          <td>{{ fish.Port }}</td>
           <td>{{ fish.Date }}</td>
-          <td>{{ fish.IsValid }}</td>
         </tr>
       </tbody>
     </table>

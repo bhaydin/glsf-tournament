@@ -8,25 +8,30 @@ import { Requests } from '../http/Requests';
 	styleUrls: ['../componentStyle.css'],
 })
 
-export class CreateBoatComponent implements OnInit {
+export class CreateBoatComponent implements OnInit{
+	submissionInProcess = false;
 	noAvailableTournaments = false;
   nameLabel = '';
 	idLabel = '';
 	lengthLabel = '';
+	membersLabel = '';
 	boatLength = '';
 	boatId = '';
 	boatName = '';
 	subStyle = "normal";
 	subText = "Submit";
-	membersLabel = '';
 	members: Array<Member> = [];
 
 	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {
 		this.addMember();
+		this.setUpBoatRequest();
 	}
 
-	ngOnInit() {
-		this.request.initialize();
+	ngOnInit() {}
+
+	async setUpBoatRequest() {
+		const tournamentId = await this.request.getTournaments();
+		this.request.getBoats(tournamentId);
 	}
 
 	addMember() {
@@ -34,62 +39,50 @@ export class CreateBoatComponent implements OnInit {
 		this.members.push(member);
 	}
 
-
 	removeMember(i) {
 		this.members.splice(i, 1);
 	}
 
 	selectedCaptain(index) {
 		for (let i = 0; i < this.members.length; i++) {
+			this.members[i].IsCaptain = false;
 			if (i == index) {
 				this.members[i].IsCaptain = true;
-			} else {
-				this.members[i].IsCaptain = false;
-			}
+			}			
 		}
 	}
 
-	filter(tournament) {
-		try {
-			tournament = JSON.parse(tournament);
-			this.request.filterBoats(tournament.Id)
-		} catch (e) {}
+	filter(tournamentId) {
+		this.request.getBoats(tournamentId);
 	}
 
-	async createBoat(tournament) {
-		let validDropdowns = true;
-		try {
-			tournament = JSON.parse(tournament);
-		} catch (e) {
-			validDropdowns = false;
-		}
-		this.members = this.getValidMembers(tournament.Id);
+	async createBoat(tournamentId) {
+		this.submissionInProcess = true;
+		this.members = this.getValidMembers(tournamentId);
 		const validName = this.checkName();
 		const validLength = this.checkLength();
 		const validId = this.checkId();
 		const validMembers = this.membersAvailable();
-		if (validName && validId && validLength && validMembers && validDropdowns) {
-			const validTournament = this.request.checkDropdownTournament(tournament);
-			if (validTournament) {
-				const boat: Boat = {
-					Name: this.boatName,
-					Length: parseFloat(this.boatLength),
-					Id: parseFloat(this.boatId),
-					TournamentId: parseFloat(tournament.Id),
-				};
-				const group: Group = {
-					Boat: boat,
-					Members: this.members,
-				};
-				this.sendRequest(group).then(() => {
-					this.reload();
-					this.request.getBoats().then(() => {
-						this.request.filterBoats(tournament.Id);
-					});
-				});
-			}
-    }
-  }
+		const validTournament = this.request.checkDropdownTournament(tournamentId);
+		if (validName && validId && validLength && validMembers && validTournament) {
+			const boat: Boat = {
+				Name: this.boatName,
+				Length: parseFloat(this.boatLength),
+				Id: parseFloat(this.boatId),
+				TournamentId: tournamentId,
+			};
+			const group: Group = {
+				Boat: boat,
+				Members: this.members,
+			};
+			this.sendRequest(group).then(() => {
+				this.reload();
+				this.request.getBoats(tournamentId);
+			});
+		} else {
+			this.submissionInProcess = false;
+		}
+	}
 
 	private membersAvailable() {
 		if (this.members.length == 0) {
@@ -111,7 +104,7 @@ export class CreateBoatComponent implements OnInit {
 					member.IsJunior = true;
 				}
 				member.Age = parseFloat(member.Age);
-				member.TournamentId = parseFloat(tournamentId);
+				member.TournamentId = tournamentId;
 				member.BoatId = parseFloat(this.boatId);
 				member.Id = i++;
 				validMembers.push(member);
@@ -124,8 +117,8 @@ export class CreateBoatComponent implements OnInit {
 		if (this.boatName == '') {
 			this.nameLabel = 'Enter name';
 			return false;
-		} else if (this.boatName.length > 300) {
-			this.nameLabel = '300 characters max';
+		} else if (this.boatName.length > this.request.MAX_STRING_LENGTH) {
+			this.nameLabel = this.request.MAX_STRING_LENGTH + ' characters max';
 			return false;
 		}
 		this.nameLabel = '';
@@ -187,6 +180,7 @@ export class CreateBoatComponent implements OnInit {
 	  this.boatName = '';
 	  this.members = [];
 	  this.addMember();
+	  this.submissionInProcess = false;
   }
 }
 

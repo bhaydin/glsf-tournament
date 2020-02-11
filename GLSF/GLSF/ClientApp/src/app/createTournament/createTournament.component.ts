@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Tournament } from '../models/dataSchemas';
+import { Tournament, Time } from '../models/dataSchemas';
 import { DatePipe } from '@angular/common';
 import { Requests } from '../http/Requests';
 
@@ -18,23 +18,31 @@ export class CreateTournamentComponent implements OnInit {
 	tournamentLocation = '';
 	subStyle = "normal";
 	subText = "Submit";
+	submissionInProcess = false;
 	currentDate: Date = new Date();
-	startTime;
-	endTime;
+	startTime = '12:00 AM';
+	endTime = '12:00 AM';
 
-	constructor(private request: Requests, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) { }
-
-	ngOnInit() {
-		this.request.initialize();
+	constructor(private request: Requests, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) {
+		this.request.getTournaments();
 	}
 
+	ngOnInit() {	}
+
 	createTournament(startDate, endDate) {
-    const validName = this.checkName();
+		this.submissionInProcess = true;
+		startDate = new Date(startDate);
+		endDate = new Date(endDate);
+		const startTimeStruct = this.splitTime(this.startTime);
+		const endTimeStruct = this.splitTime(this.endTime);
+		startDate.setHours(startTimeStruct.Hours, startTimeStruct.Minutes, 0);
+		endDate.setHours(endTimeStruct.Hours, endTimeStruct.Minutes, 0);
+		const validName = this.checkName();
 		const validDateRange = this.checkDates(startDate, endDate);
 		if (validName && validDateRange) {
-			const formattedStartDate = this.pipe.transform(startDate, 'MM/dd/yyyy');
-			const formattedEndDate = this.pipe.transform(endDate, 'MM/dd/yyyy');
-			const tournament:Tournament = {
+			const formattedStartDate = this.pipe.transform(startDate, 'MM/dd/yyyy hh:mm aa');
+			const formattedEndDate = this.pipe.transform(endDate, 'MM/dd/yyyy hh:mm aa');
+			const tournament: Tournament = {
 				StartDate: formattedStartDate,
 				EndDate: formattedEndDate,
 				Name: this.tournamentName,
@@ -45,16 +53,35 @@ export class CreateTournamentComponent implements OnInit {
 				this.reload();
 				this.request.getTournaments();
 			});
-    }
+		} else {
+			this.submissionInProcess = false;
+		}
   }
-  
+
+	private splitTime(time) {
+		const timeArrayWithMeridiem = time.split(' ');
+		const timeArray = timeArrayWithMeridiem[0].split(':');
+		return this.formatHours(parseFloat(timeArray[0]), parseFloat(timeArray[1]), timeArrayWithMeridiem[1]);
+	}
+
+	private formatHours(hour, minutes, meridiem) {
+		hour %= 12;
+		if (meridiem == "PM") {
+			hour += 12;
+		}
+		const time: Time = {
+			Hours: hour,
+			Minutes: minutes,
+		};
+		return time;
+	}
 
 	private checkName() {
 		if (this.tournamentName == '') {
 			this.nameLabel = 'Enter name';
 			return false;
-		} else if (this.tournamentName.length > 300) {
-			this.nameLabel = '300 character max';
+		} else if (this.tournamentName.length > this.request.MAX_STRING_LENGTH) {
+			this.nameLabel = this.request.MAX_STRING_LENGTH + ' character max';
 			return false;
 		}
 		this.nameLabel = '';
@@ -81,9 +108,12 @@ export class CreateTournamentComponent implements OnInit {
     await this.request.wait(200);
 	  this.subStyle = "normal";
 	  this.subText = "Submit";
-	  this.tournamentName = null;
-	  this.tournamentLocation = null;
+	  this.tournamentName = '';
+	  this.tournamentLocation = '';
 	  this.currentDate = new Date();
+	  this.submissionInProcess = false;
+	  this.startTime = '12:00 AM';
+	  this.endTime = '12:00 AM';
   }
 
 }
