@@ -1,0 +1,63 @@
+
+img{
+  max-width: 30px;
+  max-height: 30px;
+  width: auto;
+  height: auto;
+}
+
+table.table-bordered > thead > tr > th {
+  border: 2px solid #ffe600;
+}
+
+table.table-bordered > tbody > tr > td {
+  border: 2px solid #ffe600;
+}
+
+.my-custom-scrollbar {
+  position: relative;
+  height: 500px;
+  overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+  display: block;
+}
+
+.yellowTitle {
+  margin-top: 10px;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  color: #ffe600;
+}
+
+.yellowHeader {
+  text-align: center;
+  font-size: 14px;
+  color: #ffe600;
+}
+
+.yellowFont {
+  text-align: center;
+  color: #ffe600;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.fa {
+  font-size: 20px;
+  color: yellow;
+  padding-left: 30px;
+  padding-top: 10px;
+  visibility: hidden;
+}
+
+.dropdown {
+  display: inline-block;
+  padding-right: 25px;
+}
+
+.saveButton {
+  margin-left: 30px;
+}
