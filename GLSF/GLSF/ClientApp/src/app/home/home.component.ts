@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   public static speciesFilter: String;
 	public static valueFilter: String;
 	public filteredFishes: Array<Fish> = [];
+	fishes = Fish.fishes;
 
 	constructor(private request: Requests, private dialog: MatDialog, @Inject('BASE_URL') private baseUrl: string) {
 		this.setUpHomeRequest();

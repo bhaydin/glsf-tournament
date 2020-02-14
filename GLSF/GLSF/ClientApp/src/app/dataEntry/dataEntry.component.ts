@@ -31,9 +31,8 @@ export class DataEntryComponent implements OnInit {
 	subStyle = "normal";
 	currentDate: Date = new Date();
 	fishes = Fish.fishes;
-	fishClips = Fish.finClips;
-	valueSelected = false;
-	clipStatus = 'Unspecified';
+	finClips = Fish.finClips;
+	valueSelected = true;
 	model: any;
 	modelLocation = "../assets/FishModel/FishClassifier/model.json";
 
@@ -119,16 +118,15 @@ export class DataEntryComponent implements OnInit {
 		this.valueSelected = boolValue;
 	}
 
-	async createFish(species, date, clipInfo, stationId, tournamentId, boatId, memberId) {
+	async createFish(species, date, finsClipped, clipStatus, stationId, tournamentId, boatId, memberId) {
 		this.submissionInProcess = true;
+		console.log(clipStatus);
 		if (this.port == '') {
 			this.port = this.request.getStation(stationId).Port;
 		}
-
-		if (this.clipStatus == 'No Fin Clips' || this.clipStatus == 'Unspecified') {
-			clipInfo = 'Unspecified';
+		if (clipStatus == 'No Fin Clips' || clipStatus == 'Unspecified') {
+			finsClipped = 'Unspecified';
 		}
-
 	  const validSampleNumber = this.checkSampleNumber();
 		const validLength = this.checkLength(species);
 		const validWeight = this.checkWeight(species);
@@ -149,8 +147,8 @@ export class DataEntryComponent implements OnInit {
 					HasTag: this.hasTag,
 					Port: this.port,
 					IsValid: this.validFish,
-					FinClip: this.clipStatus,
-					FinsClipped: clipInfo,
+					FinClip: clipStatus,
+					FinsClipped: finsClipped,
 					StationNumber: parseFloat(stationId),
 					MemberId: parseFloat(memberId),
 					Id: null, //This value is a GUID in the DB

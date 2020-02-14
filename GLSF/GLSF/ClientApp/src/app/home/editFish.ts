@@ -15,8 +15,10 @@ import { DatePipe } from '@angular/common';
 export class EditFishDialog implements OnInit {
 	fishInEdit: Fish;
 	fishes = Fish.fishes;
+	finClips = Fish.finClips;
 	imageAvailable: boolean = false;
 	dateCaught: Date;
+	valueSelected = false;
 
 	constructor(public dialogRef: MatDialogRef<EditFishDialog>, private dialog: MatDialog, @Inject(MAT_DIALOG_DATA) data, public request: Requests, @Inject('BASE_URL') private baseUrl: string, private pipe: DatePipe) {
 		this.fishInEdit = data;
@@ -28,6 +30,9 @@ export class EditFishDialog implements OnInit {
 	}
 
 	async initializeEditFishRequest() {
+		if (this.fishInEdit.FinClip == 'No Fin Clips' || this.fishInEdit.FinClip == 'Unspecified') {
+			this.valueSelected = true;
+		}
 		this.request.getBoats(this.fishInEdit.TournamentId)
 		this.request.getStations(this.fishInEdit.TournamentId);
 		await this.request.getMembers(this.fishInEdit.TournamentId);
@@ -63,6 +68,10 @@ export class EditFishDialog implements OnInit {
 		});
 	}
 
+	selectedOption(boolean) {
+		this.valueSelected = boolean;
+	}
+
 	filterBoat(boatId) {
 		this.request.filterMembers(boatId, false);
 	}
@@ -74,16 +83,18 @@ export class EditFishDialog implements OnInit {
 		this.request.filterMembers(this.request.boats[0].Id, false);
 	}
 
-	saveChanges(species, date, tournamentId, boatId, memberId, stationId) {
+	saveChanges(species, date, finsClipped, clipStatus, tournamentId, boatId, memberId, stationId) {
 		this.fishInEdit.Species = species;
 		this.fishInEdit.TournamentId = tournamentId;
 		this.fishInEdit.BoatId = parseFloat(boatId);
 		this.fishInEdit.StationNumber = parseFloat(stationId);
 		this.fishInEdit.MemberId = parseFloat(memberId);
+		this.fishInEdit.FinClip = clipStatus;
 		this.fishInEdit.Date = this.pipe.transform(date, 'MM/dd/yyyy');
-		if (!this.fishInEdit.HasTag) {
-			this.fishInEdit.SampleNumber = '';
+		if (clipStatus == 'No Fin Clips' || clipStatus == 'Unspecified') {
+			finsClipped = 'Unspecified';
 		}
+		this.fishInEdit.FinsClipped = finsClipped;
 		this.dialogRef.close(this.fishInEdit);
 	}
 

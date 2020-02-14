@@ -5,15 +5,7 @@
   <button id="speciesButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Fish Species</button>
   <ul id="speciesDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
     <li role="presentation"><a role="menuitem" href="#">All Species</a></li>
-    <li role="presentation"><a role="menuitem" href="#">Atlantic Salmon</a></li>
-    <li role="presentation"><a role="menuitem" href="#">Brown Trout</a></li>
-    <li role="presentation"><a role="menuitem" href="#">Chinook Salmon</a></li>
-    <li role="presentation"><a role="menuitem" href="#">Coho Salmon</a></li>
-    <li role="presentation"><a role="menuitem" href="#">Lake Trout</a></li>
-    <li role="presentation"><a role="menuitem" href="#">Rainbow Trout</a></li>
-    <li role="presentation"><a role="menuitem" href="#">Sauger</a></li>
-    <li role="presentation"><a role="menuitem" href="#">Walleye</a></li>
-    <li role="presentation"><a role="menuitem" href="#">Yellow Perch</a></li>
+    <li *ngFor="let fish of fishes" role="presentation"><a role="menuitem" href="#">{{fish}}</a></li>
   </ul>
 </div>
 <div class="dropdown" style="display:inline-block;">
@@ -38,6 +30,8 @@
           <th>Length (in)</th>
           <th>Sample Number</th>
           <th>Port</th>
+          <th>Clip Status</th>
+          <th>Fins Clipped</th>
           <th>Caught On</th>
         </tr>
       </thead>
@@ -48,6 +42,8 @@
           <td>{{ fish.Length }}</td>
           <td>{{ fish.SampleNumber }}</td>
           <td>{{ fish.Port }}</td>
+          <td>{{ fish.FinClip }}</td>
+          <td>{{ fish.FinsClipped }}</td>
           <td>{{ fish.Date }}</td>
         </tr>
       </tbody>

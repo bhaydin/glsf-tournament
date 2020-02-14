@@ -18,6 +18,16 @@
 
     <label>Length (in):</label><br />
     <input [(ngModel)]="this.fishInEdit.Length" type=text placeholder="Length" class="standardwidth"><br /><br />
+
+    <label>Fin Clips:</label><br />
+    <select #finOptionSelect class="standardwidth">
+      <option value='Unspecified' (click)="selectedOption(true)" [selected]="this.fishInEdit.FinClip == 'Unspecified'">Unspecified</option>
+      <option value='Fins Clipped' (click)="selectedOption(false)" [selected]="this.fishInEdit.FinClip == 'Fins Clipped'">Fins Clipped</option>
+      <option value='No Fins Clipped' (click)="selectedOption(true)" [selected]="this.fishInEdit.FinClip == 'No Fins Clipped'">No Fins Clipped</option>
+    </select><br /><br />
+    <select #clipSelect class="standardwidth" [disabled]="valueSelected">
+      <option *ngFor="let clip of finClips" value='{{clip}}' [selected]="this.fishInEdit.FinsClipped == clip">{{clip}}</option>
+    </select>
   </div>
 
   <div class="splitright">
@@ -59,6 +69,6 @@
     <mat-datepicker touchUi #picker></mat-datepicker>
     <input (click)="picker.open()" [matDatepicker]="picker" [value]="dateCaught" class="short" [max]="currentDate" readonly><br /><br />
   </div>
-  <button class="saveButton" [disabled]="this.request.noBoatsAvailable || this.request.noTournamentsAvailable || this.request.noStationsAvailable || this.request.noMembersAvailable" (click)="saveChanges(speciesSelect.value, picker._validSelected, tournamentSelect.value, boatSelect.value, memberSelect.value, stationSelect.value)">Save Changes</button>
-  <button class="deleteButton" (click)="deleteFish()" [disabled]="this.fishInEdit.isValid">Delete Entry</button>
+  <button class="saveButton" [disabled]="this.request.noBoatsAvailable || this.request.noTournamentsAvailable || this.request.noStationsAvailable || this.request.noMembersAvailable" (click)="saveChanges(speciesSelect.value, picker._validSelected, clipSelect.value, finOptionSelect.value, tournamentSelect.value, boatSelect.value, memberSelect.value, stationSelect.value)">Save Changes</button>
+  <button class="deleteButton" (click)="deleteFish()" [disabled]="this.fishInEdit.IsValid">Delete Entry</button>
 </div>

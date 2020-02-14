@@ -44,26 +44,26 @@
    <input [(ngModel)]="sampleNumber" style="margin-left:6px;" class='standardwidth' placeholder="Sample Number" type=text><label class="required">{{sampleLabel}}</label>
   </div>
   <div style="margin-left: 20px; display: inline-block;">
-    <input type="radio" name="clips" [(ngModel)]="clipStatus" value="Unspecified" (change)="selectedOption(false)"><label>Unspecified</label><br />
-    <input type="radio" name="clips" [(ngModel)]="clipStatus" value="Fins Clipped" (change)="selectedOption(false)"><label>Fins Clipped</label><br />
-    <input type="radio" name="clips" [(ngModel)]="clipStatus" value="No Fins Clipped" (change)="selectedOption(true)"><label>No Fins Clipped</label><br />
+    <select #finOptionSelect class="standardwidth">
+      <option value='Unspecified' (click)="selectedOption(true)">Unspecified</option>
+      <option value='Fins Clipped' (click)="selectedOption(false)">Fins Clipped</option>
+      <option value='No Fins Clipped' (click)="selectedOption(true)">No Fins Clipped</option>
+    </select><br /><br />
     <select #clipSelect class="standardwidth" [disabled]="valueSelected">
-      <option *ngFor="let clip of fishClips" value='{{clip}}'>{{clip}}</option>
+      <option *ngFor="let clip of finClips" value='{{clip}}'>{{clip}}</option>
     </select>
   </div><br />
-
   <label>Weight:</label><br />
   <input [(ngModel)]="weight" type=text placeholder="Weight (Lbs)" class="moveright standardwidth"><label class="required">{{weightLabel}}</label><br />
 
   <label>Length:</label><br />
   <input [(ngModel)]="length" type=text placeholder="Length (in)" class="moveright standardwidth"><label class="required">{{lengthLabel}}</label><br />
 
-
   <label>Date Caught:</label><br />
   <mat-datepicker-toggle class="moveright" matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker touchUi #picker></mat-datepicker>
   <input (click)="picker.open()" [matDatepicker]="picker" [value]="currentDate" class="short" [max]="currentDate" readonly><br /><br />
-  <button [disabled]="submissionInProcess" (click)="createFish(speciesSelect.value, picker._validSelected, clipSelect.value, stationSelect.value, tournamentSelect.value, boatSelect.value, memberSelect.value)" [class]="subStyle">Submit</button>
+  <button [disabled]="submissionInProcess" (click)="createFish(speciesSelect.value, picker._validSelected, clipSelect.value, finOptionSelect.value, stationSelect.value, tournamentSelect.value, boatSelect.value, memberSelect.value)" [class]="subStyle">Submit</button>
 </div>
 
 
