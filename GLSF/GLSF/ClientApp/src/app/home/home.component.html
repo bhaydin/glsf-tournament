@@ -36,20 +36,22 @@
     <table class="table table-bordered table-hover table-sm mb-0">
       <thead class="yellowHeader">
         <tr>
-          <th (click)="sortBy('Species')">Fish<i id="speciesCaret" class="fa fa-caret-up"></i></th>
+          <th>Image</th>
+          <th (click)="sortBy('Species')">Species<i id="speciesCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Weight')">Weight (lbs)<i id="weightCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Length')">Length (in)<i id="lengthCaret" class="fa fa-caret-up"></i></th>
-          <th (click)="sortBy('Number')">Sample Number<i id="numberCaret" class="fa fa-caret-up"></i></th>
-          <th>Port</th>
-          <th>Clip Status</th>
-          <th>Fins Clipped</th>
-          <th (click)="sortBy('Date')">Date Caught<i id="dateCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Number')">Sample #<i id="numberCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Port')">Port<i id="portCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('ClipStatus')">Clip Status<i id="clipStatusCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Fins')">Fin Clip<i id="finCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Date')">Date<i id="dateCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Valid')">Valid<i id="validCaret" class="fa fa-caret-up"></i></th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let fish of this.filteredFishes; let i = index" (click)="editRow(i)" class="yellowFont">
-          <td><img style="display:inline-block;" src="{{ fish.Image }}" [ngClass]="{'blur': !fish.IsValid, 'previewimage': true}" /> {{ fish.Species }}</td>
+          <td><img style="display:inline-block;" src="{{ fish.Image }}" [ngClass]="{'blur': !fish.IsValid, 'previewimage': true}" /></td>
+          <td>{{ fish.Species }}</td>
           <td>{{ fish.Weight }}</td>
           <td>{{ fish.Length }}</td>
           <td>{{ fish.SampleNumber }}</td>

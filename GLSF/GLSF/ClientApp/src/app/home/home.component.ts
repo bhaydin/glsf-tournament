@@ -149,15 +149,23 @@ export class HomeComponent implements OnInit {
 
 	editRow(index) {
 		const dialogRef = this.dialog.open(EditFishDialog, {
-			panelClass: 'custom-dialog-container',
-			data: Object.assign({}, this.request.fishes[index]),
+      panelClass: 'custom-dialog-container',
+      data: Object.assign({}, this.filteredFishes[index]),
 		});
 		dialogRef.afterClosed().subscribe(editedFish => {
-			if (editedFish != undefined) {
-				const link = this.baseUrl + 'api/database/fish';
-				editedFish.Length = parseFloat(editedFish.Length);
-				editedFish.Weight = parseFloat(editedFish.Weight);
-				this.request.update(editedFish, link).then(() => this.request.fishes[index] = editedFish);
+      if (editedFish != undefined) {
+        const link = this.baseUrl + 'api/database/fish';
+        editedFish.Length = parseFloat(editedFish.Length);
+        editedFish.Weight = parseFloat(editedFish.Weight);
+        this.request.update(editedFish, link).then(() => function () {
+          this.filteredFishes[index] = editedFish;
+
+          for (let fish of this.request.fishes) {
+            if (fish.Id == editedFish.Id) {
+              fish = editedFish;
+            }
+          }
+        });
       }
 		});
 	}
