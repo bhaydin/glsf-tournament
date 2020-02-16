@@ -27,6 +27,9 @@ export class HomeComponent implements OnInit {
   private number = false;
   private date = false;
   private valid = false;
+  private port = false;
+  private clipStatus = false;
+  private finsClipped = false;
   private lastCaretClass = "";
   private lastSort = "";
 
@@ -243,7 +246,7 @@ export class HomeComponent implements OnInit {
       let fishWithoutNumbers = this.filteredFishes.filter(this.checkSampleNumberNa);
 
       fishWithNumbers.sort(function (fish1, fish2) {
-          return fish1.SampleNumber > fish2.SampleNumber ? sort : -sort;
+        return fish1.SampleNumber > fish2.SampleNumber ? -sort : sort;
       });
 
       if (sort == -1) {
@@ -257,6 +260,39 @@ export class HomeComponent implements OnInit {
       caretClass = "dateCaret";
 
       this.filteredFishes.sort((fish1, fish2) => (new Date(fish1.Date) > new Date(fish2.Date)) ? sort : -sort);
+    } else if (value === "Port") {
+      this.port = !this.port;
+      sort = this.port ? -1 : 1;
+      caretClass = "portCaret";
+
+      this.filteredFishes.sort(function (fish1, fish2) {
+        var f1 = fish1.Port.toUpperCase();
+        var f2 = fish2.Port.toUpperCase();
+
+        return (f1 < f2) ? sort : -sort;
+      });
+    } else if (value === "ClipStatus") {
+      this.clipStatus = !this.clipStatus;
+      sort = this.clipStatus ? -1 : 1;
+      caretClass = "clipStatusCaret";
+
+      this.filteredFishes.sort(function (fish1, fish2) {
+        var f1 = fish1.FinClip.toUpperCase();
+        var f2 = fish2.FinClip.toUpperCase();
+
+        return (f1 < f2) ? sort : -sort;
+      });
+    } else if (value === "Fins") {
+      this.finsClipped = !this.finsClipped;
+      sort = this.finsClipped ? -1 : 1;
+      caretClass = "finsCaret";
+
+      this.filteredFishes.sort(function (fish1, fish2) {
+        var f1 = fish1.FinsClipped.toUpperCase();
+        var f2 = fish2.FinsClipped.toUpperCase();
+
+        return (f1 < f2) ? sort : -sort;
+      });
     }
 
     if (sort == 1) {
@@ -311,10 +347,10 @@ export class HomeComponent implements OnInit {
   }
 
   private checkSampleNumber(fish: Fish) {
-    return fish.SampleNumber !== "N/A";
+    return !(fish.SampleNumber === "N/A" || fish.SampleNumber === "" || fish.SampleNumber === "Unspecified");
   }
 
   private checkSampleNumberNa(fish: Fish) {
-    return fish.SampleNumber === "N/A";
+    return fish.SampleNumber === "N/A" || fish.SampleNumber === "" || fish.SampleNumber === "Unspecified";
   }
 }
