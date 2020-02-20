@@ -21,16 +21,11 @@ import { CreateTournamentComponent } from './createTournament/createTournament.c
 import { CreateBoatComponent } from './createBoat/createBoat.component'
 import { CreateStationComponent } from './createStation/createStation.component'
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
-<<<<<<< HEAD
 import { Requests } from './http/Requests';
-
-=======
 import { EditFishDialog } from './home/editFish';
 import { DatePipe } from '@angular/common';
->>>>>>> origin/unverifiedTable
 
 // used to create fake backend
-import { fakeBackendProvider } from './_helpers';
 import { AuthGuard } from './_helpers';
 
 @NgModule({
@@ -41,19 +36,16 @@ import { AuthGuard } from './_helpers';
     HomeComponent,
     TournamentsComponent,
     LoginComponent,
-<<<<<<< HEAD
     RegisterComponent,
 	CameraDialog,
 	CreateTournamentComponent,
 	CreateBoatComponent,
 	CreateStationComponent,
-=======
-		CameraDialog,
-		EditFishDialog,
-		CreateTournamentComponent,
-		CreateBoatComponent,
-		CreateStationComponent,
->>>>>>> origin/unverifiedTable
+	CameraDialog,
+	EditFishDialog,
+	CreateTournamentComponent,
+	CreateBoatComponent,
+	CreateStationComponent,
   ],
     imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -70,8 +62,8 @@ import { AuthGuard } from './_helpers';
 		{ path: 'tournament', component: CreateTournamentComponent, canActivate: [AuthGuard] },
 		{ path: 'boat', component: CreateBoatComponent, canActivate: [AuthGuard] },
 		{ path: 'station', component: CreateStationComponent, canActivate: [AuthGuard] },
-        { path: 'login', component: LoginComponent },
-        { path: 'register', component: RegisterComponent },
+    { path: 'login', component: LoginComponent },
+    { path: 'register', component: RegisterComponent },
     ],
         { onSameUrlNavigation: 'reload' })
 	],
