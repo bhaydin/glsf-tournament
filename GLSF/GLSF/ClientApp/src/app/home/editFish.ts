@@ -30,7 +30,7 @@ export class EditFishDialog implements OnInit {
 	}
 
 	async initializeEditFishRequest() {
-		if (this.fishInEdit.FinClip == 'No Fin Clips' || this.fishInEdit.FinClip == 'Unspecified') {
+		if (this.fishInEdit.FinClip == 'No Fins Clipped' || this.fishInEdit.FinClip == 'Unspecified') {
 			this.valueSelected = true;
 		}
 		this.request.getBoats(this.fishInEdit.TournamentId)
@@ -91,7 +91,7 @@ export class EditFishDialog implements OnInit {
 		this.fishInEdit.MemberId = parseFloat(memberId);
 		this.fishInEdit.FinClip = clipStatus;
 		this.fishInEdit.Date = this.pipe.transform(date, 'MM/dd/yyyy');
-		if (clipStatus == 'No Fin Clips' || clipStatus == 'Unspecified') {
+		if (clipStatus == 'No Fins Clipped' || clipStatus == 'Unspecified') {
 			finsClipped = 'Unspecified';
 		}
 		this.fishInEdit.FinsClipped = finsClipped;

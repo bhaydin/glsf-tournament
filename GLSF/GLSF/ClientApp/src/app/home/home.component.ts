@@ -136,9 +136,9 @@ export class HomeComponent implements OnInit {
 	}
 
 	saveAsCSV() {
-		let text = 'Species, Weight, Length, Date, HasTag, SampleNumber, Port, StationNumber \n';
+		let text = 'Species, Weight, Length, Date, Has Tag, Sample Number, Port, Station Number, Clip Status, Fins Clipped \n';
 		this.filteredFishes.forEach(fish => {
-			const fishString = fish.Species + ", " + fish.Weight + ", " + fish.Length + ", " + fish.Date + ", " + fish.HasTag + ", " + fish.SampleNumber + ", " + fish.Port + ", " + fish.StationNumber +" \n";
+			const fishString = fish.Species + ", " + fish.Weight + ", " + fish.Length + ", " + fish.Date + ", " + fish.HasTag + ", " + fish.SampleNumber + ", " + fish.Port + ", " + fish.StationNumber + ", " + fish.FinClip + ", " + fish.FinsClipped + " \n";
 			text += fishString;
 		});
 		var element = document.createElement('a');
@@ -160,7 +160,7 @@ export class HomeComponent implements OnInit {
         const link = this.baseUrl + 'api/database/fish';
         editedFish.Length = parseFloat(editedFish.Length);
         editedFish.Weight = parseFloat(editedFish.Weight);
-        this.request.update(editedFish, link).then(() => function () {
+        this.request.update(editedFish, link).then(() => {
           this.filteredFishes[index] = editedFish;
 
           for (let fish of this.request.fishes) {

@@ -124,7 +124,7 @@ export class DataEntryComponent implements OnInit {
 		if (this.port == '') {
 			this.port = this.request.getStation(stationId).Port;
 		}
-		if (clipStatus == 'No Fin Clips' || clipStatus == 'Unspecified') {
+		if (clipStatus == 'No Fins Clipped' || clipStatus == 'Unspecified') {
 			finsClipped = 'Unspecified';
 		}
 	  const validSampleNumber = this.checkSampleNumber();
