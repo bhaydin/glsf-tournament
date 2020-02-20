@@ -21,6 +21,7 @@ export class Tournament {
 	Id: number;
 }
 
+
 export class Fish {
 	Weight: number;
 	Length: number;
@@ -77,5 +78,15 @@ export class Fish {
 		"Yellow Perch": 15,
 		"Walleye": 60,
 		"Sauger": 40,
-	};
+    };
+
+}
+
+export class User {
+    id: number;
+    username: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    token?: string;
 }

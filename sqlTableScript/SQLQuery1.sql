@@ -44,6 +44,18 @@ create table Stations(
 	TournamentId int not null,
 	constraint PK_StationsId primary key (Id, TournamentId),
 );
+
+use FishDB;
+drop table if exists Users;
+create table Users(
+	Id int not null identity(1,1) primary key,
+	FirstName varchar(max) not null,
+	LastName varchar(max) not null,
+	PasswordHash varchar(max) not null,
+	PasswordSalt varchar(max) not null,
+	Username varchar(max) not null,
+);
+
 alter table Fishes add constraint FK_StationId foreign key (StationNumber, TournamentId) references Stations (Id, TournamentId);
 alter table Fishes add constraint FK_BoatId foreign key (BoatId, TournamentId) references Boats (Id, TournamentId);
 alter table Boats add constraint FK_Boat_TournamentId foreign key (TournamentId) references Tournaments(Id);
