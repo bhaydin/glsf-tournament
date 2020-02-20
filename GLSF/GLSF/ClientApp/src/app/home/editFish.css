@@ -1,0 +1,165 @@
+.dialog{
+  color: #ffe600;
+  position: relative;
+  width: 600px;
+  background-color: #010382;
+  height: 625px;
+}
+
+.savechanges {
+  position: absolute;
+  width: 100px;
+  top: 430px;
+  left: 200px;
+}
+
+.leftmargin {
+  margin-left: 8px;
+}
+
+select:disabled {
+  background-color: #010382;
+  border: 2px solid #ff0000;
+  color: #ffe600;
+}
+
+.exitbutton {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  height: 30px;
+  width: 30px;
+  font-size: 16px;
+  text-align: left;
+  color: #c40000;
+  border-radius: 50%;
+  border: 2px solid #c40000;
+}
+
+img {
+  width: auto;
+  height: auto;
+  max-height: 234px;
+  max-width: 234px;
+  border: solid 2px rgba(87, 87, 87, .7);
+}
+
+label {
+  font-size: 14px;
+}
+
+button {
+  color: #ffe600;
+  border: 2px solid #ffe600;
+  background-color: #010382;
+}
+
+button:disabled {
+  color: #5c5c5c;
+  border: 2px solid #5c5c5c;
+  background-color: #010382;
+}
+
+.required {
+  color: #ff0000;
+  margin-left: 15px;
+}
+
+select:disabled {
+  background-color: #010382;
+  border: 2px solid #ff0000;
+  color: #ffe600;
+}
+
+.standardwidth {
+  width: 160px;
+}
+
+.short {
+  width: 120px;
+}
+
+button, input, select {
+  font-size: 14px;
+  background-color: #010382;
+  border: 2px solid #ffe600;
+  color: #ffe600;
+}
+
+.yellow {
+  position: absolute;
+  left: 0px;
+  color: #ffe600;
+}
+
+.moveright {
+  margin-bottom: 20px;
+  margin-left: 30px;
+}
+
+.leftrightmargin {
+  margin-left: 7px;
+  margin-right: 7px;
+}
+
+input[type=checkbox] {
+  transform: scale(1.5);
+}
+
+input:disabled {
+  border: 2px solid #5c5c5c;
+}
+
+.removebutton {
+  position: absolute;
+  font-size: 16px;
+  height: 30px;
+  width: 30px;
+  top: -15px;
+  left: -15px;
+  color: #0f0f0f;
+  text-align: center;
+  font-weight: bolder;
+  border-radius: 50%;
+  border: 2px solid #0f0f0f;
+  background-color: rgba(222,222,222,0.7);
+}
+
+.splitleft {
+  position: absolute;
+  left: 0px;
+  width: 50%;
+  color: #ffe600;
+  margin-top: 20px;
+  padding-left: 40px;
+}
+
+.splitright {
+  position: absolute;
+  right: 0px;
+  width: 50%;
+  color: #ffe600;
+  margin-top: 35px;
+  padding-left: 80px;
+}
+
+.deleteButton {
+  border: 2px solid #000000;
+  background-color: #c40000;
+  color: #000000;
+  width: 100px;
+  position: absolute;
+  top: 340px;
+  left: 160px;
+}
+
+.saveButton {
+  position: absolute;
+  bottom: 15px;
+  left: 230px;
+  width: 115px;
+  font-size: 14px;
+  background-color: #010382;
+  border: 2px solid #15b800;
+  color: #ffffff;
+}

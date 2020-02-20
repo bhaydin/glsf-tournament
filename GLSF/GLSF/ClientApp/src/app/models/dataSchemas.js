@@ -12,12 +12,30 @@ var Boat = /** @class */ (function () {
     return Boat;
 }());
 exports.Boat = Boat;
+var Member = /** @class */ (function () {
+    function Member() {
+    }
+    return Member;
+}());
+exports.Member = Member;
+var Group = /** @class */ (function () {
+    function Group() {
+    }
+    return Group;
+}());
+exports.Group = Group;
 var Tournament = /** @class */ (function () {
     function Tournament() {
     }
     return Tournament;
 }());
 exports.Tournament = Tournament;
+var Time = /** @class */ (function () {
+    function Time() {
+    }
+    return Time;
+}());
+exports.Time = Time;
 var Fish = /** @class */ (function () {
     function Fish() {
     }
@@ -34,6 +52,18 @@ var Fish = /** @class */ (function () {
         "Sauger",
         "Yellow Perch",
         "Walleye",
+        "Other",
+    ];
+    Fish.finClips = [
+        "Unspecified",
+        "AD",
+        "AN",
+        "D",
+        "LP",
+        "LM",
+        "LV",
+        "RP",
+        "RV",
     ];
     //Lbs
     Fish.maxWeights = {
@@ -46,6 +76,7 @@ var Fish = /** @class */ (function () {
         "Yellow Perch": 10,
         "Walleye": 35,
         "Sauger": 20,
+        "Other": 200,
     };
     //in
     Fish.maxLengths = {
@@ -58,6 +89,7 @@ var Fish = /** @class */ (function () {
         "Yellow Perch": 15,
         "Walleye": 60,
         "Sauger": 40,
+        "Other": 80,
     };
     return Fish;
 }());
