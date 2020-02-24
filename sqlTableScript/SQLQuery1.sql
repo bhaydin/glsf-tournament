@@ -57,8 +57,8 @@ create table Users(
 	Id int not null identity(1,1) primary key,
 	FirstName varchar(max) not null,
 	LastName varchar(max) not null,
-	PasswordHash varchar(max) not null,
-	PasswordSalt varchar(max) not null,
+	PasswordHash binary(64) not null,
+	PasswordSalt binary(128) not null,
 	Username varchar(max) not null,
 );
 
