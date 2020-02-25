@@ -1,4 +1,4 @@
-﻿input {
+input {
     margin-bottom: 10px;
 }
 
@@ -12,7 +12,7 @@
 }
 
 label, h2 {
-    color: #ffe600;
+    color: #ffe600 !important;
 }
 
 .hi-vis-yellow {
