@@ -3,21 +3,23 @@
   <label>Tournament Name:</label><br />
   <input type=text class="moveright standardwidth" [(ngModel)]="tournamentName" placeholder="Name"><label class="required">{{nameLabel}}</label><br />
 
-  <label>Tournament Id:</label><br />
-  <input type=text class="moveright standardwidth" [(ngModel)]="tournamentId" placeholder="Id"><label class="required">{{idLabel}}</label><br />
-
   <label>Location:</label><br />
   <input type=text class="moveright standardwidth" [(ngModel)]="tournamentLocation" placeholder="Location"><br />
+
+  <label class="required">{{dateLabel}}</label><br />
 
   <label>Start Date:</label><br />
   <mat-datepicker-toggle matSuffix [for]="startDate" class="moveright"></mat-datepicker-toggle>
   <mat-datepicker touchUi #startDate></mat-datepicker>
-  <input (click)="startDate.open()" [matDatepicker]="startDate" [value]="currentDate" [min]="currentDate" class="short" readonly>
-  <label class="required">{{dateLabel}}</label><br />
+  <input style="display:inline-block;" (click)="startDate.open()" [matDatepicker]="startDate" [value]="currentDate" [min]="currentDate" class="short" readonly>
+  <ngx-timepicker-field style="display:inline-block;" controlOnly="true" [(ngModel)]="startTime"></ngx-timepicker-field>
+  <br />
 
   <label>End Date:</label><br />
   <mat-datepicker-toggle matSuffix [for]="endDate" class="moveright"></mat-datepicker-toggle>
   <mat-datepicker touchUi #endDate></mat-datepicker>
-  <input (click)="endDate.open()" [matDatepicker]="endDate" [value]="currentDate" [min]="currentDate" class="short" readonly><br /><br />
-  <button (click)="createTournament(startDate._validSelected, endDate._validSelected)" [class]="subStyle">{{subText}}</button>
+  <input style="display:inline-block;" (click)="endDate.open()" [matDatepicker]="endDate" [value]="currentDate" [min]="currentDate" class="short" readonly>
+  <ngx-timepicker-field style="display:inline-block;" controlOnly="true" [(ngModel)]="endTime"></ngx-timepicker-field>
+  <br /><br />
+  <button [disabled]="submissionInProcess" (click)="createTournament(startDate._validSelected, endDate._validSelected)" [class]="subStyle">{{subText}}</button>
 </div>

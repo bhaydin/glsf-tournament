@@ -1,3 +1,6 @@
 export const environment = {
-  production: true
+    production: true,
+    apiUrl: 'https://glsf-msoe-fish.azurewebsites.net/'
 };
+
+
