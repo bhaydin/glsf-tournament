@@ -6,14 +6,7 @@
 .splitleft {
   position: absolute;
   left: 0px;
-  position: absolute;
   width: 60%;
-  color: #ffe600;
-}
-
-select:disabled {
-  background-color: #010382;
-  border: 2px solid #ff0000;
   color: #ffe600;
 }
 
@@ -25,8 +18,19 @@ select:disabled {
   margin-top: 138px;
 }
 
+select:disabled {
+  background-color: #010382;
+  border: 2px solid #ff0000;
+  color: #ffe600;
+}
+
 .standardwidth {
   width: 200px;
+}
+
+.blur {
+  -webkit-filter: blur(5px);
+  filter: blur(5px);
 }
 
 label {
@@ -88,6 +92,10 @@ button, input, select {
 input[type=checkbox] {
   transform: scale(1.5);
 }
+
+input[type=radio] {
+  transform: scale(1.5);
+}
 .short {
   width: 160px;
 }
@@ -111,18 +119,82 @@ img {
   max-width: 300px;
 }
 
-.removebutton {
-  z-index: 1;
-  font-size: 16px;
+.removeimage {
   position: absolute;
+  font-size: 16px;
   height: 30px;
   width: 30px;
   top: -15px;
   left: -15px;
   color: #0f0f0f;
-  font-weight: bolder;
   text-align: center;
+  font-weight: bolder;
   border-radius: 50%;
   border: 2px solid #0f0f0f;
   background-color: rgba(222,222,222,0.7);
+}
+
+.removemember {
+  font-size: 20px;
+  color: #0f0f0f;
+  font-weight: bolder;
+  text-align: center;
+  border: 2px solid #ffe600;
+  background-color: rgba(209,0,0,0.4);
+  height: 35.5px;
+  width: 36px;
+}
+
+.addmember {
+  font-size: 20px;
+  height: 36px;
+  width: 36px;
+  color: #0f0f0f;
+  font-weight: bolder;
+  text-align: center;
+  border: 2px solid #0f0f0f;
+  background-color: rgba(222,222,222,0.7);
+}
+
+.previewimage {
+  max-width: 30px;
+  max-height: 30px;
+  width: auto;
+  height: auto;
+}
+
+table.table-bordered > thead > tr > th {
+  border: 2px solid #ffe600;
+}
+
+table.table-bordered > tbody > tr > td {
+  border: 2px solid #ffe600;
+}
+
+.my-custom-scrollbar {
+  position: relative;
+  height: 500px;
+  overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+  display: block;
+}
+
+.yellowHeader {
+  text-align: center;
+  font-size: 14px;
+  color: #ffe600;
+}
+
+.yellowFont {
+  text-align: center;
+  color: #ffe600;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  color: #ffff00;
+  background-color: #000000;
 }

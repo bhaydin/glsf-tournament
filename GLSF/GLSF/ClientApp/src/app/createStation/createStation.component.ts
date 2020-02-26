@@ -9,40 +9,47 @@ import { Requests } from '../http/Requests';
 	styleUrls: ['../componentStyle.css'],
 })
 
-export class CreateStationComponent implements OnInit {
-	noAvailableTournaments = false;
+export class CreateStationComponent implements OnInit{
+	submissionInProcess = false;
 	idLabel = '';
 	stationNumber = '';
 	portName = '';
+	nameLabel = '';
 	subStyle = "normal";
 	subText = "Submit";
 
-	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {}
+	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {
+		this.setUpStationRequest();
+}
 
-	ngOnInit() {
-		this.request.initialize().then(() => {
-			this.noAvailableTournaments = this.request.noTournamentsAvailable;
-		});
+	ngOnInit() {	}
+
+	async setUpStationRequest() {
+		const tournamentId = await this.request.getTournaments();
+		this.request.getStations(tournamentId);
 	}
 
-	filter(value) {
-		this.request.filterStations(value);
+	filter(tournamentId) {
+		this.request.getStations(tournamentId);
 	}
 
 	async createStation(tournamentId) {
+		this.submissionInProcess = true;
+		const tournamentExists = this.request.checkDropdownTournament(tournamentId);
 		const validId = this.checkNumber();
-		if (validId && tournamentId != -1) {
+		const validName = this.checkName();
+		if (validId && validName && tournamentExists) {
 			const station: Station = {
-				TournamentId: parseFloat(tournamentId),
+				TournamentId: tournamentId,
 				Id: parseFloat(this.stationNumber),
 				Port: this.portName,
 			};
 			this.sendRequest(station).then(() => {
 				this.reload();
-				this.request.getStations().then(() => {
-					this.filter(tournamentId);
-				});
+				this.request.getStations(tournamentId);
 			});
+	  } else {
+	    this.submissionInProcess = false;
     }
   }
 
@@ -69,6 +76,18 @@ export class CreateStationComponent implements OnInit {
 		return true;
 	}
 
+	private checkName() {
+		if (this.portName == '') {
+			this.nameLabel = 'Enter name';
+			return false;
+		} else if (this.portName.length > this.request.MAX_STRING_LENGTH) {
+			this.nameLabel = this.request.MAX_STRING_LENGTH + ' characters max';
+			return false;
+		}
+		this.nameLabel = '';
+		return true;
+	}
+
 	private sendRequest(values) {
 		const link = this.baseUrl + 'api/database/station';
 		return this.request.post(values, link);
@@ -80,8 +99,9 @@ export class CreateStationComponent implements OnInit {
 	  await this.request.wait(200);
 	  this.subStyle = "normal";
 	  this.subText = "Submit";
-	  this.stationNumber = null;
-	  this.portName = null;
+	  this.stationNumber = '';
+	  this.portName = '';
+	  this.submissionInProcess = false;
   }
 }
 

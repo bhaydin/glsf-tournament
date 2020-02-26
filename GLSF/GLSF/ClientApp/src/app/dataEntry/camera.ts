@@ -3,10 +3,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { WebcamUtil, WebcamInitError } from 'ngx-webcam';
 import { Subject } from 'rxjs';
 
-export interface DialogData {
-	base64: string;
-}
-
 @Component({
 	selector: 'app-camera',
 	templateUrl: './camera.html',
@@ -25,7 +21,9 @@ export class CameraDialog implements OnInit {
 	private nextWebcamSubject: Subject<boolean | string> = new Subject<boolean | string>();
 
 
-	constructor( public dialogRef: MatDialogRef<CameraDialog>, @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+	constructor(public dialogRef: MatDialogRef<CameraDialog>, @Inject(MAT_DIALOG_DATA) data) {
+		this.base64 = data;
+	}
 
 	ngOnInit() {
 	  WebcamUtil.getAvailableVideoInputs()
