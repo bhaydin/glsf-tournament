@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Boat, Member, Group } from '../models/dataSchemas';
+import { Boat } from '../models/dataSchemas';
 import { Requests } from '../http/Requests';
+
 
 @Component({
 	selector: 'app-createBoat',
@@ -8,117 +9,57 @@ import { Requests } from '../http/Requests';
 	styleUrls: ['../componentStyle.css'],
 })
 
-export class CreateBoatComponent implements OnInit{
-	submissionInProcess = false;
+export class CreateBoatComponent implements OnInit {
 	noAvailableTournaments = false;
   nameLabel = '';
 	idLabel = '';
 	lengthLabel = '';
-	membersLabel = '';
 	boatLength = '';
 	boatId = '';
+	members = '';
 	boatName = '';
 	subStyle = "normal";
 	subText = "Submit";
-	members: Array<Member> = [];
 
-	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {
-		this.addMember();
-		this.setUpBoatRequest();
+	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {}
+
+	ngOnInit() {
+		this.request.initialize().then(() => {
+			this.noAvailableTournaments = this.request.noTournamentsAvailable;
+		});
 	}
 
-	ngOnInit() {}
-
-	async setUpBoatRequest() {
-		const tournamentId = await this.request.getTournaments();
-		this.request.getBoats(tournamentId);
-	}
-
-	addMember() {
-		const member: Member = { Name: "", Age: null, IsCaptain: false, IsJunior: false, Id: 0, BoatId: 0, TournamentId: 0};
-		this.members.push(member);
-	}
-
-	removeMember(i) {
-		this.members.splice(i, 1);
-	}
-
-	selectedCaptain(index) {
-		for (let i = 0; i < this.members.length; i++) {
-			this.members[i].IsCaptain = false;
-			if (i == index) {
-				this.members[i].IsCaptain = true;
-			}			
-		}
-	}
-
-	filter(tournamentId) {
-		this.request.getBoats(tournamentId);
+	filter(value) {
+		this.request.filterBoats(value)
 	}
 
 	async createBoat(tournamentId) {
-		this.submissionInProcess = true;
-		this.members = this.getValidMembers(tournamentId);
 		const validName = this.checkName();
 		const validLength = this.checkLength();
 		const validId = this.checkId();
-		const validMembers = this.membersAvailable();
-		const validTournament = this.request.checkDropdownTournament(tournamentId);
-		if (validName && validId && validLength && validMembers && validTournament) {
+		if (validName && validId && validLength && tournamentId != -1) {
 			const boat: Boat = {
 				Name: this.boatName,
-				Length: parseFloat(this.boatLength),
-				Id: parseFloat(this.boatId),
-				TournamentId: tournamentId,
-			};
-			const group: Group = {
-				Boat: boat,
 				Members: this.members,
+				Id: parseFloat(this.boatId),
+				TournamentId: parseFloat(tournamentId),
+				Length: parseFloat(this.boatLength),
 			};
-			this.sendRequest(group).then(() => {
+			this.sendRequest(boat).then(() => {
 				this.reload();
-				this.request.getBoats(tournamentId);
+				this.request.getBoats().then(() => {
+					this.filter(tournamentId);
+				});
 			});
-		} else {
-			this.submissionInProcess = false;
-		}
-	}
-
-	private membersAvailable() {
-		if (this.members.length == 0) {
-			this.membersLabel = 'Must have at least one registered person on a boat.'
-			this.addMember();
-			return false;
-		}
-		this.membersLabel = '';
-		return true;
-	}
-
-	private getValidMembers(tournamentId) {
-		let i = 1;
-		let validMembers: Array<Member> = [];
-		this.members.forEach(member => {
-			if (member.Age != null && member.Name != '') {
-				member.IsJunior = false;
-				if (member.Age < 16) {
-					member.IsJunior = true;
-				}
-				member.Age = parseFloat(member.Age);
-				member.TournamentId = tournamentId;
-				member.BoatId = parseFloat(this.boatId);
-				member.Id = i++;
-				validMembers.push(member);
-			}
-		});
-		return validMembers;
-	}
+    }
+  }
 
 	private checkName() {
 		if (this.boatName == '') {
 			this.nameLabel = 'Enter name';
 			return false;
-		} else if (this.boatName.length > this.request.MAX_STRING_LENGTH) {
-			this.nameLabel = this.request.MAX_STRING_LENGTH + ' characters max';
+		} else if (this.boatName.length > 300) {
+			this.nameLabel = '300 characters max';
 			return false;
 		}
 		this.nameLabel = '';
@@ -165,8 +106,8 @@ export class CreateBoatComponent implements OnInit{
 	}
 
 	private sendRequest(values) {
-		const boatLink = this.baseUrl + 'api/database/boat';
-		return this.request.post(values, boatLink);
+		const link = this.baseUrl + 'api/database/boat';
+		return this.request.post(values, link);
 	}
 
   private async reload() {
@@ -178,9 +119,7 @@ export class CreateBoatComponent implements OnInit{
 	  this.boatId = '';
 	  this.boatLength = '';
 	  this.boatName = '';
-	  this.members = [];
-	  this.addMember();
-	  this.submissionInProcess = false;
+	  this.members = '';
   }
 }
 

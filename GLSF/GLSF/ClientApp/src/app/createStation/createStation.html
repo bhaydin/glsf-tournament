@@ -1,16 +1,16 @@
 <h2 class="yellowTitle">Register Station to Tournament</h2>
 <div class="yellow">
   <label>Tournament:</label><br />
-  <select #tournamentSelect [disabled]="this.request.noTournamentsAvailable" class="standardwidth moveright">
-    <option *ngFor="let tournament of this.request.tournaments" (click)="filter(tournamentSelect.value)" value='{{tournament.Id}}'>{{tournament.Name}}</option>
+  <select #tournament [disabled]="noAvailableTournaments" class="standardwidth moveright">
+    <option *ngFor="let tournament of this.request.tournaments" (click)="filter($event.srcElement.value)" value="{{tournament.Id}}">{{tournament.Name}}</option>
   </select><br />
 
   <label>Station Number:</label><br />
-  <input [(ngModel)]="stationNumber" type=text placeholder="Number" class="standardwidth moveright"><label class="required">{{idLabel}}</label><br />
+  <input [(ngModel)]="stationNumber" type=text placeholder="Station Number" class="standardwidth moveright"><label class="required">{{idLabel}}</label><br />
 
   <label>Port:</label><br />
-  <input [(ngModel)]="portName" type=text placeholder="Default Port" class="standardwidth moveright"><label class="required">{{nameLabel}}</label><br />
+  <input [(ngModel)]="portName" type=text placeholder="Default Port" class="standardwidth moveright"><br />
   <br /><br />
 
-  <button [disabled]="submissionInProcess" (click)="createStation(tournamentSelect.value)" [class]="subStyle">{{subText}}</button>
+  <button (click)="createStation(tournament.value)" [class]="subStyle">{{subText}}</button>
 </div>

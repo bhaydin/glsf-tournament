@@ -8,62 +8,49 @@
   <button (click)="picture.click()">Choose Image</button><br /><br /><br /><br />
   <div style="position: relative;">
     <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" />
-    <button (click)="removeImage()" [hidden]="!imageAvailable" class="removeimage">X</button>
+    <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
   </div>
   <label>{{validFishLabel}}</label>
   <canvas id="canvas" hidden></canvas>
 </div>
 
 <div class="splitleft">
+  <label class="required">{{idLabel}}</label><br />
   <label>Tournament:</label><label style="margin-left:125px;">Boat:</label><br />
-  <select #tournamentSelect [disabled]="this.request.noTournamentsAvailable" class="moveright standardwidth">
-    <option *ngFor="let tournament of this.request.tournaments" (click)="filterTournament(tournamentSelect.value, juniorCheckbox.checked)" value='{{tournament.Id}}'>{{tournament.Name}}</option>
+  <select #tournament [disabled]="noAvailableTournaments" class="moveright standardwidth">
+    <option *ngFor="let tournament of this.request.tournaments" (click)="filter($event.srcElement.value)" value="{{tournament.Id}}">{{tournament.Name}}</option>
   </select>
-  <select #boatSelect [disabled]="this.request.noBoatsAvailable" style="margin-left:45px;" class="standardwidth">
-    <option *ngFor="let boat of this.request.boats" (click)="filterBoat(boatSelect.value, juniorCheckbox.checked)" value='{{boat.Id}}'>{{boat.Name}}</option>
+  <select #boat [disabled]="noAvailableBoats" style="margin-left:45px;" class="standardwidth">
+    <option *ngFor="let boat of this.request.boats" value="{{boat.Id}}">{{boat.Name}}</option>
   </select><br />
 
-  <label>Station:</label><label style="margin-left:170px;">Caught By:</label><label style="margin-left:100px;">Junior: </label><br />
-  <select #stationSelect [disabled]="this.request.noStationsAvailable" class="moveright standardwidth">
-    <option *ngFor="let station of this.request.stations" value='{{station.Id}}'>{{station.Id}}: {{station.Port}}</option>
+  <label>Station:</label><label style="margin-left:175px;">Species:</label><br />
+  <select #station [disabled]="noAvailableStations" class="moveright standardwidth">
+    <option *ngFor="let station of this.request.stations" value='{"Id":{{station.Id}}, "Name":"{{station.Port}}"}'>{{station.Id}}: {{station.Port}}</option>
   </select>
-  <select #memberSelect [disabled]="this.request.noMembersAvailable" style="margin-left:45px;" class="standardwidth">
-    <option *ngFor="let member of this.request.members" value='{{member.Id}}'>{{member.Name}}</option>
-  </select>
-  <input style="margin-left:20px;" #juniorCheckbox type="checkbox" (change)="filterBoat(boatSelect.value, juniorCheckbox.checked)" /><br />
-
-  <label>Species:</label><label style="margin-left: 170px;">Port Name:</label><br />
-  <select #speciesSelect class="moveright standardwidth">
+  <select #species style="margin-left:45px;" class="standardwidth">
     <option *ngFor="let fish of fishes" value='{{fish}}'>{{fish}}</option>
-  </select>
-  <input [(ngModel)]="port" type=text placeholder="Port" style="margin-left: 46px;" class="standardwidth"><br />
+  </select><br />
 
-  <label>Tagged:</label><label style="margin-left: 170px;">Fin Clips:</label><br />
-  <div style="display: inline-block;">
-   <input [(ngModel)]="hasTag" class="moveright" type=checkbox>
-   <input [(ngModel)]="sampleNumber" style="margin-left:6px;" class='standardwidth' placeholder="Sample Number" type=text><label class="required">{{sampleLabel}}</label>
-  </div>
-  <div style="margin-left: 20px; display: inline-block;">
-    <select #finOptionSelect class="standardwidth">
-      <option value='Unspecified' (click)="selectedOption(true)">Unspecified</option>
-      <option value='Fins Clipped' (click)="selectedOption(false)">Fins Clipped</option>
-      <option value='No Fins Clipped' (click)="selectedOption(true)">No Fins Clipped</option>
-    </select><br /><br />
-    <select #clipSelect class="standardwidth" [disabled]="valueSelected">
-      <option *ngFor="let clip of finClips" value='{{clip}}'>{{clip}}</option>
-    </select>
-  </div><br />
-  <label>Weight:</label><br />
-  <input [(ngModel)]="weight" type=text placeholder="Weight (Lbs)" class="moveright standardwidth"><label class="required">{{weightLabel}}</label><br />
+  <label>Weight (Lbs):</label><br />
+  <input [(ngModel)]="weight" type=text placeholder="Weight" class="moveright standardwidth"><label class="required">{{weightLabel}}</label><br />
 
-  <label>Length:</label><br />
-  <input [(ngModel)]="length" type=text placeholder="Length (in)" class="moveright standardwidth"><label class="required">{{lengthLabel}}</label><br />
+  <label>Length (in):</label><br />
+  <input [(ngModel)]="length" type=text placeholder="Length" class="moveright standardwidth"><label class="required">{{lengthLabel}}</label><br />
+
+  <label style="margin-right: 10px;">Tagged</label>
+  <input [(ngModel)]="hasTag" type=checkbox><br />
+
+  <input [(ngModel)]="sampleNumber" class='moveright standardwidth' placeholder="Sample Number" type=text [disabled]="!hasTag"><label class="required">{{sampleLabel}}</label><br />
+
+  <label>Port Name:</label><br />
+  <input [(ngModel)]="port" type=text placeholder="Port" class="moveright standardwidth"><br />
 
   <label>Date Caught:</label><br />
   <mat-datepicker-toggle class="moveright" matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker touchUi #picker></mat-datepicker>
   <input (click)="picker.open()" [matDatepicker]="picker" [value]="currentDate" class="short" [max]="currentDate" readonly><br /><br />
-  <button [disabled]="submissionInProcess" (click)="createFish(speciesSelect.value, picker._validSelected, clipSelect.value, finOptionSelect.value, stationSelect.value, tournamentSelect.value, boatSelect.value, memberSelect.value)" [class]="subStyle">Submit</button>
+  <button (click)="createFish(species.value, picker._validSelected, station.value, tournament.value, boat.value)" [class]="subStyle">Submit</button>
 </div>
 
 

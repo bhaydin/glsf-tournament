@@ -23,8 +23,7 @@ module.exports = {
         new webpack.DefinePlugin({
             // global app config object
             config: JSON.stringify({
-                // apiUrl: 'https://glsf-msoe-fish.azurewebsites.net/' // Use this in production, and replace it with a correct url to the live website.
-                apiUrl: ''
+                apiUrl: 'http://localhost:4000'
             })
         })
     ],

@@ -18,11 +18,14 @@ export class DataEntryComponent implements OnInit {
   weightLabel = '';
 	lengthLabel = '';
 	sampleLabel = '';
+	idLabel = '';
 	weight = '';
 	length = '';
+	noAvailableTournaments = false;
+	noAvailableBoats = false;
+	noAvailableStations = false;
 	hasTag = false;
-	validFish = true;
-	submissionInProcess = false;
+	validFish = false;
 	validFishLabel = '';
 	sampleNumber = '';
 	port = '';
@@ -31,40 +34,43 @@ export class DataEntryComponent implements OnInit {
 	subStyle = "normal";
 	currentDate: Date = new Date();
 	fishes = Fish.fishes;
-	finClips = Fish.finClips;
-	valueSelected = true;
 	model: any;
 	modelLocation = "../assets/FishModel/FishClassifier/model.json";
+	constructor(private request: Requests, private dialog: MatDialog, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) {}
 
-	constructor(private request: Requests, private dialog: MatDialog, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) {
-		this.request.initialize();
+	ngOnInit() {
 		this.loadModel();
+		this.availability();
 	}
-
-	ngOnInit() { }
 
 	private async loadModel() {
 		this.model = await tf.loadModel(this.modelLocation);
 	}
 
-	async filterTournament(tournamentId, isJunior) {
-		this.request.getBoats(tournamentId)
-		this.request.getStations(tournamentId);
-		await this.request.getMembers(tournamentId);
-		this.request.filterMembers(this.request.boats[0].Id, isJunior);
+	private async availability() {
+		this.request.initialize().then(() => {
+			this.noAvailableTournaments = this.request.noTournamentsAvailable;
+			this.noAvailableBoats = this.request.noBoatsAvailable;
+			this.noAvailableStations = this.request.noStationsAvailable;
+		});
+		return true;
 	}
 
-	filterBoat(boatId, isJunior) {
-		this.request.filterMembers(boatId, isJunior);
+	async filter(value) {
+		this.noAvailableBoats = await this.request.filterBoats(value);
+		this.noAvailableStations = await this.request.filterStations(value);
 	}
 
 	async openDialog() {
 		const dialogRef = this.dialog.open(CameraDialog, {
 			panelClass: 'custom-dialog-container'
 		});
-		dialogRef.afterClosed().subscribe(result => {
+
+		dialogRef.afterClosed().subscribe(async result => {
 			if (result != undefined) {
-				this.setImage(result);			
+				this.base64 = result;
+				this.imageAvailable = true;
+				this.validFish = await this.predict();
 			}
 		});
 	}
@@ -73,102 +79,79 @@ export class DataEntryComponent implements OnInit {
 		if (image.length !== 0) {
 			const reader = new FileReader();
 			reader.readAsDataURL(image[0]);
-			reader.onload = () => {
-				this.setImage(reader.result.toString());
+      reader.onload = async () => {
+		    this.base64 = await reader.result.toString();
+		    this.imageAvailable = true;
+		    this.validFish = await this.predict();
+
 			};
 		}
-	}
-
-	private async setImage(image) {
-		this.validFishLabel = '';
-		this.base64 = image;
-		this.imageAvailable = true;
-		this.validFish = await this.predict();
-	}
-
-	//Makes the image 250*250 so its smaller for storage.
-  //Returns the base64 string of the 250x250 image
-	resizeImage(imageString) {
-		const dimension = 250;
-		let image = new Image();
-		image.src = imageString;
-		const canvas = document.createElement('canvas');
-		const ctx = canvas.getContext('2d');
-		let ratio = dimension/image.width;
-		if (image.height >= image.width) {
-			ratio = dimension / image.height;
-			canvas.width = image.width * ratio
-			canvas.height = dimension;
-		} else {
-			canvas.width = dimension;
-			canvas.height = image.height * ratio
-		}
-		ctx.drawImage(image, 0, 0, image.width * ratio, image.height * ratio);
-		return canvas.toDataURL().toString();
 	}
 
 	removeImage() {
 		this.base64 = '';
 		this.imageAvailable = false;
 		this.validFishLabel = '';
-		this.validFish = true;
+
 	}
 
-	selectedOption(boolValue) {
-		this.valueSelected = boolValue;
-	}
-
-	async createFish(species, date, finsClipped, clipStatus, stationId, tournamentId, boatId, memberId) {
-		this.submissionInProcess = true;
-		console.log(clipStatus);
-		if (this.port == '') {
-			this.port = this.request.getStation(stationId).Port;
-		}
-		if (clipStatus == 'No Fins Clipped' || clipStatus == 'Unspecified') {
-			finsClipped = 'Unspecified';
-		}
-	  const validSampleNumber = this.checkSampleNumber();
+	async createFish(species, date, station, tournamentId, boatId) {
+		station = JSON.parse(station);
 		const validLength = this.checkLength(species);
 		const validWeight = this.checkWeight(species);
-		const validStation = this.request.checkDropdownStation(stationId);
-		const validSpecies = this.request.checkDropdownSpecies(species);
-		const validTournament = this.request.checkDropdownTournament(tournamentId);
-		const validBoat = this.request.checkDropdownBoat(boatId);
-		const validMember = this.request.checkDropdownMember(memberId);
-		if (validLength && validWeight && validSampleNumber && validSpecies && validBoat && validStation && validTournament && validMember) {
-				const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
-				const fish: Fish = {
-					Weight: parseFloat(this.weight),
-					Length: parseFloat(this.length),
-					Species: species,
-					Image: this.resizeImage(this.base64),
-					Date: formattedDate,
-					SampleNumber: this.sampleNumber,
-					HasTag: this.hasTag,
-					Port: this.port,
-					IsValid: this.validFish,
-					FinClip: clipStatus,
-					FinsClipped: finsClipped,
-					StationNumber: parseFloat(stationId),
-					MemberId: parseFloat(memberId),
-					Id: null, //This value is a GUID in the DB
-					TournamentId: tournamentId,
-					BoatId: parseFloat(boatId),
-				};
-				this.sendRequest(fish);
-				this.reload();
-	  }else {
-			this.port = '';
-			this.submissionInProcess = false;
+		const validIds = this.checkIds(station[0], tournamentId, boatId);
+		let validID = true;
+		if (this.hasTag) {
+			validID = this.checkSampleNumber();
 		}
+		if (this.port == '') {
+			this.port = station.Name;
+		}
+		if (validLength && validWeight && validID && validIds) {
+			const formattedDate = this.pipe.transform(date, 'MM/dd/yyyy');
+			const fish: Fish = {
+				Weight: parseFloat(this.weight),
+				Length: parseFloat(this.length),
+				Species: species,
+				Image: this.base64,
+				Date: formattedDate,
+				SampleNumber: parseFloat(this.sampleNumber),
+				HasTag: this.hasTag,
+				Port: this.port,
+				isValid: this.validFish,
+				StationNumber: parseFloat(station.Id),
+				Id: null, //This value is auto incremented in the DB
+				TournamentId: parseFloat(tournamentId),
+				BoatId: parseFloat(boatId),
+			};
+			console.log(fish);
+			this.sendRequest(fish);
+			this.reload();
+		} else {
+			this.port = '';
+		}
+	}
+
+	private checkIds(stationId, tournamentId, boatId) {
+		if (tournamentId == '' || stationId == '' || boatId == '') {
+			this.idLabel = 'Must have valid tournament, boat, and station';
+			return false;
+		}
+		this.idLabel = '';
+    return true;
 	}
 
 	private checkSampleNumber() {
-		if (this.hasTag) {
-			if (this.sampleNumber.length > this.request.MAX_STRING_LENGTH) {
-				this.sampleLabel = this.request.MAX_STRING_LENGTH + ' characters max';
-				return false;
-			}
+		const sampleNum = parseFloat(this.sampleNumber);
+		if (this.sampleNumber == '') {
+			this.sampleLabel = 'Enter number';
+			return false;
+		} else if (isNaN(sampleNum)) {
+			this.sampleLabel = 'Must be a number';
+			return false;
+		} else if (sampleNum < 0) {
+			this.sampleLabel = 'Must be positive';
+			return false;
 		}
 		this.sampleLabel = '';
     return true;
@@ -222,7 +205,10 @@ export class DataEntryComponent implements OnInit {
 	  this.sampleNumber = '';
 	  this.hasTag = false;
 	  this.port = '';
-	  this.submissionInProcess = false;
+  }
+
+  private async sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
 	private async predict() {
@@ -230,11 +216,13 @@ export class DataEntryComponent implements OnInit {
 		let ctx = canvas.getContext("2d");
 		let image = new Image();
     image.src = this.base64;
-		let totalTime = 0;
-		while ((image.width == 0 || this.model == undefined) && totalTime <= 2) {
-			await this.request.wait(200);
-			totalTime += 0.2;
-		}
+
+    let totalTime = 0;
+    while (image.width == 0 && totalTime < 1000) {
+      console.log("sleeping");
+      await this.sleep(100);
+      totalTime += 100;
+    }
 
     canvas.width = image.width;
     canvas.height = image.height;
@@ -262,8 +250,15 @@ export class DataEntryComponent implements OnInit {
 		if (prediction >= .8) {
 			this.validFishLabel = 'Looks like a fish!';
 			return true;
+		} else {
+			this.validFishLabel = 'Try another picture';
+			return false;
 		}
-		this.validFishLabel = 'Try another picture';
-		return false;
   }
 }
+
+
+
+
+
+

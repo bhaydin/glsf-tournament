@@ -29,7 +29,6 @@
     "core-js": "^2.6.10",
     "jquery": "3.4.1",
     "moment": "^2.24.0",
-    "ngx-material-timepicker": "^5.3.0",
     "ngx-webcam": "^0.2.6",
     "oidc-client": "^1.9.1",
     "popper.js": "^1.16.0",
