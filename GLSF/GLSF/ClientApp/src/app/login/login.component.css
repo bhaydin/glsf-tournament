@@ -1,0 +1,27 @@
+input {
+    margin-bottom: 10px;
+}
+
+.loginHeader {
+    font-size: 26px;
+}
+
+.content {
+    max-width: 500px;
+    margin: auto;
+  }
+
+label, h2 {
+    color: #ffe600;
+}
+
+.hi-vis-yellow {
+    color: #ffe600;
+}
+
+button, input, select {
+    background-color: #010382;
+    border: 2px solid #ffe600;
+    color: #ffe600;
+  }
+

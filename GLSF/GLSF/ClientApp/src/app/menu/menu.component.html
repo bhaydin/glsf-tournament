@@ -1,0 +1,11 @@
+<header *ngIf="currentUser">
+  <div class="headRectangle">
+    <button [routerLink]='["/"]'>Home</button>
+    <button [routerLink]='["/data_entry"]'>Fish</button>
+    <button [routerLink]='["/boat"]'>Boat</button>
+    <button [routerLink]='["/station"]'>Station</button>
+    <button [routerLink]='["/tournament"]'>Tournament</button>
+    <!-- Add once needed(View tournaments)<button [routerLink]='["/tournaments"]'>Upcoming Tournaments</button>-->
+    <button class="toprightexit" (click)="logout()">Log Out</button>
+  </div>
+</header>

@@ -1,0 +1,19 @@
+<div class="dialog">
+  <button class="exitbutton" (click)="onNoClick()">X</button>
+  <button class="takepicture" (click)="takePicture()" [disabled]="previewed">Take Picture</button>
+  <button class="swapcamera" (click)="swapCamera()" [hidden]="!noOtherWebcam">Switch Camera</button>
+  <img [hidden]="!previewed" class="cameracenter" [src]="base64" />
+  <button class="retakeimage" (click)="retakeImage()" [hidden]="!previewed">X</button>
+  <webcam class="cameracenter"
+          height="300" width="300"
+          allowCameraSwitch="noOtherWebcam"
+          *ngIf="toggleWebcam"
+          [trigger]="triggerObservable"
+          [switchCamera]="webcamObservable"
+          (imageCapture)="displayImage($event)"
+          imageQuality="1"
+          (initError)="handleInitError($event)"
+          [hidden]="previewed"></webcam>
+  <label class="retryconnect" [hidden]="!showRetry">Please Allow Camera Access</label>
+  <button class="useimage" (click)="onSaveImage()" [disabled]="!previewed">Use Image</button>
+</div>

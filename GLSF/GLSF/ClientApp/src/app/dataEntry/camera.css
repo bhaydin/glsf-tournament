@@ -1,0 +1,89 @@
+.dialog{
+  color: #ffe600;
+  position: relative;
+  width: 500px;
+  background-color: #010382;
+  height: 500px;
+}
+
+.takepicture {
+  position: absolute;
+  top: 50px;
+  left: 100px;
+}
+
+.swapcamera {
+  position: absolute;
+  top: 50px;
+  right: 100px;
+}
+
+.useimage {
+  position: absolute;
+  width: 100px;
+  top: 430px;
+  left: 200px;
+}
+
+.retakeimage {
+  position: absolute;
+  font-size: 16px;
+  height: 30px;
+  width: 30px;
+  top: 105px;
+  left: 85px;
+  color: #0f0f0f;
+  text-align: center;
+  font-weight: bolder;
+  border-radius: 50%;
+  border: 2px solid #0f0f0f;
+  background-color: rgba(222,222,222,0.7);
+}
+
+.exitbutton {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  height: 30px;
+  width: 30px;
+  font-size: 16px;
+  text-align: left;
+  color: #c40000;
+  border-radius: 50%;
+  border: 2px solid #c40000;
+}
+
+.retryconnect {
+  position: absolute;
+  top: 190px;
+  left: 149px;
+  color: #ffe600;
+  text-align: center;
+  background-color: #010382;
+}
+
+.cameracenter {
+  position: absolute;
+  top: 120px;
+  left: 100px;
+}
+
+img {
+  width: auto;
+  height: auto;
+  max-height: 300px;
+  max-width: 300px;
+  border: solid 2px rgba(87, 87, 87, .7);
+}
+
+button {
+  color: #ffe600;
+  border: 2px solid #ffe600;
+  background-color: #010382;
+}
+
+button:disabled {
+  color: #5c5c5c;
+  border: 2px solid #5c5c5c;
+  background-color: #010382;
+}

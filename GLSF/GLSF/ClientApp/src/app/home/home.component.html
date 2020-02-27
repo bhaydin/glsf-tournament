@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<h1 class="yellowTitle">Fish Entries</h1>
+<br>
+<div>
+  <div style="display:inline-block;" class="dropdown" style="display:inline-block;">
+    <button id="speciesButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Fish Species</button>
+    <ul id="speciesDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+      <li role="presentation"><a role="menuitem" href="#">All Species</a></li>
+      <li *ngFor="let fish of fishes" role="presentation"><a role="menuitem" href="#">{{fish}}</a></li>
+    </ul>
+  </div>
+  <div style="display:inline-block;" class="dropdown">
+    <button id="tournamentFilter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Tournament Filter</button>
+    <ul id="tournamentDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+      <li *ngFor="let tournament of this.request.tournaments" role="presentation">
+        <a role="menuitem" href="#" (click)="newTournamentFilter(tournament.Name)">{{ tournament.Name }}</a>
+      </li>
+    </ul>
+  </div>
+  <div style="display:inline-block;" class="dropdown">
+    <button id="boatFilter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Boat Filter</button>
+    <ul id="boatDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
+      <li role="presentation"><a role="menuitem" href="#" (click)="newBoatFilter('All Boats')">All Boats</a></li>
+      <li *ngFor="let boat of this.request.boats" role="presentation">
+        <a role="menuitem" href="#" (click)="newBoatFilter(boat.Name)">{{ boat.Name }}</a>
+      </li>
+    </ul>
+  </div>
+  <button style="display:inline-block;" class="btn btn-default resetButton" type="button" (click)="resetFilters()">Reset Filters</button>
+  <button style="display:inline-block;" class="btn btn-default saveButton" (click)="saveAsCSV()">Export as CSV</button>
+</div>
+  <br />
+  <br />
+  <div class="table-wrapper-scroll-y my-custom-scrollbar">
+    <table class="table table-bordered table-hover table-sm mb-0">
+      <thead class="yellowHeader">
+        <tr>
+          <th>Image</th>
+          <th (click)="sortBy('Species')">Species<i id="speciesCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Weight')">Weight (lbs)<i id="weightCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Length')">Length (in)<i id="lengthCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Number')">Sample #<i id="numberCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Port')">Port<i id="portCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('ClipStatus')">Clip Status<i id="clipStatusCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Fins')">Fins Clipped<i id="finsCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Date')">Date<i id="dateCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Valid')">Valid<i id="validCaret" class="fa fa-caret-up"></i></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fish of this.filteredFishes; let i = index" (click)="editRow(i)" class="yellowFont">
+          <td><img style="display:inline-block;" src="{{ fish.Image }}" [ngClass]="{'blur': !fish.IsValid, 'previewimage': true}" /></td>
+          <td>{{ fish.Species }}</td>
+          <td>{{ fish.Weight }}</td>
+          <td>{{ fish.Length }}</td>
+          <td>{{ fish.SampleNumber }}</td>
+          <td>{{ fish.Port }}</td>
+          <td>{{ fish.FinClip }}</td>
+          <td>{{ fish.FinsClipped }}</td>
+          <td>{{ fish.Date }}</td>
+          <td>{{ fish.IsValid }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
