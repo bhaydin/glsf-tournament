@@ -120,7 +120,6 @@ export class DataEntryComponent implements OnInit {
 
 	async createFish(species, date, finsClipped, clipStatus, stationId, tournamentId, boatId, memberId) {
 		this.submissionInProcess = true;
-		console.log(clipStatus);
 		if (this.port == '') {
 			this.port = this.request.getStation(stationId).Port;
 		}

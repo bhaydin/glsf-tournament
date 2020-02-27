@@ -14,18 +14,17 @@ import { DataEntryComponent } from './dataEntry/dataEntry.component';
 import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
 import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
 import { TournamentsComponent } from './tournamentInfo/tournaments.component';
 import { CameraDialog } from './dataEntry/camera';
 import { CreateTournamentComponent } from './createTournament/createTournament.component'
 import { CreateBoatComponent } from './createBoat/createBoat.component'
 import { CreateStationComponent } from './createStation/createStation.component'
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
-import { Requests } from './http/Requests';
 import { EditFishDialog } from './home/editFish';
 import { DatePipe } from '@angular/common';
 
 // used to create fake backend
+import { fakeBackendProvider } from './_helpers';
 import { AuthGuard } from './_helpers';
 
 @NgModule({
@@ -36,16 +35,11 @@ import { AuthGuard } from './_helpers';
     HomeComponent,
     TournamentsComponent,
     LoginComponent,
-    RegisterComponent,
-	CameraDialog,
-	CreateTournamentComponent,
-	CreateBoatComponent,
-	CreateStationComponent,
-	CameraDialog,
-	EditFishDialog,
-	CreateTournamentComponent,
-	CreateBoatComponent,
-	CreateStationComponent,
+		CameraDialog,
+		EditFishDialog,
+		CreateTournamentComponent,
+		CreateBoatComponent,
+		CreateStationComponent,
   ],
     imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -62,8 +56,7 @@ import { AuthGuard } from './_helpers';
 		{ path: 'tournament', component: CreateTournamentComponent, canActivate: [AuthGuard] },
 		{ path: 'boat', component: CreateBoatComponent, canActivate: [AuthGuard] },
 		{ path: 'station', component: CreateStationComponent, canActivate: [AuthGuard] },
-    { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent },
+    { path: 'login', component: LoginComponent}
     ],
         { onSameUrlNavigation: 'reload' })
 	],
@@ -77,7 +70,7 @@ import { AuthGuard } from './_helpers';
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 
     // provider used to create fake backend
-    // fakeBackendProvider
+    fakeBackendProvider
 
   ],
 	bootstrap: [AppComponent]

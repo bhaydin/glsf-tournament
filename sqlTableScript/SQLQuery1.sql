@@ -52,16 +52,6 @@ create table Stations(
 	constraint PK_StationsId primary key (Id, TournamentId),
 );
 
-drop table if exists Users;
-create table Users(
-	Id int not null identity(1,1) primary key,
-	FirstName varchar(max) not null,
-	LastName varchar(max) not null,
-	PasswordHash binary(64) not null,
-	PasswordSalt binary(128) not null,
-	Username varchar(max) not null,
-);
-
 drop table if exists Members;
 create table Members(
 	Name varchar(300) not null,
