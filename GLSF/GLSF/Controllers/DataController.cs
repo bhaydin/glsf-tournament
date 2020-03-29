@@ -19,61 +19,118 @@ namespace ServerDatabase.Controllers
 			_context = fish;
 		}
 
-		//Fishes
-		[Route("fish")]
+    [Route("error/{str}")]
+    [HttpPost]
+    public Task<string> LogError([FromBody]String str)
+    {
+      System.Diagnostics.Trace.TraceError("Frontend error occurred");
+      System.Diagnostics.Trace.TraceError(str);
+      return null;
+    }
+
+    //Fishes
+    [Route("fish")]
 		[HttpPost]
 		public async Task<Fish> InsertFish([FromBody]Fish fish)
 		{
-			await _context.Fishes.AddAsync(fish);
-			await _context.SaveChangesAsync();
-			return fish;
+      try
+      {
+        await _context.Fishes.AddAsync(fish);
+        await _context.SaveChangesAsync();
+        return fish;
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Object " + fish + " can not be cast to a fish");
+        return null;
+      }
 		}
 
 		[Route("fish/tournamentId/{id}")]
 		[HttpGet]
 		public async Task<string> GetFishByTournamentId(Guid id)
 		{
-			List<Fish> allFishes = await _context.Fishes.Where(fish => fish.TournamentId == id).ToListAsync();
-			return JsonConvert.SerializeObject(allFishes);
+      try
+      {
+        List<Fish> allFishes = await _context.Fishes.Where(fish => fish.TournamentId == id).ToListAsync();
+        return JsonConvert.SerializeObject(allFishes);
+      }
+      catch(Exception e) 
+      {
+        System.Diagnostics.Trace.TraceError("Cannot get the fish with tournament id " + id);
+        return null;
+      }
 		}
 
 		[Route("fish/fishId/{id}")]
 		[HttpGet]
 		public async Task<string> GetFishById(Guid id)
 		{
-			Fish fish = await _context.Fishes.FindAsync(id);
-			return JsonConvert.SerializeObject(fish);
+      try
+      {
+        Fish fish = await _context.Fishes.FindAsync(id);
+        return JsonConvert.SerializeObject(fish);
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot get the fish with the fish id " + id);
+        return null;
+      }
 		}
 
 		[Route("fish")]
 		[HttpPut]
 		public async Task<Fish> UpdateFish([FromBody]Fish fish)
 		{
-			_context.Fishes.Update(fish);
-			await _context.SaveChangesAsync();
-			return fish;
+      try
+      {
+        _context.Fishes.Update(fish);
+        await _context.SaveChangesAsync();
+        return fish;
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot update fish " + fish);
+        return null;
+      }
 		}
 
 		[Route("fish/fishId/{id}")]
 		[HttpDelete]
 		public async Task<Guid> DeleteFish(Guid id)
 		{
-			Fish fish = new Fish () { Id = id };
-			_context.Fishes.Attach(fish);
-			_context.Fishes.Remove(fish);
-			await _context.SaveChangesAsync();
-			return id;
-		}
+      try
+      {
+        Fish fish = new Fish() { Id = id };
+        _context.Fishes.Attach(fish);
+        _context.Fishes.Remove(fish);
+        await _context.SaveChangesAsync();
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot delete fish with the fish id " + id);
+      }
+
+      return id;
+    }
 
 		//Boats
 		[Route("boat")]
 		[HttpPost]
 		public async Task<Group> InsertGroup([FromBody]Group group)
 		{
-			await _context.Members.AddRangeAsync(group.Members);
-			await _context.Boats.AddAsync(group.Boat);
-			await _context.SaveChangesAsync();
-			return group;
+      try
+      {
+        await _context.Members.AddRangeAsync(group.Members);
+        await _context.Boats.AddAsync(group.Boat);
+        await _context.SaveChangesAsync();
+        return group;
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot insert group " + group);
+        return null;
+      }
 		}
 
 		//ID is tournament ID
@@ -81,16 +138,32 @@ namespace ServerDatabase.Controllers
 		[HttpGet]
 		public async Task<string> GetBoatsByTournamentId(Guid id)
 		{
-			List<Boat> allBoats = await _context.Boats.Where(boat => boat.TournamentId == id).ToListAsync();
-			return JsonConvert.SerializeObject(allBoats);
+      try
+      {
+        List<Boat> allBoats = await _context.Boats.Where(boat => boat.TournamentId == id).ToListAsync();
+        return JsonConvert.SerializeObject(allBoats);
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot get boats with the tournament id " + id);
+        return null;
+      }
 		}
 
 		[Route("member/{id}")]
 		[HttpGet]
 		public async Task<string> GetMembersByBoatId(Guid id)
 		{
-			List<Member> allMembers = await _context.Members.Where(member => member.TournamentId == id).ToListAsync();
-			return JsonConvert.SerializeObject(allMembers);
+      try
+      {
+        List<Member> allMembers = await _context.Members.Where(member => member.TournamentId == id).ToListAsync();
+        return JsonConvert.SerializeObject(allMembers);
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot get boat members with the boat id " + id);
+        return null;
+      }
 		}
 
 		//Tournaments
@@ -98,26 +171,49 @@ namespace ServerDatabase.Controllers
 		[HttpPost]
 		public async Task<Tournament> InsertTournament([FromBody]Tournament tournament)
 		{
-			await _context.Tournaments.AddAsync(tournament);
-			await _context.SaveChangesAsync();
-			return tournament;
+      try
+      {
+        await _context.Tournaments.AddAsync(tournament);
+        await _context.SaveChangesAsync();
+        return tournament;
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot insert the tournament " + tournament);
+        return null;
+      }
 		}
 
     private DateTime ConvertToDate(string date)
     {
-      DateTime myDate = DateTime.ParseExact(date, "g", new CultureInfo("en-US"), DateTimeStyles.None);
-      //DateTime myDate = DateTime.ParseExact(date, "MM/dd/yyyy ", System.Globalization.CultureInfo.InvariantCulture);
-      return myDate;
+      try
+      {
+        DateTime myDate = DateTime.ParseExact(date, "g", new CultureInfo("en-US"), DateTimeStyles.None);
+        return myDate;
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot convert " + date + " to a valid date");
+        return new DateTime();
+      }
     }
 
 		[Route("tournament")]
 		[HttpGet]
 		public async Task<string> GetTournaments()
 		{
-			List<Tournament> allTournaments = await _context.Tournaments.ToListAsync();
-      allTournaments.Sort((x, y) => ConvertToDate(x.StartDate).CompareTo(ConvertToDate(y.StartDate)));
-      allTournaments.Reverse();
-      return JsonConvert.SerializeObject(allTournaments);
+      try
+      {
+        List<Tournament> allTournaments = await _context.Tournaments.ToListAsync();
+        allTournaments.Sort((x, y) => ConvertToDate(x.StartDate).CompareTo(ConvertToDate(y.StartDate)));
+        allTournaments.Reverse();
+        return JsonConvert.SerializeObject(allTournaments);
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot get tournaments from the db");
+        return null;
+      }
 		}
 
 		//Stations
@@ -125,17 +221,33 @@ namespace ServerDatabase.Controllers
 		[HttpPost]
 		public async Task<Station> InsertStation([FromBody]Station station)
 		{
-			await _context.Stations.AddAsync(station);
-			await _context.SaveChangesAsync();
-			return station;
+      try
+      {
+        await _context.Stations.AddAsync(station);
+        await _context.SaveChangesAsync();
+        return station;
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot insert the station " + station);
+        return null;
+      }
 		}
 
 		[Route("station/{id}")]
 		[HttpGet]
 		public async Task<string> GetStationsByTournamentId(Guid id)
 		{
-			List<Station> allStations = await _context.Stations.Where(station => station.TournamentId == id).ToListAsync();
-			return JsonConvert.SerializeObject(allStations);
+      try
+      {
+        List<Station> allStations = await _context.Stations.Where(station => station.TournamentId == id).ToListAsync();
+        return JsonConvert.SerializeObject(allStations);
+      }
+      catch(Exception e)
+      {
+        System.Diagnostics.Trace.TraceError("Cannot get stations for the tournament id " + id);
+        return null;
+      }
 		}
 	}
 }

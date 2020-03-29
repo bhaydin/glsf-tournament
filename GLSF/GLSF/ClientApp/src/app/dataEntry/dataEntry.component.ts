@@ -5,6 +5,7 @@ import { CameraDialog } from './camera';
 import { MatDialog } from '@angular/material';
 import { Requests } from '../http/Requests';
 import * as tf from '../../assets/tfjs.js';
+import * as $ from 'jquery';
 
 
 @Component({
@@ -24,7 +25,9 @@ export class DataEntryComponent implements OnInit {
 	validFish = true;
 	submissionInProcess = false;
 	validFishLabel = '';
-	sampleNumber = '';
+  sampleNumber = '';
+  finOption = 'Unspecified';
+  finClip = 'Unspecified';
 	port = '';
 	base64 = '';
 	imageAvailable = false;
@@ -38,10 +41,10 @@ export class DataEntryComponent implements OnInit {
 
 	constructor(private request: Requests, private dialog: MatDialog, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) {
 		this.request.initialize();
-		this.loadModel();
+    this.loadModel();
 	}
 
-	ngOnInit() { }
+  ngOnInit() {}
 
 	private async loadModel() {
 		this.model = await tf.loadModel(this.modelLocation);
@@ -219,8 +222,9 @@ export class DataEntryComponent implements OnInit {
 	  this.length = '';
 	  this.weight = '';
 	  this.sampleNumber = '';
-	  this.hasTag = false;
-	  this.port = '';
+    this.hasTag = false;
+    this.finOption = 'Unspecified';
+    this.finClip = 'Unspecified';
 	  this.submissionInProcess = false;
   }
 

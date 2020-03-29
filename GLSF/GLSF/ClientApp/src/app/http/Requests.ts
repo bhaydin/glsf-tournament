@@ -18,9 +18,16 @@ export class Requests {
 	boats: Array<Boat> = [];
 	stations: Array<Station> = [];
 	allMembers: Array<Member> = [];
-	members: Array<Member> = [];
+  members: Array<Member> = [];
 
-	constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
+  static staticHttp: HttpClient = null;
+  static staticBaseUrl = "";
+
+
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+    Requests.staticHttp = http;
+    Requests.staticBaseUrl = baseUrl;
+  }
 
 	async initialize() {
 		const tournamentId = await this.getTournaments();
@@ -29,6 +36,11 @@ export class Requests {
 		await this.getMembers(tournamentId);
 		this.filterMembers(this.boats[0].Id, false);
 	}
+
+  static async sendError(errorMsg) {
+    const link = Requests.staticBaseUrl + 'api/database/error/' + errorMsg;
+    await Requests.staticHttp.get<String>(link).toPromise();
+  }
 
 	releaseData() {
 		this.stations = [];
@@ -231,5 +243,13 @@ export class Requests {
 			}
 		}
 		return false;
-	}
+  }
+}
+
+
+window.onerror = function (errorMessage, errorUrl, errorLine) {
+  Requests.sendError(errorMessage + " on line " + errorLine);
+
+  // Prevent firing of default error handler.
+  return true;
 }
