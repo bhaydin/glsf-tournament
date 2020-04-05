@@ -16,10 +16,8 @@ export class HomeComponent implements OnInit {
 	public tournID = 0;
 	fishes = Fish.fishes;
   public static speciesFilter: String;
-	public static valueFilter: String;
   public static tournamentFilter: String;
   public static boatFilter: String;
-  public static validFishFilter: String;
 
   private species = false;
   private weight = false;
@@ -37,33 +35,11 @@ export class HomeComponent implements OnInit {
 		this.setUpHomeRequest();
 	}
 
-	ngOnInit() {
-    $("#speciesDropDown li a").click(function () {
-      HomeComponent.speciesFilter = $(this).text();
-      $("#speciesButton").html($(this).text());
-	  });
+  public newSpeciesFilter(filter) {
+    $("#speciesButton").html(filter);
+    HomeComponent.speciesFilter = filter;
 
-    $("#speciesDropDown li a").on('click', () => {
-      this.filter();
-    });
-
-    $("#filterDropDown a").click(function () {
-      HomeComponent.valueFilter = $(this).text();
-      $("#filterButton").html($(this).text());
-    });
-
-    $("#filterDropDown a").on('click', () => {
-      this.filter();
-    });
-
-    $("#validFishDropDown a").click(function () {
-      HomeComponent.validFishFilter = $(this).text();
-      $("#validFishButton").html($(this).text());
-    });
-
-    $("#validFishDropDown a").on('click', () => {
-      this.filter();
-    });
+    this.filter();
   }
 
   public newTournamentFilter(filter) {
@@ -332,12 +308,6 @@ export class HomeComponent implements OnInit {
   public resetFilters() {
     HomeComponent.speciesFilter = "All Species";
     $("#speciesButton").html("All Species");
-
-    HomeComponent.valueFilter = "None";
-    $("#filterButton").html("None");
-
-    HomeComponent.validFishFilter = "Both";
-    $("#validFishButton").html("Both");
 
     HomeComponent.boatFilter = "All Boats";
     $("#boatFilter").html("All Boats");
