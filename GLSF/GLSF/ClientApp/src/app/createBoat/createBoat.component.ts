@@ -20,9 +20,14 @@ export class CreateBoatComponent implements OnInit{
 	boatName = '';
 	subStyle = "normal";
 	subText = "Submit";
-	members: Array<Member> = [];
+  members: Array<Member> = [];
+  membersLabels: Array<String> = new Array(100);
 
-	constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {
+  constructor(private request: Requests, @Inject('BASE_URL') private baseUrl: string) {
+    for (let i = 0; i < 100; i++) {
+      this.membersLabels[i] = '';
+    }
+
 		this.addMember();
 		this.setUpBoatRequest();
 	}
@@ -40,7 +45,9 @@ export class CreateBoatComponent implements OnInit{
 	}
 
 	removeMember(i) {
-		this.members.splice(i, 1);
+    this.members.splice(i, 1);
+    this.membersLabels.splice(i, 1);
+    this.membersLabels.push(''); // to keep the array at the same size
 	}
 
 	selectedCaptain(index) {
@@ -86,11 +93,29 @@ export class CreateBoatComponent implements OnInit{
 
 	private membersAvailable() {
 		if (this.members.length == 0) {
-			this.membersLabel = 'Must have at least one registered person on a boat.'
+      this.membersLabel = 'Must have at least one registered person on a boat.';
 			this.addMember();
 			return false;
-		}
-		this.membersLabel = '';
+    }
+
+    // Verify age of each member
+    let foundError = false;
+    for (let i = 0; i < this.members.length; i++) {
+      if (this.members[i].Age < 0 || this.members[i].Age > 100) {
+        this.membersLabels[i] = 'Invalid age. Must be from 0-100.';
+        foundError = true;
+      }
+    }
+
+    if (foundError) {
+      return false;
+    }
+
+    this.membersLabel = '';
+    for (let i = 0; i < 100; i++) {
+      this.membersLabels[i] = ''
+    }
+
 		return true;
 	}
 
