@@ -16,8 +16,9 @@
 
 <div class="splitleft">
   <label>Weight:</label><label style="margin-left:170px;">Length:</label><br />
-  <input [(ngModel)]="weight" type=text placeholder="Weight (Lbs)" class="moveright standardwidth"><label class="required">{{weightLabel}}</label>
-  <input [(ngModel)]="length" type=text placeholder="Length (in)" class="moveright standardwidth" style="margin-left:30px;"><label class="required">{{lengthLabel}}</label><br />
+  <input [(ngModel)]="weight" type=text placeholder="Weight (Lbs)" class="moveright standardwidth">
+  <input [(ngModel)]="length" type=text placeholder="Length (in)" class="moveright standardwidth" style="margin-left:45px;"><br />
+  <label style="margin-left:60px;" class="required">{{weightLabel}}</label><label style="margin-left:110px;" class="required">{{lengthLabel}}</label><br />
 
   <label>Species:</label><label style="margin-left: 170px;">Fin Clips:</label><br />
   <select #speciesSelect class="moveright standardwidth" id="SpeciesSelecter">
