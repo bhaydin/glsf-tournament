@@ -9,10 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
-using GLSF.Helpers;
-using GLSF.Services;
 using System.Text;
-using AutoMapper;
+using ServerDatabase.Controllers;
 
 namespace GLSF
 {
@@ -25,21 +23,15 @@ namespace GLSF
 		{
 			_configuration = configuration;
             _env = env;
-
-        }
+		}
         public IConfiguration Configuration { get; }
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-            //services.AddDbContext<fishDBContext>(options =>
-            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            if (_env.IsProduction())
-                services.AddDbContext<DataContext>();
-            else
-                services.AddDbContext<DataContext, SqliteDataContext>();
+            services.AddDbContext<fishDBContext>(options =>
+            options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<fishDBContext>();
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 			{
 				builder.AllowAnyOrigin()
@@ -49,19 +41,13 @@ namespace GLSF
 
 			services.AddControllersWithViews();
             services.AddControllers();
-            services.AddAutoMapper(System.AppDomain.CurrentDomain.GetAssemblies());
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
 			{
 				configuration.RootPath = "ClientApp/dist";
 			});
 
-            var appSettingsSection = _configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
-
-            // configure jwt authentication
-            var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("Secret"));
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -73,9 +59,9 @@ namespace GLSF
                 {
                     OnTokenValidated = context =>
                     {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                        var userService = context.HttpContext.RequestServices.GetRequiredService<FishController>();
                         var userId = int.Parse(context.Principal.Identity.Name);
-                        var user = userService.GetById(userId);
+                        var user = userService.GetUserById(userId);
                         if (user == null)
                         {
                             // return unauthorized if user no longer exists
@@ -94,10 +80,6 @@ namespace GLSF
                     ValidateAudience = false
                 };
             });
-
-            // configure DI for application services
-            services.AddScoped<IUserService, UserService>();
-
         }
 
 

@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
-import { Fish } from '../models/dataSchemas';
+import { Fish, User } from '../models/dataSchemas';
 import { Requests } from '../http/Requests';
 import { CameraDialog } from '../dataEntry/camera'
 import { DatePipe } from '@angular/common';
+import { AuthenticationService } from '../_services/authentication.service';
 
 @Component({
 	selector: 'app-editFish',
@@ -14,14 +15,19 @@ import { DatePipe } from '@angular/common';
 
 export class EditFishDialog implements OnInit {
 	fishInEdit: Fish;
+	baseTournament: string;
+	baseStation: string
+	baseMember: string;
+	baseBoat: string;
+	currentUser: User;
 	fishes = Fish.fishes;
-	finClips = Fish.finClips;
 	imageAvailable: boolean = false;
 	dateCaught: Date;
 	valueSelected = false;
 
-	constructor(public dialogRef: MatDialogRef<EditFishDialog>, private dialog: MatDialog, @Inject(MAT_DIALOG_DATA) data, public request: Requests, @Inject('BASE_URL') private baseUrl: string, private pipe: DatePipe) {
+	constructor(public dialogRef: MatDialogRef<EditFishDialog>, private dialog: MatDialog, @Inject(MAT_DIALOG_DATA) data, public request: Requests, @Inject('BASE_URL') private baseUrl: string, private pipe: DatePipe, private authenticationService: AuthenticationService) {
 		this.fishInEdit = data;
+		this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
 		this.initializeEditFishRequest();
 	}
 
@@ -30,13 +36,18 @@ export class EditFishDialog implements OnInit {
 	}
 
 	async initializeEditFishRequest() {
-		if (this.fishInEdit.FinClip == 'No Fins Clipped' || this.fishInEdit.FinClip == 'Unspecified') {
+		if (this.fishInEdit.FinClip != 'Fins Clipped') {
 			this.valueSelected = true;
 		}
-		this.request.getBoats(this.fishInEdit.TournamentId)
+		this.request.getBoats(this.fishInEdit.TournamentId);
 		this.request.getStations(this.fishInEdit.TournamentId);
 		await this.request.getMembers(this.fishInEdit.TournamentId);
-		this.request.filterMembers(this.fishInEdit.BoatId, false);
+		await this.request.filterMembers(this.fishInEdit.BoatId, false);
+		this.baseTournament = this.request.getTournament(this.fishInEdit.TournamentId).Name;
+		this.baseBoat = this.request.getBoat(this.fishInEdit.BoatId).Name;
+		this.baseMember = this.request.getMember(this.fishInEdit.MemberId).Name;
+		const station = this.request.getStation(this.fishInEdit.StationNumber);
+		this.baseStation = station.Id + " : "+ station.Port
 	}
 
 	async setUpDialog() {
@@ -83,18 +94,11 @@ export class EditFishDialog implements OnInit {
 		this.request.filterMembers(this.request.boats[0].Id, false);
 	}
 
-	saveChanges(species, date, finsClipped, clipStatus, tournamentId, boatId, memberId, stationId) {
-		this.fishInEdit.Species = species;
-		this.fishInEdit.TournamentId = tournamentId;
-		this.fishInEdit.BoatId = parseFloat(boatId);
-		this.fishInEdit.StationNumber = parseFloat(stationId);
-		this.fishInEdit.MemberId = parseFloat(memberId);
-		this.fishInEdit.FinClip = clipStatus;
+	saveChanges(date) {
 		this.fishInEdit.Date = this.pipe.transform(date, 'MM/dd/yyyy');
-		if (clipStatus == 'No Fins Clipped' || clipStatus == 'Unspecified') {
-			finsClipped = 'Unspecified';
+		if (this.fishInEdit.FinClip != 'Fins Clipped') {
+			this.fishInEdit.FinsClipped = this.fishInEdit.FinClip;
 		}
-		this.fishInEdit.FinsClipped = finsClipped;
 		this.dialogRef.close(this.fishInEdit);
 	}
 

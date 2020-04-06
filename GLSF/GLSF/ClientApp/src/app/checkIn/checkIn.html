@@ -1,0 +1,37 @@
+<h2 class="yellowTitle">Boat Check In</h2>
+
+<div class="yellow">
+  <label>Tournament:</label><br />
+  <select #tournamentSelect [disabled]="this.request.noTournamentsAvailable" class="standardwidth moveright">
+    <option *ngFor="let tournament of this.request.tournaments" (click)="filterTournament(tournamentSelect.value)" value='{{tournament.Id}}'>{{tournament.Name}}</option>
+  </select><br />
+  <label>Boat:</label><br />
+  <select #boatSelect [disabled]="this.request.noBoatsAvailable" class="standardwidth moveright">
+    <option *ngFor="let boat of this.request.boats" [ngClass] = "{'green': boat.PercentCheckedIn > 0}" [selected]="boat.PercentCheckedIn == 0" (click)="this.request.filterMembers(boatSelect.value, false)" value='{{boat.Id}}'>{{boat.Name}}</option>
+  </select><br />
+  <label>Check In:</label>
+  <div style="margin-left:60px;">
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table class="table table-bordered table-hover table-sm mb-0 yellowHeader">
+        <thead>
+          <tr>
+            <th>Checked In</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Captain</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="!this.request.noMembersAvailable">
+          <tr *ngFor="let member of this.request.members; let i = index" [ngClass]="{'green': member.CheckedIn}" (click)="checkInMember(i)">
+            <td><input readonly type="checkbox" [(ngModel)]="member.CheckedIn"></td>
+            <td>{{member.Name}}</td>
+            <td>{{member.Age}}</td>
+            <td *ngIf="member.IsCaptain">Captain</td>
+            <td *ngIf="!member.IsCaptain"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div><br />
+  <button [disabled]="submissionInProcess || this.request.noMembersAvailable" (click)="checkInMembers(boatSelect.value)" [class]="subStyle">{{subText}}</button>
+</div>

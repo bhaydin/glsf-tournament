@@ -27,11 +27,11 @@ export class DataEntryComponent implements OnInit {
 	sampleNumber = '';
 	port = '';
 	base64 = '';
+	finClips = '';
 	imageAvailable = false;
 	subStyle = "normal";
 	currentDate: Date = new Date();
 	fishes = Fish.fishes;
-	finClips = Fish.finClips;
 	valueSelected = true;
 	model: any;
 	modelLocation = "../assets/FishModel/FishClassifier/model.json";
@@ -47,15 +47,17 @@ export class DataEntryComponent implements OnInit {
 		this.model = await tf.loadModel(this.modelLocation);
 	}
 
-	async filterTournament(tournamentId, isJunior) {
-		this.request.getBoats(tournamentId)
-		this.request.getStations(tournamentId);
-		await this.request.getMembers(tournamentId);
-		this.request.filterMembers(this.request.boats[0].Id, isJunior);
+	async filterMembers(boatId, isJunior) {
+		await this.request.filterMembers(boatId, isJunior);
+		await this.request.getCheckedInMembers();
 	}
 
-	filterBoat(boatId, isJunior) {
-		this.request.filterMembers(boatId, isJunior);
+	async filterTournament(tournamentId, isJunior) {
+		await this.request.getBoats(tournamentId);
+		this.request.getStations(tournamentId);
+		await this.request.getMembers(tournamentId);
+		await this.request.filterMembers(this.request.boats[0].Id, isJunior);
+		this.request.getCheckedInMembers();
 	}
 
 	async openDialog() {
@@ -118,14 +120,13 @@ export class DataEntryComponent implements OnInit {
 		this.valueSelected = boolValue;
 	}
 
-	async createFish(species, date, finsClipped, clipStatus, stationId, tournamentId, boatId, memberId) {
+	async createFish(species, date, clipStatus, stationId, tournamentId, boatId, memberId) {
 		this.submissionInProcess = true;
-		console.log(clipStatus);
 		if (this.port == '') {
 			this.port = this.request.getStation(stationId).Port;
 		}
-		if (clipStatus == 'No Fins Clipped' || clipStatus == 'Unspecified') {
-			finsClipped = 'Unspecified';
+		if (clipStatus != 'Fins Clipped') {
+			this.finClips = clipStatus;
 		}
 	  const validSampleNumber = this.checkSampleNumber();
 		const validLength = this.checkLength(species);
@@ -148,7 +149,7 @@ export class DataEntryComponent implements OnInit {
 					Port: this.port,
 					IsValid: this.validFish,
 					FinClip: clipStatus,
-					FinsClipped: finsClipped,
+					FinsClipped: this.finClips,
 					StationNumber: parseFloat(stationId),
 					MemberId: parseFloat(memberId),
 					Id: null, //This value is a GUID in the DB
@@ -222,6 +223,7 @@ export class DataEntryComponent implements OnInit {
 	  this.sampleNumber = '';
 	  this.hasTag = false;
 	  this.port = '';
+	  this.finClips = '';
 	  this.submissionInProcess = false;
   }
 

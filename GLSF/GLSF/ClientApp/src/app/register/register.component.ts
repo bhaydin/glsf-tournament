@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-
-import { UserService, AlertService, AuthenticationService } from '../_services/';
+import { User } from '../models/dataSchemas'
+import { UserService } from '../_services/user.service';
+import { AlertService } from '../_services/alert.service';
+import { AuthenticationService } from '../_services/authentication.service';
 
 
 @Component({
@@ -38,30 +39,21 @@ export class RegisterComponent implements OnInit {
     }
 
     // convenience getter for easy access to form fields
-    get f() { return this.registerForm.controls; }
+	get form() { return this.registerForm.controls; }
 
-    onSubmit() {
-        this.submitted = true;
-
-        // reset alerts on submit
-        this.alertService.clear();
-
-        // stop here if form is invalid
-        if (this.registerForm.invalid) {
-            return;
-        }
-
-        this.loading = true;
-        this.userService.register(this.registerForm.value)
-            .pipe(first())
-            .subscribe(
-                data => {
-                    this.alertService.success('Registration successful', true);
-                    this.router.navigate(['/login']);
-                },
-                error => {
-                    this.alertService.error(error);
-                    this.loading = false;
-                });
-    }
+  onSubmit() {
+		this.submitted = true;
+		this.loading = true;
+      // reset alerts on submit
+		  this.alertService.clear();
+      // stop here if form is invalid
+		  if (!this.registerForm.invalid) {
+			  this.userService.registerUser(this.registerForm.value).then(() => {
+				  this.alertService.success('Registration successful', true);
+				  this.router.navigate(['/login']);
+			  });
+		  }
+		  this.loading = false;
+		  this.submitted = false;
+  }
 }

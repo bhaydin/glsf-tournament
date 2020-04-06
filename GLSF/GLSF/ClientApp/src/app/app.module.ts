@@ -8,25 +8,24 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { WebcamModule } from 'ngx-webcam';
 import { MaterialModule } from './material.module';
 
-
 import { AppComponent } from './app.component';
 import { DataEntryComponent } from './dataEntry/dataEntry.component';
 import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { TournamentsComponent } from './tournamentInfo/tournaments.component';
 import { CameraDialog } from './dataEntry/camera';
 import { CreateTournamentComponent } from './createTournament/createTournament.component'
 import { CreateBoatComponent } from './createBoat/createBoat.component'
 import { CreateStationComponent } from './createStation/createStation.component'
-import { JwtInterceptor, ErrorInterceptor } from './_helpers';
-import { Requests } from './http/Requests';
+import { CheckInComponent } from './checkIn/checkIn.component';
+import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { EditFishDialog } from './home/editFish';
 import { DatePipe } from '@angular/common';
 
 // used to create fake backend
-import { AuthGuard } from './_helpers';
+import { AuthGuard, AdminGuard } from './_helpers/auth.guard';
 
 @NgModule({
   declarations: [
@@ -34,18 +33,18 @@ import { AuthGuard } from './_helpers';
     DataEntryComponent,
     MenuComponent,
     HomeComponent,
-    TournamentsComponent,
     LoginComponent,
     RegisterComponent,
-	CameraDialog,
-	CreateTournamentComponent,
-	CreateBoatComponent,
-	CreateStationComponent,
-	CameraDialog,
-	EditFishDialog,
-	CreateTournamentComponent,
-	CreateBoatComponent,
-	CreateStationComponent,
+	  CameraDialog,
+	  CreateTournamentComponent,
+	  CreateBoatComponent,
+	  CreateStationComponent,
+	  CameraDialog,
+	  EditFishDialog,
+	  CreateTournamentComponent,
+	  CreateBoatComponent,
+		CreateStationComponent,
+		CheckInComponent,
   ],
     imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -57,11 +56,11 @@ import { AuthGuard } from './_helpers';
     NgxMaterialTimepickerModule,
     RouterModule.forRoot([
     { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-		{ path: 'data_entry', component: DataEntryComponent, canActivate: [AuthGuard] },
-		{ path: 'tournaments', component: TournamentsComponent, canActivate: [AuthGuard] },
-		{ path: 'tournament', component: CreateTournamentComponent, canActivate: [AuthGuard] },
-		{ path: 'boat', component: CreateBoatComponent, canActivate: [AuthGuard] },
-		{ path: 'station', component: CreateStationComponent, canActivate: [AuthGuard] },
+		{ path: 'data_entry', component: DataEntryComponent, canActivate: [AdminGuard] },
+		{ path: 'tournament', component: CreateTournamentComponent, canActivate: [AdminGuard] },
+		{ path: 'boat', component: CreateBoatComponent, canActivate: [AdminGuard] },
+		{ path: 'station', component: CreateStationComponent, canActivate: [AdminGuard] },
+		{ path: 'checkIn', component: CheckInComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     ],

@@ -1,23 +1,25 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/dataSchemas';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({ providedIn: 'root' })
 export class UserService {
-    constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
    
-    getAll() {
-        return this.http.get<User[]>(`${environment.apiUrl}/users`);
-    }
+	async getAllUsers() {
+		return await this.http.get<User[]>(this.baseUrl + 'api/database/user').toPromise();
+  }
 
-    register(user: User) {
-        return this.http.post(`${environment.apiUrl}/users/register`, user);
-    }
+	async registerUser(user: User) {
+		return await this.http.post(this.baseUrl + 'api/database/user/register', user).toPromise();
+  }
 
-    delete(id: number) {
-        return this.http.delete(`${environment.apiUrl}/users/${id}`);
-    }
+	async deleteById(id) {
+	  return await this.http.delete(this.baseUrl + 'api/database/user/' + id).toPromise();
+	}
+
+	async getById(id) {
+		return await this.http.delete(this.baseUrl + 'api/database/user/' + id).toPromise();
+	}
 }
