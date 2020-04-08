@@ -35,7 +35,7 @@ export class CreateBoatComponent implements OnInit{
 	}
 
 	addMember() {
-		const member: Member = { Name: "", Age: null, IsCaptain: false, IsJunior: false, Id: 0, BoatId: 0, TournamentId: 0, CheckedIn: false};
+		const member: Member = { Name: "", Age: null, IsCaptain: false, IsJunior: false, Id: 0, BoatId: 0, TournamentId: 0};
 		this.members.push(member);
 	}
 
@@ -68,7 +68,7 @@ export class CreateBoatComponent implements OnInit{
 			const boat: Boat = {
 				Name: this.boatName,
 				Length: parseFloat(this.boatLength),
-        PercentCheckedIn: 0.0,
+        CheckedIn: false,
 				Id: parseFloat(this.boatId),
 				TournamentId: tournamentId,
 			};

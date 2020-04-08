@@ -19,7 +19,7 @@ export class Requests {
 	stations: Array<Station> = [];
 	allMembers: Array<Member> = [];
 	members: Array<Member> = [];
-	checkedInMembers: Array<Member> = [];
+	checkedInBoats: Array<Boat> = [];
 
 	constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
 
@@ -28,8 +28,8 @@ export class Requests {
 		await this.getBoats(tournamentId);
 		this.getStations(tournamentId);
 		await this.getMembers(tournamentId);
-		await this.filterMembers(this.boats[0].Id, false);
-		this.getCheckedInMembers();
+		await this.filterCheckedInBoats();
+		await this.filterMembers(this.checkedInBoats[0].Id, false);
 	}
 
 	releaseData() {
@@ -69,13 +69,29 @@ export class Requests {
 			const boat: Boat = {
 				Name: 'No boats for tournament',
 				Length: -1,
-				PercentCheckedIn: 0.0,
+				CheckedIn: false,
 				Id: -1,
 				TournamentId: -1
 			};
 			this.boats.push(boat);
 		}
 		this.noBoatsAvailable = (this.boats[0].Id == -1);
+		return true;
+	}
+
+	async filterCheckedInBoats() {
+		this.checkedInBoats = await this.boats.filter(boat => boat.CheckedIn == true);
+		if (this.checkedInBoats.length == 0) {
+			const boat: Boat = {
+				Name: 'No boats checked in yet',
+				Length: -1,
+				CheckedIn: false,
+				Id: -1,
+				TournamentId: -1
+			};
+			this.checkedInBoats.push(boat);
+		}
+		this.noBoatsAvailable = (this.checkedInBoats[0].Id == -1);
 		return true;
 	}
 
@@ -97,26 +113,6 @@ export class Requests {
 	async getMembers(tournamentId) {
 		const link = this.baseUrl + 'api/database/member/' + tournamentId;
 		this.allMembers = await this.http.get<Member[]>(link).toPromise();
-		return true;
-	}
-
-
-	async getCheckedInMembers() {
-		this.checkedInMembers = await this.members.filter(member => member.CheckedIn);
-		if (this.checkedInMembers.length == 0) {
-			const member: Member = {
-				Id: -1,
-				BoatId: -1,
-				TournamentId: -1,
-				CheckedIn: false,
-				IsCaptain: false,
-				IsJunior: false,
-				Age: -1,
-        Name: "No one checked in for boat",
-			}
-			this.checkedInMembers.push(member);
-		}
-		this.noMembersAvailable = (this.checkedInMembers[0].Id == -1);
 		return true;
 	}
 
@@ -186,7 +182,6 @@ export class Requests {
 				IsCaptain: false,
 				IsJunior: false,
 				Id: -1,
-				CheckedIn: false,
 				BoatId: -1,
 				TournamentId: -1
 			}

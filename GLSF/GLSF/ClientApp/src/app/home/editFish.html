@@ -19,14 +19,9 @@
     <label>Length (in):</label><br />
     <input [(ngModel)]="this.fishInEdit.Length" [disabled]="currentUser.AccessLevel != 1" type=text placeholder="Length" class="standardwidth"><br /><br />
 
-    <label>Fin Clips:</label><br />
-    <select *ngIf="currentUser.AccessLevel == 1" [(ngModel)]="this.fishInEdit.FinClip" class="standardwidth">
-      <option value='Unspecified' (click)="selectedOption(true)" [selected]="this.fishInEdit.FinClip == 'Unspecified'">Unspecified</option>
-      <option value='Fins Clipped' (click)="selectedOption(false)" [selected]="this.fishInEdit.FinClip == 'Fins Clipped'">Fins Clipped</option>
-      <option value='No Fins Clipped' (click)="selectedOption(true)" [selected]="this.fishInEdit.FinClip == 'No Fins Clipped'">No Fins Clipped</option>
-    </select>
-    <input [(ngModel)]="this.fishInEdit.FinClip" *ngIf="currentUser.AccessLevel != 1" [disabled]="true" class="standardwidth" type=text><br />
-    <input [(ngModel)]="this.fishInEdit.FinsClipped" [disabled]="valueSelected || currentUser.AccessLevel != 1" class="standardwidth" placeholder="Clips" type=text>
+    <label>Fin Clips:</label>
+    <input [(ngModel)]="this.fishInEdit.NoClips" [disabled]="currentUser.AccessLevel != 1" type="checkbox" class="leftmargin"/><br />
+    <input [(ngModel)]="this.fishInEdit.FinsClipped" [disabled]="currentUser.AccessLevel != 1" class="standardwidth" placeholder="Fins Clipped" type=text>
   </div>
 
   <div class="splitright">
@@ -62,7 +57,6 @@
 
     <label>Tagged:</label>
     <input [(ngModel)]="this.fishInEdit.HasTag" class="leftmargin" [disabled]="currentUser.AccessLevel != 1" type=checkbox><br />
-
     <input [(ngModel)]="this.fishInEdit.SampleNumber" class='standardwidth' [disabled]="currentUser.AccessLevel != 1" placeholder="Sample Number" type=text><br /><br />
 
     <label>Port Name:</label><br />

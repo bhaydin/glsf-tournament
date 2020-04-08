@@ -67,7 +67,7 @@ namespace GLSF.Controllers
 		public bool HasTag { set; get; }
 		public string? Port { set; get; }
 		public bool IsValid { set; get; }
-		public string FinClip { set; get; }
+		public bool NoClips { set; get; }
 		public string? FinsClipped { set; get; }
 		public int StationNumber{ get; set; }
 		public int MemberId { get; set; }
@@ -91,7 +91,7 @@ namespace GLSF.Controllers
 	{
 		public string Name { get; set; }
 		public double Length { get; set; }
-		public double PercentCheckedIn { get; set; }
+		public bool CheckedIn { get; set; }
 		[Key, Column(Order = 0)]
 		public int Id { get; set; }
 		[Key, Column(Order = 1)]
@@ -104,7 +104,6 @@ namespace GLSF.Controllers
 		public int? Age { get; set; }
 		public bool? IsCaptain { get; set; }
 		public bool? IsJunior { get; set; }
-		public bool CheckedIn { get; set; }
 		[Key, Column(Order = 0)]
 		public int Id { get; set; }
 		[Key, Column(Order = 1)]

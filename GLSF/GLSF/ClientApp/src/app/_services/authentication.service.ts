@@ -21,7 +21,7 @@ export class AuthenticationService {
 	async login(username, password) {
 		const link = this.baseUrl + 'api/database/user/authenticate';
 		let ReturningUser: User = { Username: username, Password: password, FirstName: '', LastName: '', Token: '', Id: null, AccessLevel: 0 };
-		await this.http.post<any>(link, ReturningUser).toPromise().then(user => {
+		return await this.http.post<any>(link, ReturningUser).toPromise().then(user => {
 			ReturningUser.AccessLevel = user.accessLevel;
 			ReturningUser.Token = user.token;
 			ReturningUser.FirstName = user.firstName;
@@ -29,9 +29,7 @@ export class AuthenticationService {
 			ReturningUser.Id = user.id;
 			localStorage.setItem('currentUser', JSON.stringify(ReturningUser));
 			this.currentUserSubject.next(ReturningUser);
-			return true;
 		});
-		return false;
   }
     
     logout() {

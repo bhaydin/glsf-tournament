@@ -22,6 +22,7 @@ export class DataEntryComponent implements OnInit {
 	length = '';
 	hasTag = false;
 	validFish = true;
+	noClips = false;
 	submissionInProcess = false;
 	validFishLabel = '';
 	sampleNumber = '';
@@ -30,6 +31,7 @@ export class DataEntryComponent implements OnInit {
 	finClips = '';
 	imageAvailable = false;
 	subStyle = "normal";
+	fishLabelStyle = "greenText";
 	currentDate: Date = new Date();
 	fishes = Fish.fishes;
 	valueSelected = true;
@@ -49,7 +51,6 @@ export class DataEntryComponent implements OnInit {
 
 	async filterMembers(boatId, isJunior) {
 		await this.request.filterMembers(boatId, isJunior);
-		await this.request.getCheckedInMembers();
 	}
 
 	async filterTournament(tournamentId, isJunior) {
@@ -57,7 +58,7 @@ export class DataEntryComponent implements OnInit {
 		this.request.getStations(tournamentId);
 		await this.request.getMembers(tournamentId);
 		await this.request.filterMembers(this.request.boats[0].Id, isJunior);
-		this.request.getCheckedInMembers();
+		await this.request.filterCheckedInBoats();
 	}
 
 	async openDialog() {
@@ -120,15 +121,17 @@ export class DataEntryComponent implements OnInit {
 		this.valueSelected = boolValue;
 	}
 
-	async createFish(species, date, clipStatus, stationId, tournamentId, boatId, memberId) {
+	async createFish(species, date, stationId, tournamentId, boatId, memberId) {
 		this.submissionInProcess = true;
 		if (this.port == '') {
 			this.port = this.request.getStation(stationId).Port;
 		}
-		if (clipStatus != 'Fins Clipped') {
-			this.finClips = clipStatus;
+		if (this.noClips == false && this.finClips == "") {
+			this.finClips = "Unspecified";
+		} else if (this.noClips == true) {
+			this.finClips = "";
 		}
-	  const validSampleNumber = this.checkSampleNumber();
+		const validSampleNumber = this.checkSampleNumber();
 		const validLength = this.checkLength(species);
 		const validWeight = this.checkWeight(species);
 		const validStation = this.request.checkDropdownStation(stationId);
@@ -148,7 +151,7 @@ export class DataEntryComponent implements OnInit {
 					HasTag: this.hasTag,
 					Port: this.port,
 					IsValid: this.validFish,
-					FinClip: clipStatus,
+					NoClips: this.noClips,
 					FinsClipped: this.finClips,
 					StationNumber: parseFloat(stationId),
 					MemberId: parseFloat(memberId),
@@ -263,8 +266,10 @@ export class DataEntryComponent implements OnInit {
 
 		if (prediction >= .8) {
 			this.validFishLabel = 'Looks like a fish!';
+			this.fishLabelStyle = 'greenText';
 			return true;
 		}
+		this.fishLabelStyle = 'redText';
 		this.validFishLabel = 'Try another picture';
 		return false;
   }

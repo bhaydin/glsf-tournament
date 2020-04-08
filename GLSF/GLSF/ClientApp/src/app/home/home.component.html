@@ -51,21 +51,21 @@
           <th (click)="sortBy('Length')">{{lengthLabel}}<i id="lengthCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Number')">Sample #<i id="numberCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Port')">Port<i id="portCaret" class="fa fa-caret-up"></i></th>
-          <th (click)="sortBy('ClipStatus')">Clip Status<i id="clipStatusCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('ClipStatus')">No Clips<i id="clipStatusCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Fins')">Fins Clipped<i id="finsCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Date')">Date<i id="dateCaret" class="fa fa-caret-up"></i></th>
           <th *ngIf="currentUser.AccessLevel == 1" (click)="sortBy('Valid')">Valid<i id="validCaret" class="fa fa-caret-up"></i></th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let fish of this.filteredFishes; let i = index" (click)="editRow(i)" class="yellowFont">
+        <tr *ngFor="let fish of filteredFishes; let i = index" (click)="editRow(i)" class="yellowFont">
           <td><img style="display:inline-block;" src="{{ fish.Image }}" [ngClass]="{'blur': !fish.IsValid, 'previewimage': true}" /></td>
           <td>{{ fish.Species }}</td>
-          <td>{{ fish.Weight }}</td>
-          <td>{{ fish.Length }}</td>
+          <td>{{ fish.Weight | number : '1.0-2' }}</td>
+          <td>{{ fish.Length | number : '1.0-2' }}</td>
           <td>{{ fish.SampleNumber }}</td>
           <td>{{ fish.Port }}</td>
-          <td>{{ fish.FinClip }}</td>
+          <td>{{ fish.NoClips }}</td>
           <td>{{ fish.FinsClipped }}</td>
           <td>{{ fish.Date }}</td>
           <td *ngIf="currentUser.AccessLevel == 1">{{ fish.IsValid }}</td>

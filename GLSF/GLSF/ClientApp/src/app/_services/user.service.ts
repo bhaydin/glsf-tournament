@@ -12,7 +12,7 @@ export class UserService {
   }
 
 	async registerUser(user: User) {
-		return await this.http.post(this.baseUrl + 'api/database/user/register', user).toPromise();
+		return await this.http.post<any>(this.baseUrl + 'api/database/user/register', user).toPromise();
   }
 
 	async deleteById(id) {

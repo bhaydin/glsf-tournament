@@ -10,7 +10,7 @@
     <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" />
     <button (click)="removeImage()" [hidden]="!imageAvailable" class="removeimage">X</button>
   </div>
-  <label>{{validFishLabel}}</label>
+  <label [class]="fishLabelStyle">{{validFishLabel}}</label>
   <canvas id="canvas" hidden></canvas>
 </div>
 
@@ -20,15 +20,15 @@
     <option *ngFor="let tournament of this.request.tournaments" (click)="filterTournament(tournamentSelect.value, juniorCheckbox.checked)" value='{{tournament.Id}}'>{{tournament.Name}}</option>
   </select>
   <select #boatSelect [disabled]="this.request.noBoatsAvailable" style="margin-left:45px;" class="standardwidth">
-    <option *ngFor="let boat of this.request.boats" (click)="filterMembers(boatSelect.value, juniorCheckbox.checked)" value='{{boat.Id}}'>{{boat.Name}}</option>
+    <option *ngFor="let boat of this.request.checkedInBoats" (click)="filterMembers(boatSelect.value, juniorCheckbox.checked)" value='{{boat.Id}}'>{{boat.Name}}</option>
   </select><br />
 
   <label>Station:</label><label style="margin-left:170px;">Caught By:</label><label style="margin-left:100px;">Junior: </label><br />
   <select #stationSelect [disabled]="this.request.noStationsAvailable" class="moveright standardwidth">
     <option *ngFor="let station of this.request.stations" value='{{station.Id}}'>{{station.Id}}: {{station.Port}}</option>
   </select>
-  <select #memberSelect [disabled]="this.request.noMembersAvailable" style="margin-left:45px;" class="standardwidth">
-    <option *ngFor="let member of this.request.checkedInMembers" value='{{member.Id}}'>{{member.Name}}</option>
+  <select #memberSelect [disabled]="this.request.noMembersAvailable || this.request.noBoatsAvailable" style="margin-left:45px;" class="standardwidth">
+    <option *ngFor="let member of this.request.members" value='{{member.Id}}'>{{member.Name}}</option>
   </select>
   <input style="margin-left:20px;" #juniorCheckbox type="checkbox" (change)="filterMembers(boatSelect.value, juniorCheckbox.checked)" /><br />
 
@@ -44,12 +44,8 @@
    <input [(ngModel)]="sampleNumber" style="margin-left:6px;" class='standardwidth' placeholder="Sample Number" type=text><label class="required">{{sampleLabel}}</label>
   </div>
   <div style="margin-left: 10px; display: inline-block;">
-    <select #finOptionSelect class="standardwidth">
-      <option value='Unspecified' (click)="selectedOption(true)">Unspecified</option>
-      <option value='Fins Clipped' (click)="selectedOption(false)">Fins Clipped</option>
-      <option value='No Fins Clipped' (click)="selectedOption(true)">No Fins Clipped</option>
-    </select><br /><br />
-    <input [(ngModel)]="finClips" class="standardwidth" placeholder="Clips" [disabled]="valueSelected" type=text>
+    <input type="checkbox" [(ngModel)]="noClips"/>
+    <input [(ngModel)]="finClips" style="margin-left:6px;" class="standardwidth" placeholder="Fins Clipped" type=text>
   </div><br />
   <label>Weight:</label><br />
   <input [(ngModel)]="weight" type=text placeholder="Weight (Lbs)" class="moveright standardwidth"><label class="required">{{weightLabel}}</label><br />
@@ -61,7 +57,7 @@
   <mat-datepicker-toggle class="moveright" matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker touchUi #picker></mat-datepicker>
   <input (click)="picker.open()" [matDatepicker]="picker" [value]="currentDate" class="short" [max]="currentDate" readonly><br /><br />
-  <button [disabled]="submissionInProcess" (click)="createFish(speciesSelect.value, picker._validSelected, finOptionSelect.value, stationSelect.value, tournamentSelect.value, boatSelect.value, memberSelect.value)" [class]="subStyle">Submit</button>
+  <button [disabled]="submissionInProcess" (click)="createFish(speciesSelect.value, picker._validSelected, stationSelect.value, tournamentSelect.value, boatSelect.value, memberSelect.value)" [class]="subStyle">Submit</button>
 </div>
 
 

@@ -7,7 +7,7 @@ export class Station {
 export class Boat {
 	Name: string;
 	Length: number;
-	PercentCheckedIn: number;
+	CheckedIn: boolean;
 	Id: number;
 	TournamentId: any;
 }
@@ -17,7 +17,6 @@ export class Member {
 	Age: any;
 	IsCaptain: boolean;
 	IsJunior: boolean;
-	CheckedIn: boolean;
 	Id: number;
 	BoatId: number;
 	TournamentId: any;
@@ -52,7 +51,7 @@ export class Fish {
 	HasTag: boolean;
 	Port: string;
 	IsValid: boolean;
-	FinClip: string;
+	NoClips: boolean;
 	FinsClipped: string;
 	StationNumber: number;
 	MemberId: number;

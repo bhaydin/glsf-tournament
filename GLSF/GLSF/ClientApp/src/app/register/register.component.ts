@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { User } from '../models/dataSchemas'
 import { UserService } from '../_services/user.service';
 import { AlertService } from '../_services/alert.service';
 import { AuthenticationService } from '../_services/authentication.service';
@@ -12,7 +11,8 @@ import { AuthenticationService } from '../_services/authentication.service';
     styleUrls: ['register.component.css']
 })
 export class RegisterComponent implements OnInit {
-    registerForm: FormGroup;
+	  registerForm: FormGroup;
+	  registerLabel = "";
     loading = false;
     submitted = false;
 
@@ -41,19 +41,23 @@ export class RegisterComponent implements OnInit {
     // convenience getter for easy access to form fields
 	get form() { return this.registerForm.controls; }
 
-  onSubmit() {
-		this.submitted = true;
-		this.loading = true;
-      // reset alerts on submit
-		  this.alertService.clear();
-      // stop here if form is invalid
+  async onSubmit() {
+	  try {
+		  this.registerLabel = "";
+		  this.submitted = true;
+		  this.loading = true;
+		  // stop here if form is invalid
 		  if (!this.registerForm.invalid) {
-			  this.userService.registerUser(this.registerForm.value).then(() => {
-				  this.alertService.success('Registration successful', true);
+			  await this.userService.registerUser(this.registerForm.value).then(() => {
 				  this.router.navigate(['/login']);
 			  });
 		  }
 		  this.loading = false;
 		  this.submitted = false;
+	  } catch (e) {
+		  this.registerLabel = e;
+		  this.loading = false;
+		  this.submitted = false;
+	  }
   }
 }

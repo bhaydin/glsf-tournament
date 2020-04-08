@@ -36,9 +36,7 @@ export class EditFishDialog implements OnInit {
 	}
 
 	async initializeEditFishRequest() {
-		if (this.fishInEdit.FinClip != 'Fins Clipped') {
-			this.valueSelected = true;
-		}
+
 		this.request.getBoats(this.fishInEdit.TournamentId);
 		this.request.getStations(this.fishInEdit.TournamentId);
 		await this.request.getMembers(this.fishInEdit.TournamentId);
@@ -79,10 +77,6 @@ export class EditFishDialog implements OnInit {
 		});
 	}
 
-	selectedOption(boolean) {
-		this.valueSelected = boolean;
-	}
-
 	filterBoat(boatId) {
 		this.request.filterMembers(boatId, false);
 	}
@@ -96,8 +90,10 @@ export class EditFishDialog implements OnInit {
 
 	saveChanges(date) {
 		this.fishInEdit.Date = this.pipe.transform(date, 'MM/dd/yyyy');
-		if (this.fishInEdit.FinClip != 'Fins Clipped') {
-			this.fishInEdit.FinsClipped = this.fishInEdit.FinClip;
+		if (this.fishInEdit.NoClips == false && this.fishInEdit.FinsClipped == "") {
+			this.fishInEdit.FinsClipped = "Unspecified";
+		} else if (this.fishInEdit.NoClips == true) {
+			this.fishInEdit.FinsClipped = "";
 		}
 		this.dialogRef.close(this.fishInEdit);
 	}

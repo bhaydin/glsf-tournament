@@ -11,7 +11,8 @@ import { AuthenticationService } from '../_services/authentication.service'
 })
 export class LoginComponent implements OnInit {
 
-  loginForm: FormGroup;
+	loginForm: FormGroup;
+	loginLabel = "";
   loading = false;
   submitted = false;
   returnUrl: string;
@@ -42,17 +43,23 @@ export class LoginComponent implements OnInit {
 
   get form() { return this.loginForm.controls; }
 
-	onSubmit() {
-		this.submitted = true;
-		this.loading = true;
-		// stop here if form is invalid
-		if (!this.loginForm.invalid) {
-			this.authenticationService.login(this.form.username.value, this.form.password.value).then(() => {
-				this.router.navigate([this.returnUrl]);
-			});
-		}
-		this.loading = false;
-		this.submitted = false;
+	async onSubmit() {
+		try {
+			this.loginLabel = "";
+		  this.submitted = true;
+		  this.loading = true;
+		  if (!this.loginForm.invalid) {
+			  await this.authenticationService.login(this.form.username.value, this.form.password.value).then(() => {
+				  this.router.navigate([this.returnUrl]);
+			  });
+		  }
+		  this.loading = false;
+		  this.submitted = false;
+		} catch (e) {
+			this.loginLabel = e;
+		  this.loading = false;
+		  this.submitted = false;
+	  }
   }
 
   submitLogin(user: string) {

@@ -152,9 +152,9 @@ export class HomeComponent implements OnInit {
 			unitMultiplierWeight = 0.45359237;
 		  unitMultiplierLength = 2.54;
 		}
-		let text = 'Species, Weight(' + unitWeight +'), Length ('+ unitLength +'), Date, Has Tag, Sample Number, Port, Station Number, Clip Status, Fins Clipped \n';
+		let text = 'Species, Weight(' + unitWeight +'), Length ('+ unitLength +'), Date, Has Tag, Sample Number, Port, Station Number, Fins Clipped \n';
 		this.filteredFishes.forEach(fish => {
-			const fishString = fish.Species + ", " + unitMultiplierWeight * this.storedWeights[i] + ", " + unitMultiplierLength * this.storedLengths[i++] + ", " + fish.Date + ", " + fish.HasTag + ", " + fish.SampleNumber + ", " + fish.Port + ", " + fish.StationNumber + ", " + fish.FinClip + ", " + fish.FinsClipped + " \n";
+			const fishString = fish.Species + ", " + unitMultiplierWeight * this.storedWeights[i] + ", " + unitMultiplierLength * this.storedLengths[i++] + ", " + fish.Date + ", " + fish.HasTag + ", " + fish.SampleNumber + ", " + fish.Port + ", " + fish.StationNumber + ", " + fish.FinsClipped + " \n";
 			text += fishString;
 		});
 		var element = document.createElement('a');
@@ -195,7 +195,7 @@ export class HomeComponent implements OnInit {
 	editRow(index) {
 		const dialogRef = this.dialog.open(EditFishDialog, {
       panelClass: 'custom-dialog-container',
-      data: Object.assign({}, this.request.getAFish(this.filteredFishes[index].Id)),
+      data: Object.assign({}, this.filteredFishes[index]),
 		});
 		dialogRef.afterClosed().subscribe(editedFish => {
       if (editedFish != undefined) {
@@ -204,10 +204,10 @@ export class HomeComponent implements OnInit {
         editedFish.Weight = parseFloat(editedFish.Weight);
         this.request.update(editedFish, link).then(() => {
           this.filteredFishes[index] = editedFish;
-
-          for (let fish of this.request.fishes) {
-            if (fish.Id == editedFish.Id) {
-              fish = editedFish;
+			    for (let i = 0; i < this.request.fishes.length; i++) {
+			      if (this.request.fishes[i].Id == editedFish.Id) {
+					    this.request.fishes[i] = editedFish;
+					    break;
             }
           }
         });
@@ -329,9 +329,9 @@ export class HomeComponent implements OnInit {
       sort = this.clipStatus ? -1 : 1;
       caretClass = "clipStatusCaret";
 
-      this.filteredFishes.sort(function (fish1, fish2) {
-        var f1 = fish1.FinClip.toUpperCase();
-        var f2 = fish2.FinClip.toUpperCase();
+		  this.filteredFishes.sort(function (fish1, fish2) {
+			  var f1 = fish1.NoClips;
+			  var f2 = fish2.NoClips;
 
         return (f1 < f2) ? sort : -sort;
       });
