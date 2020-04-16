@@ -1,5 +1,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.min.js"></script>
+<script type="module">
+  import { Toast } from 'coreui.esm.min.js'
 
+  Array.from(document.querySelectorAll('.toast'))
+    .forEach(toastNode => new Toast(toastNode))
+</script>
 <h2 class="yellowTitle">Enter Fish to Database</h2>
 <div class="splitright">
   <button (click)="openDialog()" class="moverightbutton">Take Image</button>
@@ -30,7 +35,12 @@
   <select #memberSelect [disabled]="this.request.noMembersAvailable" style="margin-left:45px;" class="standardwidth">
     <option *ngFor="let member of this.request.members" value='{{member.Id}}'>{{member.Name}}</option>
   </select>
-  <input style="margin-left:20px;" #juniorCheckbox type="checkbox" (change)="filterBoat(boatSelect.value, juniorCheckbox.checked)" /><br />
+  <label class="switch switch-3d switch-success">
+    <input #juniorCheckbox type="checkbox" class="switch-input"  (change)="filterBoat(boatSelect.value, juniorCheckbox.checked)" checked>
+    <span class="switch-slider"></span>
+  </label>
+  <br />
+  
 
   <label>Species:</label><label style="margin-left: 170px;">Port Name:</label><br />
   <select #speciesSelect class="moveright standardwidth">

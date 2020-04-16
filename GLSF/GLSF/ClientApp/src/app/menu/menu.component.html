@@ -1,11 +1,11 @@
 <header *ngIf="currentUser">
-  <div class="headRectangle">
-    <button [routerLink]='["/"]'>Home</button>
-    <button [routerLink]='["/data_entry"]'>Fish</button>
-    <button [routerLink]='["/boat"]'>Boat</button>
-    <button [routerLink]='["/station"]'>Station</button>
-    <button [routerLink]='["/tournament"]'>Tournament</button>
-    <!-- Add once needed(View tournaments)<button [routerLink]='["/tournaments"]'>Upcoming Tournaments</button>-->
-    <button class="toprightexit" (click)="logout()">Log Out</button>
+  <div class="sidenav">
+      <button class="btn btn-block btn-success" [routerLink]='["/"]'>Home</button>
+      <button class="btn btn-block btn-success" [routerLink]='["/data_entry"]'>Fish</button>
+      <button class="btn btn-block btn-success" [routerLink]='["/boat"]'>Boat</button>
+      <button class="btn btn-block btn-success" [routerLink]='["/station"]'>Station</button>
+      <button class="btn btn-block btn-success" [routerLink]='["/tournament"]'>Tournament</button>
+      <!-- Add once needed(View tournaments)<button [routerLink]='["/tournaments"]'>Upcoming Tournaments</button>-->
+      <button class="btn btn-block btn-success" (click)="logout()">Log Out</button>
   </div>
 </header>

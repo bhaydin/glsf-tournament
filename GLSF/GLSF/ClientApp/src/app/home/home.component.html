@@ -4,7 +4,7 @@
 <br>
 <div>
   <div style="display:inline-block;" class="dropdown" style="display:inline-block;">
-    <button id="speciesButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Fish Species</button>
+    <button id="speciesButton" data-toggle="dropdown" dropdownToggle type="button" class="btn btn-primary dropdown-toggle">Fish Species</button>
     <ul id="speciesDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
       <li role="presentation"><a role="menuitem" href="#">All Species</a></li>
       <li *ngFor="let fish of fishes" role="presentation"><a role="menuitem" href="#">{{fish}}</a></li>
