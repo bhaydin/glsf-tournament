@@ -45,6 +45,7 @@
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "~11.10.5",
     "codelyzer": "^5.2.0",
+    "html-webpack-plugin": "^3.2.0",
     "jasmine-core": "~3.3.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "^4.4.1",
@@ -52,8 +53,7 @@
     "karma-coverage-istanbul-reporter": "^2.1.0",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
-    "typescript": "3.4.5",
-    "html-webpack-plugin": "^3.2.0"
+    "typescript": "3.4.5"
   },
   "optionalDependencies": {
     "node-sass": "^4.9.3",
