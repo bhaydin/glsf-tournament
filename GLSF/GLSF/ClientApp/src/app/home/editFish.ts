@@ -18,11 +18,16 @@ export class EditFishDialog implements OnInit {
 	finClips = Fish.finClips;
 	imageAvailable: boolean = false;
 	dateCaught: Date;
-	valueSelected = false;
+  valueSelected = false;
+  currentDate: Date = new Date();
+  weightLabel = '';
+  lengthLabel = '';
+  sampleLabel = '';
+  validFishLabel = '';
 
 	constructor(public dialogRef: MatDialogRef<EditFishDialog>, private dialog: MatDialog, @Inject(MAT_DIALOG_DATA) data, public request: Requests, @Inject('BASE_URL') private baseUrl: string, private pipe: DatePipe) {
 		this.fishInEdit = data;
-		this.initializeEditFishRequest();
+    this.initializeEditFishRequest();
 	}
 
 	ngOnInit() {
@@ -83,20 +88,82 @@ export class EditFishDialog implements OnInit {
 		this.request.filterMembers(this.request.boats[0].Id, false);
 	}
 
-	saveChanges(species, date, finsClipped, clipStatus, tournamentId, boatId, memberId, stationId) {
-		this.fishInEdit.Species = species;
-		this.fishInEdit.TournamentId = tournamentId;
-		this.fishInEdit.BoatId = parseFloat(boatId);
-		this.fishInEdit.StationNumber = parseFloat(stationId);
-		this.fishInEdit.MemberId = parseFloat(memberId);
-		this.fishInEdit.FinClip = clipStatus;
-		this.fishInEdit.Date = this.pipe.transform(date, 'MM/dd/yyyy');
-		if (clipStatus == 'No Fins Clipped' || clipStatus == 'Unspecified') {
-			finsClipped = 'Unspecified';
-		}
-		this.fishInEdit.FinsClipped = finsClipped;
-		this.dialogRef.close(this.fishInEdit);
-	}
+  saveChanges(species, date, finsClipped, clipStatus, tournamentId, boatId, memberId, stationId) {
+    const validSampleNumber = this.checkSampleNumber(this.fishInEdit.HasTag, this.fishInEdit.SampleNumber);
+    const validLength = this.checkLength(species, this.fishInEdit.Length);
+    const validWeight = this.checkWeight(species, this.fishInEdit.Weight);
+    const validStation = this.request.checkDropdownStation(stationId);
+    const validSpecies = this.request.checkDropdownSpecies(species);
+    const validTournament = this.request.checkDropdownTournament(tournamentId);
+    const validBoat = this.request.checkDropdownBoat(boatId);
+    const validMember = this.request.checkDropdownMember(memberId);
+
+    if (validLength && validWeight && validSampleNumber && validSpecies && validBoat && validStation && validTournament && validMember) {
+      this.fishInEdit.Species = species;
+      this.fishInEdit.TournamentId = tournamentId;
+      this.fishInEdit.BoatId = parseFloat(boatId);
+      this.fishInEdit.StationNumber = parseFloat(stationId);
+      this.fishInEdit.MemberId = parseFloat(memberId);
+      this.fishInEdit.FinClip = clipStatus;
+      this.fishInEdit.Date = this.pipe.transform(date, 'MM/dd/yyyy');
+
+      if (clipStatus == 'No Fins Clipped' || clipStatus == 'Unspecified') {
+        finsClipped = 'Unspecified';
+      }
+
+      this.fishInEdit.FinsClipped = finsClipped;
+      this.dialogRef.close(this.fishInEdit);
+    }
+  }
+
+  public clearSampleTag() {
+    if (this.fishInEdit.HasTag) {
+      this.fishInEdit.SampleNumber = '';
+    }
+  }
+
+  private checkSampleNumber(hasTag, sampleNumber) {
+    if (hasTag) {
+      if (sampleNumber.length > this.request.MAX_STRING_LENGTH) {
+        this.sampleLabel = this.request.MAX_STRING_LENGTH + ' characters max';
+        return false;
+      }
+    }
+    this.sampleLabel = '';
+    return true;
+  }
+
+  private checkLength(species, length) {
+    const lengthNum = parseFloat(length);
+    if (length == '') {
+      this.lengthLabel = 'Enter length';
+      return false;
+    } else if (isNaN(lengthNum)) {
+      this.lengthLabel = 'Invalid length';
+      return false;
+    } else if (lengthNum < 0 || lengthNum > Fish.maxLengths[species]) {
+      this.lengthLabel = 'Out of bounds';
+      return false;
+    }
+    this.lengthLabel = '';
+    return true;
+  }
+
+  private checkWeight(species, weight) {
+    const weightNum = parseFloat(weight);
+    if (weight == '') {
+      this.weightLabel = 'Enter weight';
+      return false;
+    } else if (isNaN(weightNum)) {
+      this.weightLabel = 'Invalid weight';
+      return false;
+    } else if (weightNum < 0 || weightNum > Fish.maxWeights[species]) {
+      this.weightLabel = 'Out of bounds';
+      return false;
+    }
+    this.weightLabel = '';
+    return true;
+  }
 
 	removeImage() {
 		this.fishInEdit.Image = '';
@@ -109,9 +176,8 @@ export class EditFishDialog implements OnInit {
 			reader.readAsDataURL(image[0]);
 			reader.onload = async () => {
 				this.fishInEdit.Image = reader.result.toString();
-				this.imageAvailable = true;
+        this.imageAvailable = true;
 			};
 		}
-	}
-
+  }
 }

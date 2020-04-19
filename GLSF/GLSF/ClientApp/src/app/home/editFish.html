@@ -8,16 +8,19 @@
     <div style="position: relative; height:234px; width:234px; ">
       <img [src]="this.fishInEdit.Image" onload="this.style.display=''" onerror="this.style.display='none'" />
       <button (click)="removeImage()" [hidden]="!imageAvailable" class="removebutton">X</button>
-    </div><br />
+    </div>
+    <label>{{validFishLabel}}</label><br />
 
     <label>Valid</label>
     <input [(ngModel)]="this.fishInEdit.IsValid" class="leftmargin" type=checkbox><br /><br />
 
     <label>Weight (Lbs):</label><br />
-    <input [(ngModel)]="this.fishInEdit.Weight" type=text placeholder="Weight" class="standardwidth"><br /><br />
+    <input [(ngModel)]="this.fishInEdit.Weight" type=text placeholder="Weight" class="standardwidth">
+    <label class="required">{{weightLabel}}</label><br /><br />
 
     <label>Length (in):</label><br />
-    <input [(ngModel)]="this.fishInEdit.Length" type=text placeholder="Length" class="standardwidth"><br /><br />
+    <input [(ngModel)]="this.fishInEdit.Length" type=text placeholder="Length" class="standardwidth">
+    <label class="required">{{lengthLabel}}</label><br /><br />
 
     <label>Fin Clips:</label><br />
     <select #finOptionSelect class="standardwidth">
@@ -57,9 +60,10 @@
     </select><br /><br />
 
     <label>Tagged:</label>
-    <input [(ngModel)]="this.fishInEdit.HasTag" class="leftmargin" type=checkbox><br />
+    <input [(ngModel)]="this.fishInEdit.HasTag" (click)="clearSampleTag()" class="leftmargin" type=checkbox><br />
 
-    <input [(ngModel)]="this.fishInEdit.SampleNumber" class='standardwidth' placeholder="Sample Number" type=text><br /><br />
+    <input [disabled]="!this.fishInEdit.HasTag" [(ngModel)]="this.fishInEdit.SampleNumber" class='standardwidth' placeholder="Sample Number" type=text>
+    <label class="required">{{sampleLabel}}</label><br /><br />
 
     <label>Port Name:</label><br />
     <input [(ngModel)]="this.fishInEdit.Port" type=text placeholder="Port" class="standardwidth"><br /><br />

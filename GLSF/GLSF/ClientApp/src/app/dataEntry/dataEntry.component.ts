@@ -48,7 +48,13 @@ export class DataEntryComponent implements OnInit {
 
 	private async loadModel() {
 		this.model = await tf.loadModel(this.modelLocation);
-	}
+  }
+
+  public clearSampleTag() {
+    if (this.hasTag) {
+      this.sampleNumber = '';
+    }
+  }
 
 	async filterTournament(tournamentId, isJunior) {
 		this.request.getBoats(tournamentId)

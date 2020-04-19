@@ -51,8 +51,8 @@
   <input style="margin-left:20px;" #juniorCheckbox type="checkbox" (change)="filterBoat(boatSelect.value, juniorCheckbox.checked)" /><br /><br />
 
   <label>Tagged:</label><label style="margin-left: 170px;">Port Name:</label><br />
-  <input [(ngModel)]="hasTag" class="moveright" type=checkbox>
-  <input [(ngModel)]="sampleNumber" style="margin-left:6px;" class='standardwidth' placeholder="Sample Number" type=text><label class="required">{{sampleLabel}}</label>
+  <input [(ngModel)]="hasTag" (click)="clearSampleTag()" class="moveright" type=checkbox>
+  <input [disabled]="!hasTag" [(ngModel)]="sampleNumber" style="margin-left:6px;" class='standardwidth' placeholder="Sample Number" type=text><label class="required">{{sampleLabel}}</label>
   <input [(ngModel)]="port" type=text placeholder="Port" style="margin-left: 10px;" class="standardwidth"><br /><br />
 
   <label>Date Caught:</label><br />

@@ -33,7 +33,9 @@ export class HomeComponent implements OnInit {
 
 	constructor(private request: Requests, private dialog: MatDialog, @Inject('BASE_URL') private baseUrl: string) {
 		this.setUpHomeRequest();
-	}
+  }
+
+  ngOnInit() { }
 
   public newSpeciesFilter(filter) {
     $("#speciesButton").html(filter);
