@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Fish } from '../models/dataSchemas';
+import { Fish, User } from '../models/dataSchemas';
 import * as $ from 'jquery';
 import { Requests } from '../http/Requests';
 import { MatDialog } from '@angular/material';
 import { EditFishDialog } from './editFish';
+import { AuthenticationService } from '../_services/authentication.service';
 
 @Component({
   selector: 'app-home',
@@ -15,10 +16,17 @@ export class HomeComponent implements OnInit {
   public filteredFishes: Array<Fish> = [];
 	public tournID = 0;
 	fishes = Fish.fishes;
+	currentUser: User;
   public static speciesFilter: String;
   public static tournamentFilter: String;
   public static boatFilter: String;
 
+	imperialMode = true;
+	unitText = "View Metric";
+	weightLabel = "Weight (Lb)";
+	lengthLabel = "Length (In)";
+	storedLengths = [];
+	storedWeights = [];
   private species = false;
   private weight = false;
   private length = false;
@@ -31,7 +39,8 @@ export class HomeComponent implements OnInit {
   private lastCaretClass = "";
   private lastSort = "";
 
-	constructor(private request: Requests, private dialog: MatDialog, @Inject('BASE_URL') private baseUrl: string) {
+	constructor(private request: Requests, private dialog: MatDialog, @Inject('BASE_URL') private baseUrl: string, private authenticationService: AuthenticationService) {
+		this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
 		this.setUpHomeRequest();
   }
 
@@ -113,10 +122,17 @@ export class HomeComponent implements OnInit {
     await this.filter();
 	}
 
-	saveAsCSV() {
-		let text = 'Species, Weight, Length, Date, Has Tag, Sample Number, Port, Station Number, Clip Status, Fins Clipped \n';
+	saveAsCSV(unitLength, unitWeight, imperial) {
+		let i = 0;
+		let unitMultiplierWeight = 1;
+		let unitMultiplierLength = 1;
+		if (!imperial){
+			unitMultiplierWeight = 0.45359237;
+		  unitMultiplierLength = 2.54;
+		}
+		let text = 'Species, Weight(' + unitWeight +'), Length ('+ unitLength +'), Date, Has Tag, Sample Number, Port, Station Number, Fins Clipped \n';
 		this.filteredFishes.forEach(fish => {
-			const fishString = fish.Species + ", " + fish.Weight + ", " + fish.Length + ", " + fish.Date + ", " + fish.HasTag + ", " + fish.SampleNumber + ", " + fish.Port + ", " + fish.StationNumber + ", " + fish.FinClip + ", " + fish.FinsClipped + " \n";
+			const fishString = fish.Species + ", " + unitMultiplierWeight * this.storedWeights[i] + ", " + unitMultiplierLength * this.storedLengths[i++] + ", " + fish.Date + ", " + fish.HasTag + ", " + fish.SampleNumber + ", " + fish.Port + ", " + fish.StationNumber + ", " + fish.FinsClipped + " \n";
 			text += fishString;
 		});
 		var element = document.createElement('a');
@@ -128,7 +144,38 @@ export class HomeComponent implements OnInit {
 		document.body.removeChild(element);
 	}
 
-	editRow(index) {
+	changeUnits() {
+		if (this.imperialMode) {  
+			this.unitText = "View Imperial";
+			this.lengthLabel = "Length (Cm)";
+			this.weightLabel = "Weight (Kg)";
+			let i = 0;
+			this.filteredFishes.forEach(fish => {
+				this.storedWeights[i] = fish.Weight;
+				this.storedLengths[i++] = fish.Length;
+				fish.Weight *= 0.45359237;
+				fish.Length *= 2.54;
+			});
+			this.imperialMode = false;
+		} else {
+			this.unitText = "View Metric";
+			this.weightLabel = "Weight (Lb)";
+			this.lengthLabel = "Length (In)";
+			let i = 0;
+			this.filteredFishes.forEach(fish => {
+				fish.Weight = this.storedWeights[i];
+				fish.Length = this.storedLengths[i++];
+			});
+			this.imperialMode = true;
+		}
+	}
+
+  editRow(index) {
+    if (!this.imperialMode) {
+      this.filteredFishes[index].Length = this.storedLengths[index];
+      this.filteredFishes[index].Weight = this.storedWeights[index];
+    }
+
 		const dialogRef = this.dialog.open(EditFishDialog, {
       panelClass: 'custom-dialog-container',
       data: Object.assign({}, this.filteredFishes[index]),
@@ -140,11 +187,19 @@ export class HomeComponent implements OnInit {
         editedFish.Weight = parseFloat(editedFish.Weight);
         this.request.update(editedFish, link).then(() => {
           this.filteredFishes[index] = editedFish;
-
-          for (let fish of this.request.fishes) {
-            if (fish.Id == editedFish.Id) {
-              fish = editedFish;
+			    for (let i = 0; i < this.request.fishes.length; i++) {
+			      if (this.request.fishes[i].Id == editedFish.Id) {
+					    this.request.fishes[i] = editedFish;
+					    break;
             }
+          }
+
+          if (!this.imperialMode) {
+            this.storedLengths[index] = this.filteredFishes[index].Length;
+            this.storedWeights[index] = this.filteredFishes[index].Weight;
+
+            this.filteredFishes[index].Length *= 2.54;
+            this.filteredFishes[index].Weight *= 0.45359237;
           }
         });
       }
@@ -152,18 +207,29 @@ export class HomeComponent implements OnInit {
 	}
 
   private async filter() {
-    this.filteredFishes = [];
+	  this.filteredFishes = [];
+	  this.storedWeights = [];
+	  this.storedLengths = [];
     await this.request.getFish(this.tournID);
     await this.speciesFilter();
-    await this.boatFilter();
+	  await this.boatFilter();
+	  let i = 0;
+	  this.filteredFishes.forEach(fish => {
+		  this.storedWeights[i] = fish.Weight;
+		  this.storedLengths[i++] = fish.Length;
+		  if (!this.imperialMode) {
+			  fish.Weight *= 0.45359237;
+			  fish.Length *= 2.54;
+		  }
+	  });
 
     await this.sortBy(this.lastSort);
-    await this.sortBy(this.lastSort);
+	  await this.sortBy(this.lastSort);
   }
 
   private speciesFilter() {
     let species = HomeComponent.speciesFilter;
-
+    
     if (species == undefined || species === "All Species") {
       this.request.fishes.forEach((fish: Fish) => {
         this.filteredFishes.push(fish);
@@ -254,9 +320,9 @@ export class HomeComponent implements OnInit {
       sort = this.clipStatus ? -1 : 1;
       caretClass = "clipStatusCaret";
 
-      this.filteredFishes.sort(function (fish1, fish2) {
-        var f1 = fish1.FinClip.toUpperCase();
-        var f2 = fish2.FinClip.toUpperCase();
+		  this.filteredFishes.sort(function (fish1, fish2) {
+			  var f1 = fish1.NoClips;
+			  var f2 = fish2.NoClips;
 
         return (f1 < f2) ? sort : -sort;
       });

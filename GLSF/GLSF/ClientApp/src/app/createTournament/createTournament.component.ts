@@ -6,7 +6,7 @@ import { Requests } from '../http/Requests';
 
 @Component({
 	selector: 'app-createTournament',
-	templateUrl: '/createTournament.html',
+	templateUrl: './createTournament.html',
 	styleUrls: ['../componentStyle.css'],
 	providers: [DatePipe]
 })
@@ -83,10 +83,12 @@ export class CreateTournamentComponent implements OnInit {
 		} else if (this.tournamentName.length > this.request.MAX_STRING_LENGTH) {
 			this.nameLabel = this.request.MAX_STRING_LENGTH + ' character max';
 			return false;
+		} else if (this.request.tournaments.find(tournament => tournament.Name == this.tournamentName) != undefined) {
+        this.nameLabel = "Tournament name already in use"
 		}
 		this.nameLabel = '';
 		return true;
-  }
+	}
 
 	private checkDates(startDate, endDate) {
 		if (startDate <= endDate) {

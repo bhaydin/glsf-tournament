@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace GLSF.Controllers
 {
@@ -53,6 +52,8 @@ namespace GLSF.Controllers
 		public DbSet<Boat> Boats { get; set; }
 		public DbSet<Member> Members { get; set; }
 		public DbSet<Station> Stations { get; set; }
+		public DbSet<UserDatabaseModel> Users { get; set; }
+
 	}
 
 	public class Fish
@@ -66,7 +67,7 @@ namespace GLSF.Controllers
 		public bool HasTag { set; get; }
 		public string? Port { set; get; }
 		public bool IsValid { set; get; }
-		public string FinClip { set; get; }
+		public bool NoClips { set; get; }
 		public string? FinsClipped { set; get; }
 		public int StationNumber{ get; set; }
 		public int MemberId { get; set; }
@@ -90,6 +91,7 @@ namespace GLSF.Controllers
 	{
 		public string Name { get; set; }
 		public double Length { get; set; }
+		public bool CheckedIn { get; set; }
 		[Key, Column(Order = 0)]
 		public int Id { get; set; }
 		[Key, Column(Order = 1)]
@@ -98,10 +100,10 @@ namespace GLSF.Controllers
 
 	public class Member
 	{
-		public string Name { get; set; }
-		public int Age { get; set; }
-		public bool IsCaptain { get; set; }
-		public bool IsJunior { get; set; }
+		public string? Name { get; set; }
+		public int? Age { get; set; }
+		public bool? IsCaptain { get; set; }
+		public bool? IsJunior { get; set; }
 		[Key, Column(Order = 0)]
 		public int Id { get; set; }
 		[Key, Column(Order = 1)]
@@ -123,5 +125,27 @@ namespace GLSF.Controllers
 		public int Id { get; set; }
 		[Key, Column(Order = 1)]
 		public Guid? TournamentId { get; set; }
+	}
+
+	public class UserModel
+	{
+		[Key]
+		public Guid? Id { get; set; }
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
+		public string Username { get; set; }
+		public string Password { get; set; }
+		public string? Token { get; set; }
+		public int AccessLevel { get; set; }
+	}
+
+	public class UserDatabaseModel
+	{
+		public Guid? Id { get; set; }
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
+		public string Username { get; set; }
+		public byte[] PasswordHash { get; set; }
+		public int AccessLevel { get; set; }
 	}
 }

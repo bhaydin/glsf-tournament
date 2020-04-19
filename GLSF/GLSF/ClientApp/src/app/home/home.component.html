@@ -3,7 +3,7 @@
 <h1 class="yellowTitle">Fish Entries</h1>
 <br>
 <div>
-  <div style="display:inline-block;" class="dropdown" style="display:inline-block;">
+  <div style="display:inline-block;" class="dropdown">
     <button id="speciesButton" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Fish Species</button>
     <ul id="speciesDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
       <li role="presentation"><a role="menuitem" href="#" (click)="newSpeciesFilter('All Species')">All Species</a></li>
@@ -22,13 +22,20 @@
     <button id="boatFilter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Boat Filter</button>
     <ul id="boatDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
       <li role="presentation"><a role="menuitem" href="#" (click)="newBoatFilter('All Boats')">All Boats</a></li>
-      <li *ngFor="let boat of this.request.boats" role="presentation">
+      <li *ngFor="let boat of this.request.checkedInBoats" role="presentation">
         <a role="menuitem" href="#" (click)="newBoatFilter(boat.Name)">{{ boat.Name }}</a>
       </li>
     </ul>
   </div>
   <button style="display:inline-block;" class="btn btn-default resetButton" type="button" (click)="resetFilters()">Reset Filters</button>
-  <button style="display:inline-block;" class="btn btn-default saveButton" (click)="saveAsCSV()">Export as CSV</button>
+  <div style="display:inline-block; margin-left: 20px;" class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Export as CSV</button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+      <li role="presentation"><a role="menuitem" href="#" (click)="saveAsCSV('In', 'Lb', true)">Imperial</a></li>
+      <li role="presentation"><a role="menuitem" href="#" (click)="saveAsCSV('Cm', 'Kg', false)">Metric</a></li>
+    </ul>
+  </div>
+  <button style="display:inline-block; margin-left: 20px;" class="btn btn-default resetButton" (click)="changeUnits()">{{unitText}}</button>
 </div>
   <br />
   <br />
@@ -38,28 +45,28 @@
         <tr>
           <th>Image</th>
           <th (click)="sortBy('Species')">Species<i id="speciesCaret" class="fa fa-caret-up"></i></th>
-          <th (click)="sortBy('Weight')">Weight (lbs)<i id="weightCaret" class="fa fa-caret-up"></i></th>
-          <th (click)="sortBy('Length')">Length (in)<i id="lengthCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Weight')">{{weightLabel}}<i id="weightCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('Length')">{{lengthLabel}}<i id="lengthCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Number')">Sample #<i id="numberCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Port')">Port<i id="portCaret" class="fa fa-caret-up"></i></th>
-          <th (click)="sortBy('ClipStatus')">Clip Status<i id="clipStatusCaret" class="fa fa-caret-up"></i></th>
+          <th (click)="sortBy('ClipStatus')">No Clips<i id="clipStatusCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Fins')">Fins Clipped<i id="finsCaret" class="fa fa-caret-up"></i></th>
           <th (click)="sortBy('Date')">Date<i id="dateCaret" class="fa fa-caret-up"></i></th>
-          <th (click)="sortBy('Valid')">Valid<i id="validCaret" class="fa fa-caret-up"></i></th>
+          <th *ngIf="currentUser.AccessLevel == 1" (click)="sortBy('Valid')">Valid<i id="validCaret" class="fa fa-caret-up"></i></th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let fish of this.filteredFishes; let i = index" (click)="editRow(i)" class="yellowFont">
+        <tr *ngFor="let fish of filteredFishes; let i = index" (click)="editRow(i)" class="yellowFont">
           <td><img style="display:inline-block;" src="{{ fish.Image }}" [ngClass]="{'blur': !fish.IsValid, 'previewimage': true}" /></td>
           <td>{{ fish.Species }}</td>
-          <td>{{ fish.Weight }}</td>
-          <td>{{ fish.Length }}</td>
+          <td>{{ fish.Weight | number : '1.0-2' }}</td>
+          <td>{{ fish.Length | number : '1.0-2' }}</td>
           <td>{{ fish.SampleNumber }}</td>
           <td>{{ fish.Port }}</td>
-          <td>{{ fish.FinClip }}</td>
+          <td>{{ fish.NoClips }}</td>
           <td>{{ fish.FinsClipped }}</td>
           <td>{{ fish.Date }}</td>
-          <td>{{ fish.IsValid }}</td>
+          <td *ngIf="currentUser.AccessLevel == 1">{{ fish.IsValid }}</td>
         </tr>
       </tbody>
     </table>

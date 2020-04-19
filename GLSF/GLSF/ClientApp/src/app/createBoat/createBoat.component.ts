@@ -75,6 +75,7 @@ export class CreateBoatComponent implements OnInit{
 			const boat: Boat = {
 				Name: this.boatName,
 				Length: parseFloat(this.boatLength),
+        CheckedIn: false,
 				Id: parseFloat(this.boatId),
 				TournamentId: tournamentId,
 			};
@@ -145,6 +146,8 @@ export class CreateBoatComponent implements OnInit{
 		} else if (this.boatName.length > this.request.MAX_STRING_LENGTH) {
 			this.nameLabel = this.request.MAX_STRING_LENGTH + ' characters max';
 			return false;
+		} else if (this.request.boats.find(boat => boat.Name == this.boatName) != undefined) {
+			this.nameLabel = "Boat name already in use"
 		}
 		this.nameLabel = '';
 		return true;

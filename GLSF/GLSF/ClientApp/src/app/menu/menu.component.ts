@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthenticationService } from '../_services';
+import { AuthenticationService } from '../_services/authentication.service';
+import { User } from '../models/dataSchemas';
 
 @Component({
   selector: 'app-menu',
@@ -9,10 +10,10 @@ import { AuthenticationService } from '../_services';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-	currentUser: any;
+	currentUser: User;
 
-  constructor(private router: Router, private authenticationService: AuthenticationService) {
-    this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+	constructor(private router: Router, private authenticationService: AuthenticationService) {
+		this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
   }
 	ngOnInit() {}
 
