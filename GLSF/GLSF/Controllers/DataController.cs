@@ -165,17 +165,17 @@ namespace ServerDatabase.Controllers
 		[HttpPost]
 		public async Task<Fish> InsertFish([FromBody]Fish fish)
 		{
-      try
-      {
-        await _context.Fishes.AddAsync(fish);
-        await _context.SaveChangesAsync();
-        return fish;
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Object " + fish + " can not be cast to a fish");
-        return null;
-      }
+		  try
+		  {
+			await _context.Fishes.AddAsync(fish);
+			await _context.SaveChangesAsync();
+			return fish;
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Object " + fish + " can not be cast to a fish");
+			return null;
+		  }
 		}
 
 		[Route("fish/tournamentId/{id}")]
@@ -214,17 +214,17 @@ namespace ServerDatabase.Controllers
 		[HttpPut]
 		public async Task<Fish> UpdateFish([FromBody]Fish fish)
 		{
-      try
-      {
-        _context.Fishes.Update(fish);
-        await _context.SaveChangesAsync();
-        return fish;
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Cannot update fish " + fish);
-        return null;
-      }
+		  try
+		  {
+			_context.Fishes.Update(fish);
+			await _context.SaveChangesAsync();
+			return fish;
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot update fish " + fish);
+			return null;
+		  }
 		}
 
 		[Route("fish/fishId/{id}")]

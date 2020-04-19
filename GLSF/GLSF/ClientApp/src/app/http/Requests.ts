@@ -2,17 +2,13 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Tournament, Boat, Station, Fish, Member } from "../models/dataSchemas";
 import { Inject, Injectable } from "@angular/core";
 
-@Injectable({
-	providedIn: 'root',
-})
-
-export class Requests {
+@Injectable({ providedIn: 'root', })
+export class Requests{
 	noTournamentsAvailable = false;
 	noBoatsAvailable = false;
 	noStationsAvailable = false;
 	noMembersAvailable = false;
 	MAX_STRING_LENGTH = 300;
-
 	tournaments: Array<Tournament> = [];
 	fishes: Array<Fish> = [];
 	boats: Array<Boat> = [];
@@ -21,26 +17,20 @@ export class Requests {
   members: Array<Member> = [];
 	checkedInBoats: Array<Boat> = [];
 
-  static staticHttp: HttpClient = null;
-  static staticBaseUrl = "";
-
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
-    Requests.staticHttp = http;
-    Requests.staticBaseUrl = baseUrl;
-  }
+	constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
 
 	async initialize() {
 		const tournamentId = await this.getTournaments();
 		await this.getBoats(tournamentId);
-		this.getStations(tournamentId);
+		await this.getStations(tournamentId);
 		await this.getMembers(tournamentId);
 		await this.filterCheckedInBoats();
 		await this.filterMembers(this.checkedInBoats[0].Id, false);
 	}
 
-  static async sendError(errorMsg) {
-    const link = Requests.staticBaseUrl + 'api/database/error/' + errorMsg;
-    await Requests.staticHttp.get<String>(link).toPromise();
+  async sendError(errorMsg) {
+	  const link = this.baseUrl + 'api/database/error/' + errorMsg;
+    await this.http.get<String>(link).toPromise();
   }
 
 	releaseData() {
@@ -275,8 +265,6 @@ export class Requests {
 
 
 window.onerror = function (errorMessage, errorUrl, errorLine) {
-  Requests.sendError(errorMessage + " on line " + errorLine);
-
-  // Prevent firing of default error handler.
+  this.sendError(errorMessage + " on line " + errorLine);
   return true;
 }

@@ -181,10 +181,12 @@ export class HomeComponent implements OnInit {
       data: Object.assign({}, this.filteredFishes[index]),
 		});
 		dialogRef.afterClosed().subscribe(editedFish => {
-      if (editedFish != undefined) {
+			if (editedFish != undefined) {
         const link = this.baseUrl + 'api/database/fish';
         editedFish.Length = parseFloat(editedFish.Length);
-        editedFish.Weight = parseFloat(editedFish.Weight);
+				editedFish.Weight = parseFloat(editedFish.Weight);
+				editedFish.MemberId = parseFloat(editedFish.MemberId);
+				editedFish.BoatId = parseFloat(editedFish.BoatId);
         this.request.update(editedFish, link).then(() => {
           this.filteredFishes[index] = editedFish;
 			    for (let i = 0; i < this.request.fishes.length; i++) {

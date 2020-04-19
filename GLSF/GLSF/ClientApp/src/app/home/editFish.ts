@@ -12,7 +12,6 @@ import { AuthenticationService } from '../_services/authentication.service';
 	styleUrls: ['./editFish.css']
 })
 
-
 export class EditFishDialog implements OnInit {
 	fishInEdit: Fish;
 	baseTournament: string;
@@ -42,6 +41,7 @@ export class EditFishDialog implements OnInit {
 
 	async initializeEditFishRequest() {
 		await this.request.getBoats(this.fishInEdit.TournamentId);
+		await this.request.filterCheckedInBoats();
 		await this.request.getStations(this.fishInEdit.TournamentId);
 		await this.request.getMembers(this.fishInEdit.TournamentId);
 		await this.request.filterMembers(this.fishInEdit.BoatId, false);
@@ -49,7 +49,7 @@ export class EditFishDialog implements OnInit {
     this.baseBoat = await this.request.getBoat(this.fishInEdit.BoatId).Name;
 		this.baseMember = await this.request.getMember(this.fishInEdit.MemberId).Name;
 		const station = await this.request.getStation(this.fishInEdit.StationNumber);
-		this.baseStation = station.Id + " : "+ station.Port
+		this.baseStation = station.Id + " : " + station.Port;
 	}
 
 	async setUpDialog() {
@@ -86,10 +86,14 @@ export class EditFishDialog implements OnInit {
 	}
 
 	async filterTournament(tournamentId) {
-		this.request.getBoats(tournamentId)
-		this.request.getStations(tournamentId);
+		await this.request.getBoats(tournamentId);
+		await this.request.filterCheckedInBoats();
+		await this.request.getStations(tournamentId);
 		await this.request.getMembers(tournamentId);
-		this.request.filterMembers(this.request.boats[0].Id, false);
+		await this.request.filterMembers(this.request.boats[0].Id, false);
+		this.fishInEdit.BoatId = this.request.boats[0].Id;
+		this.fishInEdit.MemberId = this.request.members[0].Id;
+		this.fishInEdit.StationNumber = this.request.stations[0].Id;
 	}
 
   saveChanges(date) {
@@ -100,19 +104,16 @@ export class EditFishDialog implements OnInit {
     const validSpecies = this.request.checkDropdownSpecies(this.fishInEdit.Species);
     const validTournament = this.request.checkDropdownTournament(this.fishInEdit.TournamentId);
     const validBoat = this.request.checkDropdownBoat(this.fishInEdit.BoatId);
-    const validMember = this.request.checkDropdownMember(this.fishInEdit.MemberId);
-
-    if (validLength && validWeight && validSampleNumber && validSpecies && validBoat && validStation && validTournament && validMember) {
-      this.fishInEdit.Date = this.pipe.transform(date, 'MM/dd/yyyy');
-
-      if (this.fishInEdit.NoClips == false && this.fishInEdit.FinsClipped == "") {
-        this.fishInEdit.FinsClipped = "Unspecified";
-      } else if (this.fishInEdit.NoClips == true) {
-        this.fishInEdit.FinsClipped = "";
-      }
-
-      this.dialogRef.close(this.fishInEdit);
-    }
+	  const validMember = this.request.checkDropdownMember(this.fishInEdit.MemberId);
+	  if (validLength && validWeight && validSampleNumber && validSpecies && validBoat && validStation && validTournament && validMember) {
+		  this.fishInEdit.Date = this.pipe.transform(date, 'MM/dd/yyyy');
+		  if (this.fishInEdit.NoClips == false && this.fishInEdit.FinsClipped == "") {
+			  this.fishInEdit.FinsClipped = "Unspecified";
+		  } else if (this.fishInEdit.NoClips == true) {
+			  this.fishInEdit.FinsClipped = "";
+		  }
+		  this.dialogRef.close(this.fishInEdit);
+	  }
   }
 
   public clearSampleTag() {
