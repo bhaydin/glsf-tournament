@@ -26,13 +26,13 @@
 
   <div class="splitright">
     <label>Tournament:</label><br />
-    <select *ngIf="currentUser.AccessLevel == 1" [(ngModel)]="this.fishInEdit.TournamentId" class="standardwidth" [disabled]="this.request.noTournamentsAvailable">
+    <select #tournamentSelect *ngIf="currentUser.AccessLevel == 1" [(ngModel)]="this.fishInEdit.TournamentId" class="standardwidth" [disabled]="this.request.noTournamentsAvailable">
       <option *ngFor="let tournament of this.request.tournaments" (click)="filterTournament(tournamentSelect.value)" [selected]="this.fishInEdit.TournamentId == tournament.Id" value='{{tournament.Id}}'>{{tournament.Name}}</option>
     </select>
     <input *ngIf="currentUser.AccessLevel != 1" type="text" [disabled]="true" [(ngModel)]="this.baseTournament" /><br /><br />
 
     <label>Boat:</label><br />
-    <select *ngIf="currentUser.AccessLevel == 1" [(ngModel)]="this.fishInEdit.BoatId" class="standardwidth" [disabled]="this.request.noBoatsAvailable">
+    <select #boatSelect *ngIf="currentUser.AccessLevel == 1" [(ngModel)]="this.fishInEdit.BoatId" class="standardwidth" [disabled]="this.request.noBoatsAvailable">
       <option *ngFor="let boat of this.request.boats" (click)="filterBoat(boatSelect.value)" [selected]="this.fishInEdit.BoatId == boat.Id" value='{{boat.Id}}'>{{boat.Name}}</option>
     </select>
     <input *ngIf="currentUser.AccessLevel != 1" type="text" [disabled]="true" [(ngModel)]="this.baseBoat" /><br /><br />
