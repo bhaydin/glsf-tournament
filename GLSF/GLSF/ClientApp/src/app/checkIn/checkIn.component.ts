@@ -42,7 +42,8 @@ export class CheckInComponent implements OnInit{
 				boat.CheckedIn = true;
 			}
 			await this.request.update(boat, boatLink);
-			this.checkInLabel = boat.Name + " checked in"
+      this.checkInLabel = boat.Name + " checked in"
+      this.request.filterCheckedInBoats();
 		}
 	}
 
