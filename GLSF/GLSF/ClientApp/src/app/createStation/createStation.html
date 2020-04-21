@@ -1,5 +1,5 @@
 <h2 class="yellowTitle">Register Station to Tournament</h2>
-<div class="splitright">
+<div class="splitleft">
   <label>Tournament:</label><br />
   <select #tournamentSelect [disabled]="this.request.noTournamentsAvailable" class="standardwidth moveright">
     <option *ngFor="let tournament of this.request.tournaments" (click)="filter(tournamentSelect.value)" value='{{tournament.Id}}'>{{tournament.Name}}</option>
