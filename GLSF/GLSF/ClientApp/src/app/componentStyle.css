@@ -18,6 +18,37 @@
   margin-top: 138px;
 }
 
+.green {
+  background-color: #4dff00;
+  color: #000000;
+}
+
+.greenText {
+  color: #4dff00;
+}
+
+.redText {
+  color: #ff6363;
+}
+
+.checkInSubmit {
+  background-color: #000000;
+  border: 2px solid #ffe600;
+  color: #ffe600;
+  height: 40px;
+  width: 150px;
+  border-radius: 4px;
+}
+
+.checkInSubmitSuccess {
+  border: 2px solid #15b800;
+  color: #ffffff;
+  background-color: #4dff00;
+  border-radius: 4px;
+  height: 40px;
+  width: 150px;
+}
+
 select:disabled {
   background-color: #010382;
   border: 2px solid #ff0000;
@@ -56,9 +87,9 @@ button, input, select {
 }
 
 .success {
-  background-color: #4dff00;
   border: 2px solid #15b800;
   color: #ffffff;
+  background-color: #4dff00;
   border-radius: 4px;
   height: 40px;
   width: 150px;
