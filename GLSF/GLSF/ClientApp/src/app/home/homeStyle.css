@@ -61,3 +61,9 @@ table.table-bordered > tbody > tr > td {
 .saveButton {
   margin-left: 30px;
 }
+
+.divider{
+  width:20px;
+  height:auto;
+  display:inline-block;
+}

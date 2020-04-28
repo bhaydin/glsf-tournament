@@ -7,10 +7,10 @@
 </script>
 <h2 class="yellowTitle">Enter Fish to Database</h2>
 <div class="splitright">
-  <button (click)="openDialog()" class="moverightbutton">Take Image</button>
+  <button (click)="openDialog()" class="btn btn-primary">Take Image</button>
   <label class="leftrightmargin">or</label>
   <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
-  <button (click)="picture.click()">Choose Image</button><br /><br /><br /><br />
+  <button (click)="picture.click()" class="btn btn-primary">Choose Image</button><br /><br /><br /><br />
   <div style="position: relative;">
     <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" />
     <button (click)="removeImage()" [hidden]="!imageAvailable" class="removeimage">X</button>

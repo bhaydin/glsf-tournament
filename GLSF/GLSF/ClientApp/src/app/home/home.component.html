@@ -11,7 +11,7 @@
     </ul>
   </div>
   <div style="display:inline-block;" class="dropdown">
-    <button id="tournamentFilter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Tournament Filter</button>
+    <button id="tournamentFilter" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Tournament Filter</button>
     <ul id="tournamentDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
       <li *ngFor="let tournament of this.request.tournaments" role="presentation">
         <a role="menuitem" href="#" (click)="newTournamentFilter(tournament.Name)">{{ tournament.Name }}</a>
@@ -19,7 +19,7 @@
     </ul>
   </div>
   <div style="display:inline-block;" class="dropdown">
-    <button id="boatFilter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Boat Filter</button>
+    <button id="boatFilter" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Boat Filter</button>
     <ul id="boatDropDown" class="dropdown-menu" role="menu" aria-labelledby="menu1">
       <li role="presentation"><a role="menuitem" href="#" (click)="newBoatFilter('All Boats')">All Boats</a></li>
       <li *ngFor="let boat of this.request.boats" role="presentation">
@@ -27,8 +27,9 @@
       </li>
     </ul>
   </div>
-  <button style="display:inline-block;" class="btn btn-default resetButton" type="button" (click)="resetFilters()">Reset Filters</button>
-  <button style="display:inline-block;" class="btn btn-default saveButton" (click)="saveAsCSV()">Export as CSV</button>
+  <button style="display:inline-block;" class="btn btn-primary" type="button" (click)="resetFilters()">Reset Filters</button>
+  <div class="divider"></div>
+  <button style="display:inline-block;" class="btn btn-primary" (click)="saveAsCSV()">Export as CSV</button>
 </div>
   <br />
   <br />
