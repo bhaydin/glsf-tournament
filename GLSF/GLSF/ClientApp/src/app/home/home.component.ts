@@ -70,9 +70,10 @@ export class HomeComponent implements OnInit {
     this.filter();
   }
 
-  private getTournamentBoats() {
-    this.request.getBoats(this.tournID);
-    this.request.getFish(this.tournID);
+  private async getTournamentBoats() {
+    await this.request.getBoats(this.tournID);
+    await this.request.getFish(this.tournID);
+    await this.request.filterCheckedInBoats();
 
     HomeComponent.boatFilter = "All Boats";
     $("#boatFilter").html("All Boats");
@@ -180,7 +181,9 @@ export class HomeComponent implements OnInit {
       panelClass: 'custom-dialog-container',
       data: Object.assign({}, this.filteredFishes[index]),
 		});
-		dialogRef.afterClosed().subscribe(editedFish => {
+    dialogRef.afterClosed().subscribe(editedFish => {
+      this.filter();
+
 			if (editedFish != undefined) {
         const link = this.baseUrl + 'api/database/fish';
         editedFish.Length = parseFloat(editedFish.Length);

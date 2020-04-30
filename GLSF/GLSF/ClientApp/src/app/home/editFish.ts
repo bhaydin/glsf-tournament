@@ -64,7 +64,7 @@ export class EditFishDialog implements OnInit {
 	deleteFish() {
 		const link = this.baseUrl + 'api/database/fish/fishId/' + this.fishInEdit.Id;
 		this.request.delete(link);
-		this.request.fishes = this.request.fishes.filter(fish => fish.Id != this.fishInEdit.Id)
+    this.request.fishes = this.request.fishes.filter(fish => fish.Id != this.fishInEdit.Id);
 		this.dialogRef.close();
 	}
 
