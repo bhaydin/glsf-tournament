@@ -89,15 +89,24 @@ namespace ServerDatabase.Controllers
 				if (string.IsNullOrWhiteSpace(user.Password))
 					throw new Exception("Password is required");
 
-				if (_context.Users.Any(x => x.Username == user.Username))
-					throw new Exception("Username \"" + user.Username + "\" is already taken");
+				foreach(UserDatabaseModel tempUser in _context.Users.ToList())
+				{
+					if (_context.Users.Any(x => x.Username == user.Username))
+						throw new Exception("Username \"" + user.Username + "\" is already taken");
+					if (_context.Users.Any(x => x.Email == user.Email))
+						throw new Exception("Email \"" + user.Email + "\" is already in use");
+					if (_context.Users.Any(x => x.PhoneNumber == user.PhoneNumber))
+						throw new Exception("Phone number \"" + user.PhoneNumber + "\" is already in use");
+				}
 
 				UserDatabaseModel databaseUser = new UserDatabaseModel { Id = null, 
 					FirstName = user.FirstName, 
 					LastName = user.LastName, 
 					Username = user.Username,
 					PasswordHash = new byte[0],
-					AccessLevel = 0,};
+					AccessLevel = 0,
+					Email = user.Email,
+					PhoneNumber = user.PhoneNumber,};
 				databaseUser.PasswordHash = CreatePasswordHash(user.Password);
 				await _context.Users.AddAsync(databaseUser);
 				await _context.SaveChangesAsync();
