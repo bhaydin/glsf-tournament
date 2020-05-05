@@ -22,7 +22,7 @@
     <input [(ngModel)]="this.fishInEdit.Length" type=text placeholder="Length" [disabled]="currentUser.AccessLevel != 1" class="standardwidth">
     <label class="required">{{lengthLabel}}</label><br /><br />
 
-    <label>Fin Clips:</label>
+    <label>No Fin Clips:</label>
     <input [(ngModel)]="this.fishInEdit.NoClips" [disabled]="currentUser.AccessLevel != 1" type="checkbox" class="leftmargin"/><br />
     <input [(ngModel)]="this.fishInEdit.FinsClipped" [disabled]="currentUser.AccessLevel != 1" class="standardwidth" placeholder="Fins Clipped" type=text>
   </div>
@@ -59,7 +59,7 @@
     <input *ngIf="currentUser.AccessLevel != 1" type="text" [disabled]="true" [(ngModel)]="this.fishInEdit.Species"/><br /><br />
 
     <label>Tagged:</label>
-    <input [(ngModel)]="this.fishInEdit.HasTag" (click)="clearSampleTag()" class="leftmargin" [disabled]="currentUser.AccessLevel != 1" type=checkbox><br />
+    <input [(ngModel)]="this.fishInEdit.HasTag" class="leftmargin" [disabled]="currentUser.AccessLevel != 1" type=checkbox><br />
 
     <input [disabled]="currentUser.AccessLevel != 1" [(ngModel)]="this.fishInEdit.SampleNumber" class='standardwidth' placeholder="Sample Number" type=text>
     <label class="required">{{sampleLabel}}</label><br /><br />
@@ -73,5 +73,5 @@
     <input (click)="picker.open()" [disabled]="currentUser.AccessLevel != 1" [matDatepicker]="picker" [value]="dateCaught" class="short" [max]="currentDate" readonly><br /><br />
   </div>
   <button *ngIf="currentUser.AccessLevel == 1" class="saveButton" [disabled]="this.request.noBoatsAvailable || this.request.noTournamentsAvailable || this.request.noStationsAvailable || this.request.noMembersAvailable" (click)="saveChanges(picker._validSelected)">Save Changes</button>
-  <button *ngIf="currentUser.AccessLevel == 1" class="deleteButton" (click)="deleteFish()">Delete Entry</button>
+  <button *ngIf="currentUser.AccessLevel == 1" [disabled]="this.fishInEdit.IsValid" class="deleteButton" (click)="deleteFish()">Delete Entry</button>
 </div>

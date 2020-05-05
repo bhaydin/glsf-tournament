@@ -52,12 +52,6 @@ export class DataEntryComponent implements OnInit {
 		this.model = await tf.loadModel(this.modelLocation);
   }
 
-  public clearSampleTag() {
-    if (this.hasTag) {
-      this.sampleNumber = '';
-    }
-  }
-
 	async filterMembers(boatId, isJunior) {
 		await this.request.filterMembers(boatId, isJunior);
 	}

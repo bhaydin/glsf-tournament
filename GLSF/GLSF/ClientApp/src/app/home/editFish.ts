@@ -72,7 +72,6 @@ export class EditFishDialog implements OnInit {
 		const dialogRef = this.dialog.open(CameraDialog, {
 			panelClass: 'custom-dialog-container'
 		});
-
 		dialogRef.afterClosed().subscribe(result => {
 			if (result != undefined) {
 				this.fishInEdit.Image = result;
@@ -114,12 +113,6 @@ export class EditFishDialog implements OnInit {
 		  }
 		  this.dialogRef.close(this.fishInEdit);
 	  }
-  }
-
-  public clearSampleTag() {
-    if (this.fishInEdit.HasTag) {
-      this.fishInEdit.SampleNumber = '';
-    }
   }
 
   private checkSampleNumber(hasTag, sampleNumber) {
