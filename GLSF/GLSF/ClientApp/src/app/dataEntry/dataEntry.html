@@ -1,11 +1,16 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.min.js"></script>
+<script type="module">
+  import { Toast } from 'coreui.esm.min.js'
 
+  Array.from(document.querySelectorAll('.toast'))
+    .forEach(toastNode => new Toast(toastNode))
+</script>
 <h2 class="yellowTitle">Enter Fish to Database</h2>
 <div class="splitright">
-  <button (click)="openDialog()" class="moverightbutton">Take Image</button>
+  <button (click)="openDialog()" class="btn btn-primary">Take Image</button>
   <label class="leftrightmargin">or</label>
   <input #picture type="file" accept="image/*" (change)="preview(picture.files)" style="display: none">
-  <button (click)="picture.click()">Choose Image</button><br /><br /><br /><br />
+  <button (click)="picture.click()" class="btn btn-primary">Choose Image</button><br /><br /><br /><br />
   <div style="position: relative;">
     <img [src]="base64" onload="this.style.display=''" onerror="this.style.display='none'" class="moverightbutton" />
     <button (click)="removeImage()" [hidden]="!imageAvailable" class="removeimage">X</button>
@@ -44,6 +49,36 @@
   <select #memberSelect [disabled]="this.request.noMembersAvailable || this.request.noBoatsAvailable" style="margin-left:45px;" class="standardwidth">
     <option *ngFor="let member of this.request.members" value='{{member.Id}}'>{{member.Name}}</option>
   </select>
+  <label class="switch switch-3d switch-success">
+    <input #juniorCheckbox type="checkbox" class="switch-input"  (change)="filterBoat(boatSelect.value, juniorCheckbox.checked)" checked>
+    <span class="switch-slider"></span>
+  </label>
+  <br />
+  
+
+  <label>Species:</label><label style="margin-left: 170px;">Port Name:</label><br />
+  <select #speciesSelect class="moveright standardwidth">
+    <option *ngFor="let fish of fishes" value='{{fish}}'>{{fish}}</option>
+  </select>
+  <input [(ngModel)]="port" type=text placeholder="Port" style="margin-left: 46px;" class="standardwidth"><br />
+
+  <label>Tagged:</label><label style="margin-left: 170px;">Fin Clips:</label><br />
+  <div style="display: inline-block;">
+   <input [(ngModel)]="hasTag" class="moveright" type=checkbox>
+   <input [(ngModel)]="sampleNumber" style="margin-left:6px;" class='standardwidth' placeholder="Sample Number" type=text><label class="required">{{sampleLabel}}</label>
+  </div>
+  <div style="margin-left: 20px; display: inline-block;">
+    <select #finOptionSelect class="standardwidth">
+      <option value='Unspecified' (click)="selectedOption(true)">Unspecified</option>
+      <option value='Fins Clipped' (click)="selectedOption(false)">Fins Clipped</option>
+      <option value='No Fins Clipped' (click)="selectedOption(true)">No Fins Clipped</option>
+    </select><br /><br />
+    <select #clipSelect class="standardwidth" [disabled]="valueSelected">
+      <option *ngFor="let clip of finClips" value='{{clip}}'>{{clip}}</option>
+    </select>
+  </div><br />
+  <label>Weight:</label><br />
+  <input [(ngModel)]="weight" type=text placeholder="Weight (Lbs)" class="moveright standardwidth"><label class="required">{{weightLabel}}</label><br />
   <input style="margin-left:20px;" #juniorCheckbox type="checkbox" (change)="filterMembers(boatSelect.value, juniorCheckbox.checked)" /><br /><br />
 
   <label>Tagged:</label><label style="margin-left: 170px;">Port Name:</label><br />

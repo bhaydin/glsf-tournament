@@ -29,25 +29,25 @@ table.table-bordered > tbody > tr > td {
   font-size: 28px;
   font-weight: bold;
   text-align: center;
-  color: #ffe600;
+  /* color: #ffe600; */
 }
 
 .yellowHeader {
   text-align: center;
   font-size: 14px;
-  color: #ffe600;
+  /* color: #ffe600; */
 }
 
 .yellowFont {
   text-align: center;
-  color: #ffe600;
+  /* color: #ffe600; */
   font-size: 14px;
   font-weight: bold;
 }
 
 .fa {
   font-size: 20px;
-  color: yellow;
+  /* color: yellow; */
   padding-left: 20px;
   padding-top: 10px;
   visibility: hidden;
@@ -60,4 +60,10 @@ table.table-bordered > tbody > tr > td {
 
 .saveButton {
   margin-left: 30px;
+}
+
+.divider{
+  width:20px;
+  height:auto;
+  display:inline-block;
 }
