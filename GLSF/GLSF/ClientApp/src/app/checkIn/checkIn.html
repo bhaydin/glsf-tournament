@@ -1,6 +1,6 @@
 <h2 class="yellowTitle">Boat Check In</h2>
 
-<div class="yellow">
+<div class="yellow" style="margin-left: 150px;">
   <label>Tournament:</label><br />
   <select #tournamentSelect [disabled]="this.request.noTournamentsAvailable" class="standardwidth moveright">
     <option *ngFor="let tournament of this.request.tournaments" (click)="filterTournament(tournamentSelect.value)" value='{{tournament.Id}}'>{{tournament.Name}}</option>
