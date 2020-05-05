@@ -4,8 +4,8 @@
 }
 
 .splitleft {
-  position: absolute;
-  left: 0px;
+  /* position: absolute; */
+  left: 200px;
   width: 60%;
   color: #ffe600;
 }
@@ -15,7 +15,7 @@
   right: 0px;
   width: 40%;
   color: #ffe600;
-  margin-top: 138px;
+  margin-top: 50px;
 }
 
 .green {
@@ -229,3 +229,4 @@ table.table-bordered > tbody > tr > td {
   color: #ffff00;
   background-color: #000000;
 }
+

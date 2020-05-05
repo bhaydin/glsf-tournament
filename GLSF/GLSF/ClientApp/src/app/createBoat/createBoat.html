@@ -1,6 +1,6 @@
 <h2 class="yellowTitle">Register Boat to Tournament</h2>
 
-<div class="yellow">
+<div class="splitleft">
 
   <label>Tournament:</label><br />
   <select #tournamentSelect [disabled]="this.request.noTournamentsAvailable" class="standardwidth moveright">
@@ -30,8 +30,8 @@
       </tbody>
     </table>
 
-    <button class="addmember moveright" (click)="addMember()">+</button>
+  <button class="addmember moveright" (click)="addMember()">+</button>
   </div><br />
 
-  <button [disabled]="submissionInProcess" (click)="createBoat(tournamentSelect.value)" [class]="subStyle">{{subText}}</button>
+  <button [disabled]="submissionInProcess" (click)="createBoat(tournamentSelect.value)" [class]="subStyle" >{{subText}}</button>
 </div>
