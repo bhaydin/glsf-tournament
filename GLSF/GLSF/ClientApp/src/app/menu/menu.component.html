@@ -1,10 +1,11 @@
 <header *ngIf="currentUser">
   <div class="sidenav">
       <button class="btn btn-block btn-success" [routerLink]='["/"]'>Home</button>
-      <button class="btn btn-block btn-success" [routerLink]='["/data_entry"]'>Fish</button>
-      <button class="btn btn-block btn-success" [routerLink]='["/boat"]'>Boat</button>
-      <button class="btn btn-block btn-success" [routerLink]='["/station"]'>Station</button>
-      <button class="btn btn-block btn-success" [routerLink]='["/tournament"]'>Tournament</button>
+      <button class="btn btn-block btn-success" *ngIf="this.currentUser.AccessLevel == 1" [routerLink]='["/data_entry"]'>Fish</button>
+      <button class="btn btn-block btn-success" *ngIf="this.currentUser.AccessLevel == 1" [routerLink]='["/boat"]'>Boat</button>
+      <button class="btn btn-block btn-success" *ngIf="this.currentUser.AccessLevel == 1" [routerLink]='["/station"]'>Station</button>
+      <button class="btn btn-block btn-success" *ngIf="this.currentUser.AccessLevel == 1" [routerLink]='["/tournament"]'>Tournament</button>
+      <button class="btn btn-block btn-success" [routerLink]='["/checkIn"]'>Check In</button>
       <!-- Add once needed(View tournaments)<button [routerLink]='["/tournaments"]'>Upcoming Tournaments</button>-->
       <button class="btn btn-block btn-success" (click)="logout()">Log Out</button>
   </div>

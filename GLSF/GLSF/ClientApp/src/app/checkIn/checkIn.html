@@ -1,0 +1,19 @@
+<h2 class="yellowTitle">Boat Check In</h2>
+
+<div class="yellow">
+  <label>Tournament:</label><br />
+  <select #tournamentSelect [disabled]="this.request.noTournamentsAvailable" class="standardwidth moveright">
+    <option *ngFor="let tournament of this.request.tournaments" (click)="filterTournament(tournamentSelect.value)" value='{{tournament.Id}}'>{{tournament.Name}}</option>
+  </select><br />
+  <label>Check In:</label><br />
+  <div style="margin-left:60px; display: inline-block;" class="table-wrapper-scroll-y my-custom-scrollbar">
+    <table class="table table-bordered table-hover table-sm mb-0 yellowHeader">
+      <tbody *ngIf="!this.request.noBoatsAvailable">
+        <tr *ngFor="let boat of this.request.boats; let i = index" (click)="checkInBoat(i)" [ngClass]="{'green': boat.CheckedIn}">
+          <td *ngIf="currentUser.AccessLevel == 1"><input readonly type="checkbox" [(ngModel)]="boat.CheckedIn" style="margin-right: 20px;">{{boat.Id}}</td>
+          <td *ngIf="currentUser.AccessLevel != 1"><input readonly type="checkbox" [(ngModel)]="boat.CheckedIn" style="margin-right: 20px;">{{boat.Name}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

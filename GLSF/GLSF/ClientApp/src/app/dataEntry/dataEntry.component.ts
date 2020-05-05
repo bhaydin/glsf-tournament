@@ -5,6 +5,7 @@ import { CameraDialog } from './camera';
 import { MatDialog } from '@angular/material';
 import { Requests } from '../http/Requests';
 import * as tf from '../../assets/tfjs.js';
+import * as $ from 'jquery';
 
 
 @Component({
@@ -22,40 +23,51 @@ export class DataEntryComponent implements OnInit {
 	length = '';
 	hasTag = false;
 	validFish = true;
+	noClips = false;
 	submissionInProcess = false;
 	validFishLabel = '';
-	sampleNumber = '';
+  sampleNumber = '';
+  finOption = 'Unspecified';
+  finClip = 'Unspecified';
 	port = '';
 	base64 = '';
+	finClips = '';
 	imageAvailable = false;
 	subStyle = "normal";
+	fishLabelStyle = "greenText";
 	currentDate: Date = new Date();
 	fishes = Fish.fishes;
-	finClips = Fish.finClips;
 	valueSelected = true;
 	model: any;
 	modelLocation = "../assets/FishModel/FishClassifier/model.json";
 
 	constructor(private request: Requests, private dialog: MatDialog, private pipe: DatePipe, @Inject('BASE_URL') private baseUrl: string) {
 		this.request.initialize();
-		this.loadModel();
+    this.loadModel();
 	}
 
-	ngOnInit() { }
+  ngOnInit() {}
 
 	private async loadModel() {
 		this.model = await tf.loadModel(this.modelLocation);
+  }
+
+  public clearSampleTag() {
+    if (this.hasTag) {
+      this.sampleNumber = '';
+    }
+  }
+
+	async filterMembers(boatId, isJunior) {
+		await this.request.filterMembers(boatId, isJunior);
 	}
 
 	async filterTournament(tournamentId, isJunior) {
-		this.request.getBoats(tournamentId)
+		await this.request.getBoats(tournamentId);
 		this.request.getStations(tournamentId);
 		await this.request.getMembers(tournamentId);
-		this.request.filterMembers(this.request.boats[0].Id, isJunior);
-	}
-
-	filterBoat(boatId, isJunior) {
-		this.request.filterMembers(boatId, isJunior);
+		await this.request.filterMembers(this.request.boats[0].Id, isJunior);
+		await this.request.filterCheckedInBoats();
 	}
 
 	async openDialog() {
@@ -118,15 +130,17 @@ export class DataEntryComponent implements OnInit {
 		this.valueSelected = boolValue;
 	}
 
-	async createFish(species, date, finsClipped, clipStatus, stationId, tournamentId, boatId, memberId) {
+	async createFish(species, date, stationId, tournamentId, boatId, memberId) {
 		this.submissionInProcess = true;
 		if (this.port == '') {
 			this.port = this.request.getStation(stationId).Port;
 		}
-		if (clipStatus == 'No Fins Clipped' || clipStatus == 'Unspecified') {
-			finsClipped = 'Unspecified';
+		if (this.noClips == false && this.finClips == "") {
+			this.finClips = "Unspecified";
+		} else if (this.noClips == true) {
+			this.finClips = "";
 		}
-	  const validSampleNumber = this.checkSampleNumber();
+		const validSampleNumber = this.checkSampleNumber();
 		const validLength = this.checkLength(species);
 		const validWeight = this.checkWeight(species);
 		const validStation = this.request.checkDropdownStation(stationId);
@@ -146,8 +160,8 @@ export class DataEntryComponent implements OnInit {
 					HasTag: this.hasTag,
 					Port: this.port,
 					IsValid: this.validFish,
-					FinClip: clipStatus,
-					FinsClipped: finsClipped,
+					NoClips: this.noClips,
+					FinsClipped: this.finClips,
 					StationNumber: parseFloat(stationId),
 					MemberId: parseFloat(memberId),
 					Id: null, //This value is a GUID in the DB
@@ -218,9 +232,10 @@ export class DataEntryComponent implements OnInit {
 	  this.removeImage();
 	  this.length = '';
 	  this.weight = '';
-	  this.sampleNumber = '';
+    this.sampleNumber = '';
+    this.noClips = false;
 	  this.hasTag = false;
-	  this.port = '';
+	  this.finClips = '';
 	  this.submissionInProcess = false;
   }
 
@@ -260,8 +275,10 @@ export class DataEntryComponent implements OnInit {
 
 		if (prediction >= .8) {
 			this.validFishLabel = 'Looks like a fish!';
+			this.fishLabelStyle = 'greenText';
 			return true;
 		}
+		this.fishLabelStyle = 'redText';
 		this.validFishLabel = 'Try another picture';
 		return false;
   }

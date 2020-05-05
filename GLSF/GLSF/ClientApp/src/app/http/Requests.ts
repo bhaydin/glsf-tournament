@@ -2,33 +2,36 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Tournament, Boat, Station, Fish, Member } from "../models/dataSchemas";
 import { Inject, Injectable } from "@angular/core";
 
-@Injectable({
-	providedIn: 'root',
-})
-
-export class Requests {
+@Injectable({ providedIn: 'root', })
+export class Requests{
 	noTournamentsAvailable = false;
 	noBoatsAvailable = false;
 	noStationsAvailable = false;
 	noMembersAvailable = false;
 	MAX_STRING_LENGTH = 300;
-
 	tournaments: Array<Tournament> = [];
 	fishes: Array<Fish> = [];
 	boats: Array<Boat> = [];
 	stations: Array<Station> = [];
 	allMembers: Array<Member> = [];
-	members: Array<Member> = [];
+  members: Array<Member> = [];
+	checkedInBoats: Array<Boat> = [];
 
 	constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
 
 	async initialize() {
 		const tournamentId = await this.getTournaments();
 		await this.getBoats(tournamentId);
-		this.getStations(tournamentId);
+		await this.getStations(tournamentId);
 		await this.getMembers(tournamentId);
-		this.filterMembers(this.boats[0].Id, false);
+		await this.filterCheckedInBoats();
+		await this.filterMembers(this.checkedInBoats[0].Id, false);
 	}
+
+  async sendError(errorMsg) {
+	  const link = this.baseUrl + 'api/database/error/' + errorMsg;
+    await this.http.get<String>(link).toPromise();
+  }
 
 	releaseData() {
 		this.stations = [];
@@ -67,12 +70,29 @@ export class Requests {
 			const boat: Boat = {
 				Name: 'No boats for tournament',
 				Length: -1,
+				CheckedIn: false,
 				Id: -1,
 				TournamentId: -1
 			};
 			this.boats.push(boat);
 		}
 		this.noBoatsAvailable = (this.boats[0].Id == -1);
+		return true;
+	}
+
+	async filterCheckedInBoats() {
+		this.checkedInBoats = await this.boats.filter(boat => boat.CheckedIn == true);
+		if (this.checkedInBoats.length == 0) {
+			const boat: Boat = {
+				Name: 'No boats checked in yet',
+				Length: -1,
+				CheckedIn: false,
+				Id: -1,
+				TournamentId: -1
+			};
+			this.checkedInBoats.push(boat);
+		}
+		this.noBoatsAvailable = (this.checkedInBoats[0].Id == -1);
 		return true;
 	}
 
@@ -133,6 +153,15 @@ export class Requests {
 		return null;
 	}
 
+	getAFish(fishId) {
+		for (let i = 0; i < this.fishes.length; i++) {
+			if (this.fishes[i].Id == fishId) {
+				return this.fishes[i];
+			}
+		}
+		return null;
+	}
+
 	wait(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
@@ -160,7 +189,7 @@ export class Requests {
 			this.members.push(member);
 		}
 		this.noMembersAvailable = (this.members[0].Id == -1);
-		return this.noMembersAvailable;
+		return true;
 	}
 
   //Database modification methods
@@ -231,5 +260,11 @@ export class Requests {
 			}
 		}
 		return false;
-	}
+  }
+}
+
+
+window.onerror = function (errorMessage, errorUrl, errorLine) {
+  this.sendError(errorMessage + " on line " + errorLine);
+  return true;
 }

@@ -17,7 +17,7 @@ create table Fishes(
 	HasTag bit not null,
 	Port nvarchar(300) null,
 	IsValid bit not null,
-	FinClip varchar(30) not null,
+	NoClips bit not null,
 	FinsClipped nvarchar(30) null,
 	StationNumber int not null,
 	MemberId int not null,
@@ -39,6 +39,7 @@ drop table if exists Boats;
 create table Boats(
 	Name varchar(300) not null,
 	Length float not null,
+	CheckedIn bit not null,
 	Id int not null,
 	TournamentId UNIQUEIDENTIFIER not null,
 	constraint PK_BoatId primary key (Id, TournamentId),
@@ -50,6 +51,16 @@ create table Stations(
 	Id int not null,
 	TournamentId UNIQUEIDENTIFIER not null,
 	constraint PK_StationsId primary key (Id, TournamentId),
+);
+
+drop table if exists Users;
+create table Users(
+	Id UNIQUEIDENTIFIER not null primary key,
+	FirstName varchar(300) not null,
+	LastName varchar(300) not null,
+	PasswordHash binary(64) not null,
+	Username varchar(300) not null,
+	AccessLevel int not null,
 );
 
 drop table if exists Members;

@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { User } from '../models/dataSchemas'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
     private currentUserSubject: BehaviorSubject<any>;
     public currentUser: Observable<any>;
 
-    constructor(private http: HttpClient) {
-        this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentUser')));
+	  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
         this.currentUser = this.currentUserSubject.asObservable();
     }
 
@@ -17,16 +17,21 @@ export class AuthenticationService {
         return this.currentUserSubject.value;
     }
 
-    login(username, password) {
-        return this.http.post<any>(`/users/authenticate`, { username, password })
-            .pipe(map(user => {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                this.currentUserSubject.next(user);
-                return user;
-            }));
-    }
-
+    //Access level 0 is default and is guest.
+	async login(username, password) {
+		const link = this.baseUrl + 'api/database/user/authenticate';
+		let ReturningUser: User = { Username: username, Password: password, FirstName: '', LastName: '', Token: '', Id: null, AccessLevel: 0 };
+		return await this.http.post<any>(link, ReturningUser).toPromise().then(user => {
+			ReturningUser.AccessLevel = user.accessLevel;
+			ReturningUser.Token = user.token;
+			ReturningUser.FirstName = user.firstName;
+			ReturningUser.LastName = user.lastName;
+			ReturningUser.Id = user.id;
+			localStorage.setItem('currentUser', JSON.stringify(ReturningUser));
+			this.currentUserSubject.next(ReturningUser);
+		});
+  }
+    
     logout() {
         // remove user from local storage and set current user to null
         localStorage.removeItem('currentUser');

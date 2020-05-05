@@ -25,6 +25,7 @@
           <td><input type="text" placeholder="Age" style="margin-right: 20px;" class="standardwidth" [(ngModel)]="member.Age"></td>
           <td><input type="radio" style="margin-right: 20px;" name="captain" (change)="selectedCaptain(i)"></td>
           <td><button class="removemember" (click)="removeMember(i)">X</button></td>
+          <td><label class="required">{{membersLabels[i]}}</label></td>
         </tr>
       </tbody>
     </table>
