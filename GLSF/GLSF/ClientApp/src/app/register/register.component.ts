@@ -39,6 +39,8 @@ export class RegisterComponent implements OnInit {
     // convenience getter for easy access to form fields
 	get form() { return this.registerForm.controls; }
 
+  //Activates when the user presses register. Prevents another registration of the user two times by disabling the button
+  //Then the user service registers the value, if successful takes the user to the log in page
   async onSubmit() {
 	  try {
 		  this.registerLabel = "";

@@ -59,7 +59,7 @@
     <input *ngIf="currentUser.AccessLevel != 1" type="text" [disabled]="true" [(ngModel)]="this.fishInEdit.Species"/><br /><br />
 
     <label>Tagged:</label>
-    <input [(ngModel)]="this.fishInEdit.HasTag" (click)="clearSampleTag()" class="leftmargin" [disabled]="currentUser.AccessLevel != 1" type=checkbox><br />
+    <input [(ngModel)]="this.fishInEdit.HasTag" class="leftmargin" [disabled]="currentUser.AccessLevel != 1" type=checkbox><br />
 
     <input [disabled]="currentUser.AccessLevel != 1" [(ngModel)]="this.fishInEdit.SampleNumber" class='standardwidth' placeholder="Sample Number" type=text>
     <label class="required">{{sampleLabel}}</label><br /><br />

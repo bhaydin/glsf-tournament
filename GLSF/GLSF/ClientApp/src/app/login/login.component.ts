@@ -17,7 +17,6 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string;
   error: string;
-  random = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,6 +42,9 @@ export class LoginComponent implements OnInit {
 
   get form() { return this.loginForm.controls; }
 
+  //Logs in user with entered information
+  //Prevents a double log in by disabling button after pressed, enables button after failure or success
+  //If success moves user to the home page with fish information
 	async onSubmit() {
 		try {
 			this.loginLabel = "";
@@ -60,9 +62,5 @@ export class LoginComponent implements OnInit {
 		  this.loading = false;
 		  this.submitted = false;
 	  }
-  }
-
-  submitLogin(user: string) {
-      this.random = user;
   }
 }

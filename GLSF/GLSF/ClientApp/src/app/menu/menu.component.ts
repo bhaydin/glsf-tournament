@@ -17,6 +17,7 @@ export class MenuComponent implements OnInit {
   }
 	ngOnInit() {}
 
+  //When the user logs out, moves them to the log in page, and removes their user from the current user cookie
   logout() {
     this.authenticationService.logout();
     this.router.navigate(['/login']);

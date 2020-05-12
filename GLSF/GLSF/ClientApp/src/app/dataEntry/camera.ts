@@ -25,6 +25,7 @@ export class CameraDialog implements OnInit {
 		this.base64 = data;
 	}
 
+  //Looks to check if the device has more than one webcam
 	ngOnInit() {
 	  WebcamUtil.getAvailableVideoInputs()
 		.then((mediaDevices: MediaDeviceInfo[]) => {
@@ -32,42 +33,51 @@ export class CameraDialog implements OnInit {
 		});
 	}
 
+  //Deletes image selected
 	retakeImage() {
 		this.previewed = false;
 		this.base64 = '';
 	}
 
+  //Takes a picture of current webcam
 	takePicture() {
 		this.triggerSubject.next();
 	}
 
+  //Changes camera visible
 	swapCamera() {
 		this.nextWebcamSubject.next();
 	}
-    
+
+  //Takes a picture
 	get triggerObservable() {
 		return this.triggerSubject.asObservable();
 	}
 
+  //Switches webcam
 	get webcamObservable() {
 		return this.nextWebcamSubject.asObservable();
 	}
 
+  //Closes webcam dialogue and removes picture
 	onNoClick() {
 		this.dialogRef.close();
 	}
 
+  //Displays newly taken picture
 	displayImage(image) {
 		this.base64 = image.imageAsDataUrl;
 		this.previewed = true;
 	}
 
+  //If there are no webcams do this
   handleInitError(error: WebcamInitError) {
     if (error.mediaStreamError && error.mediaStreamError.name === "NotAllowedError") {
 		  this.showRetry = true;
     }
 	}
 
+  //Saves image
 	onSaveImage() {
 		this.dialogRef.close(this.base64);
 	}

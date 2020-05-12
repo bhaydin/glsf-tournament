@@ -1,9 +1,11 @@
+//Station class/data model for database and server
 export class Station {
 	Port: string;
 	Id: number;
 	TournamentId: any;
 }
 
+//Boat class/data model for database and server
 export class Boat {
 	Name: string;
 	Length: number;
@@ -12,6 +14,7 @@ export class Boat {
 	TournamentId: any;
 }
 
+//Member class/data model for database and server
 export class Member {
 	Name: string;
 	Age: any;
@@ -22,11 +25,15 @@ export class Member {
 	TournamentId: any;
 }
 
+//Group class/data model for server
+//Used to easily send a boat and the attached members
 export class Group {
 	Boat: Boat;
 	Members: Array<Member>;
 }
 
+
+//Tournament class/data model for server and database
 export class Tournament {
 	StartDate: string;
 	EndDate: string;
@@ -35,11 +42,15 @@ export class Tournament {
 	Id: any;
 }
 
+//Time class for tournament hour/minute entry fields
+//Makes it simple to add specified time to a date
 export class Time{
 	Hours: number;
 	Minutes: number;
 }
 
+
+//Fish class/data model for server and database
 export class Fish {
 	Weight: number;
 	Length: number;
@@ -58,7 +69,7 @@ export class Fish {
 	BoatId: number;
 	Id: any;
 
-	//Names
+	//Names of fish in lake michigan, expand if needed
 	public static fishes = [
 		"Atlantic Salmon",
 		"Brown Trout",
@@ -72,19 +83,7 @@ export class Fish {
     "Other", 
 	];
 
-	public static finClips = [
-    "Unspecified",
-		"AD",
-		"AN",
-		"D",
-		"LP",
-		"LM",
-		"LV",
-		"RP",
-		"RV",
-	];
-
-	//Lbs
+	//Lbs of each specified fish in a dictionary (Maxes)
 	public static maxWeights = {
 		"Chinook Salmon": 130,
 		"Coho Salmon": 40,
@@ -98,7 +97,7 @@ export class Fish {
     "Other": 200,
 	};
 
-	//in
+	//Inches of each specified fish in a dictionary (Maxes)
 	public static maxLengths = {
 		"Chinook Salmon": 60,
 		"Coho Salmon": 60,
@@ -113,6 +112,7 @@ export class Fish {
     };
 }
 
+//User class/data model for database and server
 export class User {
 	Id: any;
 	Username: string;

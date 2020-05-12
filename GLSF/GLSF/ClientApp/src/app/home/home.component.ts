@@ -46,6 +46,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() { }
 
+  //Creates species filter for the selected species
   public newSpeciesFilter(filter) {
     $("#speciesButton").html(filter);
     HomeComponent.speciesFilter = filter;
@@ -53,6 +54,7 @@ export class HomeComponent implements OnInit {
     this.filter();
   }
 
+  //Creates tournament filter for selected tournament
   public newTournamentFilter(filter) {
     $("#tournamentFilter").html(filter);
     HomeComponent.tournamentFilter = filter;
@@ -70,6 +72,8 @@ export class HomeComponent implements OnInit {
     this.filter();
   }
 
+  //Gets boats and fish for the home page
+  //Only checked in boats are available
   private async getTournamentBoats() {
     await this.request.getBoats(this.tournID);
     await this.request.getFish(this.tournID);
@@ -79,12 +83,15 @@ export class HomeComponent implements OnInit {
     $("#boatFilter").html("All Boats");
   }
 
+  //Creates a new filter for the boats, and filters by the selected boat
   public newBoatFilter(filter) {
     $("#boatFilter").html(filter);
     HomeComponent.boatFilter = filter;
     this.filter();
   }
 
+  //Gets the selected tournament by finding one that is currently running, and is the oldest
+  //Then the filters are default applied to that tournament.
   private getDefaultTournament() {
     let foundId = 0;
     var today = new Date();
@@ -108,21 +115,22 @@ export class HomeComponent implements OnInit {
     return this.request.tournaments[foundId].Id;
   }
 
+  //Turns a date string to a date object in typescript
   private stringToDate(dateStr) {
     var parts = dateStr.split('/');
-    //console.log(parts);
-    // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
-    // January - 0, February - 1, etc.
     var mydate = new Date(parts[2], parts[0] - 1, parts[1]);
     return mydate;
   }
 
+  //Gets all necessary information for the home page, this includes fish, tournament, boats, stations etc...
+  //The information is then filtered by what was previously selected, or default selected
   async setUpHomeRequest() {
     await this.request.initialize();
     await this.getDefaultTournament();
     await this.filter();
 	}
 
+  //Saves the currently selected fish as a csv file. It can be in metric or imperial
 	saveAsCSV(unitLength, unitWeight, imperial) {
 		let i = 0;
 		let unitMultiplierWeight = 1;
@@ -145,6 +153,7 @@ export class HomeComponent implements OnInit {
 		document.body.removeChild(element);
 	}
 
+  //Changes the displayed units to metric or imperial depending on which was selected
 	changeUnits() {
 		if (this.imperialMode) {  
 			this.unitText = "View Imperial";
@@ -171,6 +180,9 @@ export class HomeComponent implements OnInit {
 		}
 	}
 
+  //Called when a user selects a fish to edit within the table
+  //The fish is updated if the changes are saved
+  //Fish can only be edited in imperial units
   editRow(index) {
     if (!this.imperialMode) {
       this.filteredFishes[index].Length = this.storedLengths[index];
@@ -211,6 +223,7 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
+  //Applies the filter to the list of fish in a tournament
   private async filter() {
 	  this.filteredFishes = [];
 	  this.storedWeights = [];
@@ -232,6 +245,7 @@ export class HomeComponent implements OnInit {
 	  await this.sortBy(this.lastSort);
   }
 
+  //Filter by species
   private speciesFilter() {
     let species = HomeComponent.speciesFilter;
     
@@ -248,6 +262,8 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  //This is for the table headers and sorting from highest to lowest or lowest to highest
+  // Works for most table headers, ones that can be sorted.
   public sortBy(value) {
     if (this.lastCaretClass !== "") {
       document.getElementById(this.lastCaretClass).style.visibility = "hidden";
@@ -355,6 +371,7 @@ export class HomeComponent implements OnInit {
     this.lastCaretClass = caretClass;
   }
 
+  //Filters the fish by boat
   private boatFilter() {
     let filter = HomeComponent.boatFilter;
 
@@ -378,6 +395,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  //Removes all filters applied to fish
   public resetFilters() {
     HomeComponent.speciesFilter = "All Species";
     $("#speciesButton").html("All Species");
@@ -389,10 +407,12 @@ export class HomeComponent implements OnInit {
     this.filter();
   }
 
+  //Used to check if a fishes sample number is specified
   private checkSampleNumber(fish: Fish) {
     return !(fish.SampleNumber === "N/A" || fish.SampleNumber === "" || fish.SampleNumber === "Unspecified");
   }
 
+  //Used to check if a sample number is not specified
   private checkSampleNumberNa(fish: Fish) {
     return fish.SampleNumber === "N/A" || fish.SampleNumber === "" || fish.SampleNumber === "Unspecified";
   }

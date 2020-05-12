@@ -39,6 +39,8 @@ export class EditFishDialog implements OnInit {
 		this.setUpDialog();
 	}
 
+  //Gets all information for the request class to edit a fish.
+  //Establishes values that the fish currently has so that the values before edit can be restored easily
 	async initializeEditFishRequest() {
 		await this.request.getBoats(this.fishInEdit.TournamentId);
 		await this.request.filterCheckedInBoats();
@@ -52,15 +54,19 @@ export class EditFishDialog implements OnInit {
 		this.baseStation = station.Id + " : " + station.Port;
 	}
 
+  //Initializes a few values within the edited fish that need formating
 	async setUpDialog() {
 		this.dateCaught = new Date(this.fishInEdit.Date);
 		this.imageAvailable = (this.fishInEdit.Image != '');
 	}
 
+  //When the dialogue is clicked out of bounds or on the cancel button
+  //Does not save any changes to the fish
 	onNoClick() {
 		this.dialogRef.close();
 	}
 
+  //When a fish is invalid and is requested that it be deleted
 	deleteFish() {
 		const link = this.baseUrl + 'api/database/fish/fishId/' + this.fishInEdit.Id;
 		this.request.delete(link);
@@ -68,6 +74,7 @@ export class EditFishDialog implements OnInit {
 		this.dialogRef.close();
 	}
 
+  //Opens the camera so that the fishes image can be updated
 	openCameraDialog() {
 		const dialogRef = this.dialog.open(CameraDialog, {
 			panelClass: 'custom-dialog-container'
@@ -81,6 +88,7 @@ export class EditFishDialog implements OnInit {
 		});
 	}
 
+  //Called when the boat selected for a fish is changed, and the members need to be updated in the select drop down
 	filterBoat(boatId) {
 		this.request.filterMembers(boatId, false);
 	}
@@ -96,6 +104,7 @@ export class EditFishDialog implements OnInit {
 		this.fishInEdit.StationNumber = this.request.stations[0].Id;
 	}
 
+  //Saves the changes made to the fish, verifies that all values are valid
   saveChanges(date) {
     const validSampleNumber = this.checkSampleNumber(this.fishInEdit.HasTag, this.fishInEdit.SampleNumber);
     const validLength = this.checkLength(this.fishInEdit.Species, this.fishInEdit.Length);
@@ -116,12 +125,7 @@ export class EditFishDialog implements OnInit {
 	  }
   }
 
-  public clearSampleTag() {
-    if (this.fishInEdit.HasTag) {
-      this.fishInEdit.SampleNumber = '';
-    }
-  }
-
+  //Validates that a sample number is 300 characters or less
   private checkSampleNumber(hasTag, sampleNumber) {
     if (hasTag) {
       if (sampleNumber.length > this.request.MAX_STRING_LENGTH) {
@@ -133,6 +137,7 @@ export class EditFishDialog implements OnInit {
     return true;
   }
 
+  //Validates length to make sure it is numeric, and within realistic bounds
   private checkLength(species, length) {
     const lengthNum = parseFloat(length);
     if (length == '') {
@@ -149,6 +154,7 @@ export class EditFishDialog implements OnInit {
     return true;
   }
 
+  //Validates weight to make sure its numeric, and it is within realistic bounds
   private checkWeight(species, weight) {
     const weightNum = parseFloat(weight);
     if (weight == '') {
@@ -165,11 +171,13 @@ export class EditFishDialog implements OnInit {
     return true;
   }
 
+  //Removes image so that it doesn't exist
 	removeImage() {
 		this.fishInEdit.Image = '';
 		this.imageAvailable = false;
 	}
 
+  //Displays image after one is chosen or taken
 	preview(image) {
 		if (image.length !== 0) {
 			const reader = new FileReader();

@@ -5,7 +5,6 @@ import { CameraDialog } from './camera';
 import { MatDialog } from '@angular/material';
 import { Requests } from '../http/Requests';
 import * as tf from '../../assets/tfjs.js';
-import * as $ from 'jquery';
 
 
 @Component({
@@ -48,20 +47,17 @@ export class DataEntryComponent implements OnInit {
 
   ngOnInit() {}
 
+  //Loads prediction model for fish image
 	private async loadModel() {
 		this.model = await tf.loadModel(this.modelLocation);
   }
 
-  public clearSampleTag() {
-    if (this.hasTag) {
-      this.sampleNumber = '';
-    }
-  }
-
+  //Filters members by junior status or not and boat id
 	async filterMembers(boatId, isJunior) {
 		await this.request.filterMembers(boatId, isJunior);
 	}
 
+  //Filters boats, stations, and members by the selected tournament id
 	async filterTournament(tournamentId, isJunior) {
 		await this.request.getBoats(tournamentId);
 		this.request.getStations(tournamentId);
@@ -70,6 +66,7 @@ export class DataEntryComponent implements OnInit {
 		await this.request.filterCheckedInBoats();
 	}
 
+  //Opens camera so that a fish image can be taken
 	async openDialog() {
 		const dialogRef = this.dialog.open(CameraDialog, {
 			panelClass: 'custom-dialog-container'
@@ -81,6 +78,7 @@ export class DataEntryComponent implements OnInit {
 		});
 	}
 
+  //Displays image in a preview to see the final product
 	preview(image) {
 		if (image.length !== 0) {
 			const reader = new FileReader();
@@ -91,6 +89,7 @@ export class DataEntryComponent implements OnInit {
 		}
 	}
 
+  //Sets image string for fish
 	private async setImage(image) {
 		this.validFishLabel = '';
 		this.base64 = image;
@@ -119,6 +118,7 @@ export class DataEntryComponent implements OnInit {
 		return canvas.toDataURL().toString();
 	}
 
+  //Removes selected image for fish
 	removeImage() {
 		this.base64 = '';
 		this.imageAvailable = false;
@@ -126,10 +126,7 @@ export class DataEntryComponent implements OnInit {
 		this.validFish = true;
 	}
 
-	selectedOption(boolValue) {
-		this.valueSelected = boolValue;
-	}
-
+  //Creates the fish to be entered into the database, verifies values to make sure the fish is valid for the database
 	async createFish(species, date, stationId, tournamentId, boatId, memberId) {
 		this.submissionInProcess = true;
 		if (this.port == '') {
@@ -176,6 +173,7 @@ export class DataEntryComponent implements OnInit {
 		}
 	}
 
+  //Verifies that the sample number is less than 300 characters
 	private checkSampleNumber() {
 		if (this.hasTag) {
 			if (this.sampleNumber.length > this.request.MAX_STRING_LENGTH) {
@@ -187,6 +185,7 @@ export class DataEntryComponent implements OnInit {
     return true;
   }
 
+  //Verifies that the length of the fish is a number and a reasonable value
 	private checkLength(species) {
 		const lengthNum = parseFloat(this.length);
 		if (this.length == '') {
@@ -203,6 +202,7 @@ export class DataEntryComponent implements OnInit {
 		return true;
   }
 
+  //Verifies that the weight of the fish is a number and a reasonable value
 	private checkWeight(species) {
 		const weightNum = parseFloat(this.weight);
 		if (this.weight == '') {
@@ -219,11 +219,13 @@ export class DataEntryComponent implements OnInit {
 		return true;
   }
 
+  //Sends request for fish to be added to database
 	private sendRequest(values) {
 		const link = this.baseUrl + 'api/database/fish';
 		this.request.post(values, link);
 	}
 
+  //Reloads page after submission is complete
   private async reload() {
     this.subStyle = "success";
     await this.request.wait(200);
@@ -239,6 +241,7 @@ export class DataEntryComponent implements OnInit {
 	  this.submissionInProcess = false;
   }
 
+  //If the model predicts the image it is not a fish then it is marked invalid
 	private async predict() {
 		let canvas = <HTMLCanvasElement>document.getElementById("canvas");
 		let ctx = canvas.getContext("2d");

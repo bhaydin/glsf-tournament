@@ -3,7 +3,7 @@ import { Tournament, Boat, Station, Fish, Member } from "../models/dataSchemas";
 import { Inject, Injectable } from "@angular/core";
 
 @Injectable({ providedIn: 'root', })
-export class Requests{
+export class Requests {
 	noTournamentsAvailable = false;
 	noBoatsAvailable = false;
 	noStationsAvailable = false;
@@ -19,6 +19,7 @@ export class Requests{
 
 	constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
 
+  //Initializes the request service with boats, stations, members of the default tournament
 	async initialize() {
 		const tournamentId = await this.getTournaments();
 		await this.getBoats(tournamentId);
@@ -28,11 +29,13 @@ export class Requests{
 		await this.filterMembers(this.checkedInBoats[0].Id, false);
 	}
 
+  //Sends an error to the server
   async sendError(errorMsg) {
 	  const link = this.baseUrl + 'api/database/error/' + errorMsg;
     await this.http.get<String>(link).toPromise();
   }
 
+  //Clears data that was previously stored, not in use right now
 	releaseData() {
 		this.stations = [];
 		this.boats = [];
@@ -40,6 +43,7 @@ export class Requests{
 		this.members = [];
 	}
 
+  //Gets all tournaments in database, if there are none then adds a invalid tournament that disables drop down selects
 	async getTournaments() {
 		const link = this.baseUrl + 'api/database/tournament';
 		this.tournaments = await this.http.get<Tournament[]>(link).toPromise();
@@ -57,12 +61,14 @@ export class Requests{
 		return this.tournaments[0].Id;
 	}
 
+  //Gets all fish for a tournament, it is by tournament because each fish has a image stored as well. Needed to limit requested objects
 	async getFish(tournamentId) {
 		const link = this.baseUrl + 'api/database/fish/tournamentId/' + tournamentId;
 		this.fishes = await this.http.get<Fish[]>(link).toPromise();
 		return true;
 	}
 
+  //Gets all boats for a tournament, if there are none then a invalid boat is generated that disabled all boat select drop downs
 	async getBoats(tournamentId) {
 		const link = this.baseUrl + 'api/database/boat/' + tournamentId;
 		this.boats = await this.http.get<Boat[]>(link).toPromise();
@@ -80,6 +86,7 @@ export class Requests{
 		return true;
 	}
 
+  //Filters all boats for tournament for the boats that have been checked in by tournament administrator
 	async filterCheckedInBoats() {
 		this.checkedInBoats = await this.boats.filter(boat => boat.CheckedIn == true);
 		if (this.checkedInBoats.length == 0) {
@@ -96,6 +103,7 @@ export class Requests{
 		return true;
 	}
 
+  //Gets all stations for a tournament, if there are no stations creates a invalid station that disabled all station select drop downs
 	async getStations(tournamentId) {
 		const link = this.baseUrl + 'api/database/station/' + tournamentId;
 		this.stations = await this.http.get<Station[]>(link).toPromise();
@@ -111,12 +119,14 @@ export class Requests{
 		return true;
 	}
 
+  //Gets all members from the server for the request service
 	async getMembers(tournamentId) {
 		const link = this.baseUrl + 'api/database/member/' + tournamentId;
 		this.allMembers = await this.http.get<Member[]>(link).toPromise();
 		return true;
 	}
 
+  //Gets a tournament from the request service
 	getTournament(tournamentId) {
 		for (let i = 0; i < this.tournaments.length; i++) {
 			if (this.tournaments[i].Id == tournamentId) {
@@ -126,6 +136,7 @@ export class Requests{
 		return null;
 	}
 
+  //Gets a boat from the request service
 	getBoat(boatId) {
 		for (let i = 0; i < this.boats.length; i++) {
 			if (this.boats[i].Id == boatId) {
@@ -135,6 +146,7 @@ export class Requests{
 		return null;
 	}
 
+  //Gets a station from the request service
 	getStation(stationId) {
 		for (let i = 0; i < this.stations.length; i++) {
 			if (this.stations[i].Id == stationId) {
@@ -144,6 +156,7 @@ export class Requests{
 		return null;
 	}
 
+  //Gets a member from the request service
 	getMember(memberId) {
 		for (let i = 0; i < this.members.length; i++) {
 			if (this.members[i].Id == memberId) {
@@ -153,6 +166,7 @@ export class Requests{
 		return null;
 	}
 
+  //Gets a fish from the request service
 	getAFish(fishId) {
 		for (let i = 0; i < this.fishes.length; i++) {
 			if (this.fishes[i].Id == fishId) {
@@ -162,10 +176,12 @@ export class Requests{
 		return null;
 	}
 
+  //Wait method in milliseconds
 	wait(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
+  //Filters members based on boat id, also filters based on if the members are juniors or not
 	async filterMembers(boatId, isJunior) {
 		if (isJunior) {
 			this.members = await this.allMembers.filter(member =>
@@ -192,7 +208,7 @@ export class Requests{
 		return true;
 	}
 
-  //Database modification methods
+  //Database modification method that posts the specified value to the specified link
 	async post(values, link) {
 		const httpOptions = {
 			headers: new HttpHeaders({
@@ -212,11 +228,13 @@ export class Requests{
 	  return await this.http.put(link, values, httpOptions).toPromise();
 	}
 
+  //Used to delete a row in the database 
 	async delete(link) {
 		return await this.http.delete(link).toPromise();
 	}
 
   //Dropdown check methods, making sure elements dont get changed via inspect element
+  //Checks if selected species is valid
 	checkDropdownSpecies(species) {
 		for (let i = 0; i < Fish.fishes.length; i++) {
 			if (Fish.fishes[i] == species) {
@@ -224,8 +242,9 @@ export class Requests{
 			}
 		}
 		return false;
-}
+  }
 
+  //Checks if selected station is valid
 	checkDropdownStation(stationId) {
 		for (let i = 0; i < this.stations.length; i++) {
 			if (this.stations[i].Id == stationId) {
@@ -235,6 +254,7 @@ export class Requests{
 		return false;
 	}
 
+  //Checks if selected boat is valid
 	checkDropdownBoat(boatId) {
 		for (let i = 0; i < this.boats.length; i++) {
 			if (this.boats[i].Id == boatId) {
@@ -244,6 +264,7 @@ export class Requests{
 		return false;
 	}
 
+  //Checks if selected tournament is valid
 	checkDropdownTournament(tournamentId) {
 		for (let i = 0; i < this.tournaments.length; i++) {
 			if (this.tournaments[i].Id == tournamentId) {
@@ -253,6 +274,7 @@ export class Requests{
 		return false;
 	}
 
+  //Checks if selected member is valid
 	checkDropdownMember(memberId) {
 		for (let i = 0; i < this.members.length; i++) {
 			if (this.members[i].Id == memberId) {
@@ -262,7 +284,6 @@ export class Requests{
 		return false;
   }
 }
-
 
 window.onerror = function (errorMessage, errorUrl, errorLine) {
   this.sendError(errorMessage + " on line " + errorLine);
