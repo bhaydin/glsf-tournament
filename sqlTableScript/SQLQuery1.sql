@@ -61,6 +61,8 @@ create table Users(
 	PasswordHash binary(64) not null,
 	Username varchar(300) not null,
 	AccessLevel int not null,
+	Email varchar(300) not null,
+	PhoneNumber varchar(30) not null,
 );
 
 drop table if exists Members;

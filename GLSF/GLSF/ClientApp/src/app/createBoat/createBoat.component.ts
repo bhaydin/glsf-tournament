@@ -34,22 +34,26 @@ export class CreateBoatComponent implements OnInit{
 
 	ngOnInit() {}
 
+  //Gets all tournaments to set up boat request
 	async setUpBoatRequest() {
 		const tournamentId = await this.request.getTournaments();
 		this.request.getBoats(tournamentId);
 	}
 
+  //Adds a default member to a boat, (all boats need at least 1 person on it)
 	addMember() {
 		const member: Member = { Name: "", Age: null, IsCaptain: false, IsJunior: false, Id: 0, BoatId: 0, TournamentId: 0};
 		this.members.push(member);
 	}
 
+  //Removes specified member from list
 	removeMember(i) {
     this.members.splice(i, 1);
     this.membersLabels.splice(i, 1);
     this.membersLabels.push(''); // to keep the array at the same size
 	}
 
+  //Selects the member as captain of the ship, it is possible that no captain can be selected
 	selectedCaptain(index) {
 		for (let i = 0; i < this.members.length; i++) {
 			this.members[i].IsCaptain = false;
@@ -59,10 +63,12 @@ export class CreateBoatComponent implements OnInit{
 		}
 	}
 
+  //Filters boats by selected tournament, prevents duplicates
 	filter(tournamentId) {
 		this.request.getBoats(tournamentId);
 	}
 
+  //Creates boat for tournament, validates boat values
 	async createBoat(tournamentId) {
 		this.submissionInProcess = true;
 		this.members = this.getValidMembers(tournamentId);
@@ -92,6 +98,7 @@ export class CreateBoatComponent implements OnInit{
 		}
 	}
 
+  //Makes sure one member is on a boat at least.
 	private membersAvailable() {
 		if (this.members.length == 0) {
       this.membersLabel = 'Must have at least one registered person on a boat.';
@@ -120,6 +127,7 @@ export class CreateBoatComponent implements OnInit{
 		return true;
 	}
 
+  //Makes sure each member has valid information (age, name, etc..)
 	private getValidMembers(tournamentId) {
 		let i = 1;
 		let validMembers: Array<Member> = [];
@@ -139,6 +147,7 @@ export class CreateBoatComponent implements OnInit{
 		return validMembers;
 	}
 
+  // Makes sure boat name is available and not taken
 	private checkName() {
 		if (this.boatName == '') {
 			this.nameLabel = 'Enter name';
@@ -153,6 +162,7 @@ export class CreateBoatComponent implements OnInit{
 		return true;
 	}
 
+  //Makes sure length is a valid number
 	private checkLength() {
 		const lengthNum = parseFloat(this.boatLength);
 		if (this.boatLength == '') {
@@ -169,6 +179,7 @@ export class CreateBoatComponent implements OnInit{
 		return true;
 	}
 
+  //Makes sure boat ID isn't already taken for tournament
 	private checkId() {
 		const idNum = parseFloat(this.boatId);
 		if (this.boatId == '') {
@@ -192,11 +203,13 @@ export class CreateBoatComponent implements OnInit{
 		return true;
 	}
 
+  //Sends request for boat to be made in database
 	private sendRequest(values) {
 		const boatLink = this.baseUrl + 'api/database/boat';
 		return this.request.post(values, boatLink);
 	}
 
+  //Reloads boat creation page
   private async reload() {
 	  this.subStyle = "success";
 	  this.subText = "Submitted!";

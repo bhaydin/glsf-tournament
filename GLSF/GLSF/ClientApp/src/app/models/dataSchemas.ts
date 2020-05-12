@@ -121,4 +121,6 @@ export class User {
 	LastName: string;
 	Token: string;
 	AccessLevel: number;
+	Email: string;
+	PhoneNumber: string;
 }

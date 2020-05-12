@@ -79,7 +79,6 @@ export class EditFishDialog implements OnInit {
 		const dialogRef = this.dialog.open(CameraDialog, {
 			panelClass: 'custom-dialog-container'
 		});
-
 		dialogRef.afterClosed().subscribe(result => {
 			if (result != undefined) {
 				this.fishInEdit.Image = result;

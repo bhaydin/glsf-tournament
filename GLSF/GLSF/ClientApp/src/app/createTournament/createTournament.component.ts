@@ -29,6 +29,7 @@ export class CreateTournamentComponent implements OnInit {
 
 	ngOnInit() {	}
 
+  //Creates tournament for database
 	createTournament(startDate, endDate) {
 		this.submissionInProcess = true;
 		startDate = new Date(startDate);
@@ -58,12 +59,14 @@ export class CreateTournamentComponent implements OnInit {
 		}
   }
 
+  //gets minutes and seconds specified in time selector
 	private splitTime(time) {
 		const timeArrayWithMeridiem = time.split(' ');
 		const timeArray = timeArrayWithMeridiem[0].split(':');
 		return this.formatHours(parseFloat(timeArray[0]), parseFloat(timeArray[1]), timeArrayWithMeridiem[1]);
 	}
 
+  //Formats hours depending on whether or not it was am or pm selected becomes 24 hour format
 	private formatHours(hour, minutes, meridiem) {
 		hour %= 12;
 		if (meridiem == "PM") {
@@ -76,6 +79,7 @@ export class CreateTournamentComponent implements OnInit {
 		return time;
 	}
 
+  //Makes sure tournament name is 300 characters or less
 	private checkName() {
 		if (this.tournamentName == '') {
 			this.nameLabel = 'Enter name';
@@ -90,6 +94,7 @@ export class CreateTournamentComponent implements OnInit {
 		return true;
 	}
 
+  //Validates start date is before the ending date of the tournament
 	private checkDates(startDate, endDate) {
 		if (startDate <= endDate) {
 			this.dateLabel = '';
@@ -99,11 +104,13 @@ export class CreateTournamentComponent implements OnInit {
 		return false;
 	}
 
+  //Sends the tournament to be created in the database
 	private async sendRequest(values) {
 		const link = this.baseUrl + 'api/database/tournament';
 		return this.request.post(values, link);
   }
 
+  //Reloads the tournament page
   private async reload() {
 	  this.subStyle = "success";
 	  this.subText = "Submitted!";

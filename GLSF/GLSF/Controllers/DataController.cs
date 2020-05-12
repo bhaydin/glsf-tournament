@@ -89,15 +89,24 @@ namespace ServerDatabase.Controllers
 				if (string.IsNullOrWhiteSpace(user.Password))
 					throw new Exception("Password is required");
 
-				if (_context.Users.Any(x => x.Username == user.Username))
-					throw new Exception("Username \"" + user.Username + "\" is already taken");
+				foreach(UserDatabaseModel tempUser in _context.Users.ToList())
+				{
+					if (_context.Users.Any(x => x.Username == user.Username))
+						throw new Exception("Username \"" + user.Username + "\" is already taken");
+					if (_context.Users.Any(x => x.Email == user.Email))
+						throw new Exception("Email \"" + user.Email + "\" is already in use");
+					if (_context.Users.Any(x => x.PhoneNumber == user.PhoneNumber))
+						throw new Exception("Phone number \"" + user.PhoneNumber + "\" is already in use");
+				}
 
 				UserDatabaseModel databaseUser = new UserDatabaseModel { Id = null, 
 					FirstName = user.FirstName, 
 					LastName = user.LastName, 
 					Username = user.Username,
 					PasswordHash = new byte[0],
-					AccessLevel = 0,};
+					AccessLevel = 0,
+					Email = user.Email,
+					PhoneNumber = user.PhoneNumber,};
 				databaseUser.PasswordHash = CreatePasswordHash(user.Password);
 				await _context.Users.AddAsync(databaseUser);
 				await _context.SaveChangesAsync();
@@ -182,32 +191,32 @@ namespace ServerDatabase.Controllers
 		[HttpGet]
 		public async Task<string> GetFishByTournamentId(Guid id)
 		{
-      try
-      {
-        List<Fish> allFishes = await _context.Fishes.Where(fish => fish.TournamentId == id).ToListAsync();
-        return JsonConvert.SerializeObject(allFishes);
-      }
-      catch(Exception e) 
-      {
-        System.Diagnostics.Trace.TraceError("Cannot get the fish with tournament id " + id);
-        return null;
-      }
+		  try
+		  {
+			List<Fish> allFishes = await _context.Fishes.Where(fish => fish.TournamentId == id).ToListAsync();
+			return JsonConvert.SerializeObject(allFishes);
+		  }
+		  catch(Exception e) 
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot get the fish with tournament id " + id);
+			return null;
+		  }
 		}
 
 		[Route("fish/fishId/{id}")]
 		[HttpGet]
 		public async Task<string> GetFishById(Guid id)
 		{
-      try
-      {
-        Fish fish = await _context.Fishes.FindAsync(id);
-        return JsonConvert.SerializeObject(fish);
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Cannot get the fish with the fish id " + id);
-        return null;
-      }
+		  try
+		  {
+			Fish fish = await _context.Fishes.FindAsync(id);
+			return JsonConvert.SerializeObject(fish);
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot get the fish with the fish id " + id);
+			return null;
+		  }
 		}
 
 		[Route("fish")]
@@ -231,20 +240,20 @@ namespace ServerDatabase.Controllers
 		[HttpDelete]
 		public async Task<Guid> DeleteFish(Guid id)
 		{
-      try
-      {
-        Fish fish = new Fish() { Id = id };
-        _context.Fishes.Attach(fish);
-        _context.Fishes.Remove(fish);
-        await _context.SaveChangesAsync();
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Cannot delete fish with the fish id " + id);
-      }
+		  try
+		  {
+			Fish fish = new Fish() { Id = id };
+			_context.Fishes.Attach(fish);
+			_context.Fishes.Remove(fish);
+			await _context.SaveChangesAsync();
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot delete fish with the fish id " + id);
+		  }
 
-      return id;
-    }
+		  return id;
+		}
 
 		//Boats
 		[Route("boat")]
@@ -279,32 +288,32 @@ namespace ServerDatabase.Controllers
 		[HttpGet]
 		public async Task<string> GetBoatsByTournamentId(Guid id)
 		{
-      try
-      {
-        List<Boat> allBoats = await _context.Boats.Where(boat => boat.TournamentId == id).ToListAsync();
-        return JsonConvert.SerializeObject(allBoats);
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Cannot get boats with the tournament id " + id);
-        return null;
-      }
+		  try
+		  {
+			List<Boat> allBoats = await _context.Boats.Where(boat => boat.TournamentId == id).ToListAsync();
+			return JsonConvert.SerializeObject(allBoats);
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot get boats with the tournament id " + id);
+			return null;
+		  }
 		}
 
 		[Route("member/{id}")]
 		[HttpGet]
 		public async Task<string> GetMembersByBoatId(Guid id)
 		{
-      try
-      {
-        List<Member> allMembers = await _context.Members.Where(member => member.TournamentId == id).ToListAsync();
-        return JsonConvert.SerializeObject(allMembers);
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Cannot get boat members with the boat id " + id);
-        return null;
-      }
+		  try
+		  {
+			List<Member> allMembers = await _context.Members.Where(member => member.TournamentId == id).ToListAsync();
+			return JsonConvert.SerializeObject(allMembers);
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot get boat members with the boat id " + id);
+			return null;
+		  }
 		}
 
 		//Tournaments
@@ -312,49 +321,49 @@ namespace ServerDatabase.Controllers
 		[HttpPost]
 		public async Task<Tournament> InsertTournament([FromBody]Tournament tournament)
 		{
-      try
-      {
-        await _context.Tournaments.AddAsync(tournament);
-        await _context.SaveChangesAsync();
-        return tournament;
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Cannot insert the tournament " + tournament);
-        return null;
-      }
+		  try
+		  {
+			await _context.Tournaments.AddAsync(tournament);
+			await _context.SaveChangesAsync();
+			return tournament;
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot insert the tournament " + tournament);
+			return null;
+		  }
 		}
 
-    private DateTime ConvertToDate(string date)
-    {
-      try
-      {
-        DateTime myDate = DateTime.ParseExact(date, "g", new CultureInfo("en-US"), DateTimeStyles.None);
-        return myDate;
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Cannot convert " + date + " to a valid date");
-        return new DateTime();
-      }
-    }
+		private DateTime ConvertToDate(string date)
+		{
+		  try
+		  {
+			DateTime myDate = DateTime.ParseExact(date, "g", new CultureInfo("en-US"), DateTimeStyles.None);
+			return myDate;
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot convert " + date + " to a valid date");
+			return new DateTime();
+		  }
+		}
 
 		[Route("tournament")]
 		[HttpGet]
 		public async Task<string> GetTournaments()
 		{
-      try
-      {
-        List<Tournament> allTournaments = await _context.Tournaments.ToListAsync();
-        allTournaments.Sort((x, y) => ConvertToDate(x.StartDate).CompareTo(ConvertToDate(y.StartDate)));
-        allTournaments.Reverse();
-        return JsonConvert.SerializeObject(allTournaments);
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Cannot get tournaments from the db");
-        return null;
-      }
+		  try
+		  {
+			List<Tournament> allTournaments = await _context.Tournaments.ToListAsync();
+			allTournaments.Sort((x, y) => ConvertToDate(x.StartDate).CompareTo(ConvertToDate(y.StartDate)));
+			allTournaments.Reverse();
+			return JsonConvert.SerializeObject(allTournaments);
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot get tournaments from the db");
+			return null;
+		  }
 		}
 
 		//Stations
@@ -362,16 +371,16 @@ namespace ServerDatabase.Controllers
 		[HttpPost]
 		public async Task<Station> InsertStation([FromBody]Station station)
 		{
-      try
-      {
-        await _context.Stations.AddAsync(station);
-        await _context.SaveChangesAsync();
-        return station;
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Cannot insert the station " + station);
-        return null;
+		  try
+		  {
+			await _context.Stations.AddAsync(station);
+			await _context.SaveChangesAsync();
+			return station;
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot insert the station " + station);
+			return null;
       }
 		}
 
@@ -379,16 +388,16 @@ namespace ServerDatabase.Controllers
 		[HttpGet]
 		public async Task<string> GetStationsByTournamentId(Guid id)
 		{
-      try
-      {
-        List<Station> allStations = await _context.Stations.Where(station => station.TournamentId == id).ToListAsync();
-        return JsonConvert.SerializeObject(allStations);
-      }
-      catch(Exception e)
-      {
-        System.Diagnostics.Trace.TraceError("Cannot get stations for the tournament id " + id);
-        return null;
-      }
+		  try
+		  {
+			List<Station> allStations = await _context.Stations.Where(station => station.TournamentId == id).ToListAsync();
+			return JsonConvert.SerializeObject(allStations);
+		  }
+		  catch(Exception e)
+		  {
+			System.Diagnostics.Trace.TraceError("Cannot get stations for the tournament id " + id);
+			return null;
+		  }
 		}
 
 		[Route("checkin")]

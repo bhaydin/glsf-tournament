@@ -24,6 +24,7 @@ export class CheckInComponent implements OnInit{
 
 	ngOnInit() {}
 
+  //Sets up check in values in the request service
 	async setUpCheckIn() {
 		const tournamentId = await this.request.getTournaments();
 		await this.request.getBoats(tournamentId);
@@ -31,6 +32,7 @@ export class CheckInComponent implements OnInit{
 		this.request.filterMembers(this.request.boats[0].Id, false);
 	}
 
+  //Checks in boat selected by tournament administrator
 	async checkInBoat(i) {
 		this.checkInLabel = "";
 		if (this.currentUser.AccessLevel == 1) {
@@ -47,6 +49,7 @@ export class CheckInComponent implements OnInit{
 		}
 	}
 
+  //Gets the boats for the selected tournament
 	async filterTournament(tournamentId) {
 		this.request.getBoats(tournamentId);
 		await this.request.getMembers(tournamentId);

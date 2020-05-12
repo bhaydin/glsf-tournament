@@ -194,33 +194,36 @@ export class HomeComponent implements OnInit {
       data: Object.assign({}, this.filteredFishes[index]),
 		});
     dialogRef.afterClosed().subscribe(editedFish => {
-      this.filter();
-
 			if (editedFish != undefined) {
         const link = this.baseUrl + 'api/database/fish';
         editedFish.Length = parseFloat(editedFish.Length);
 				editedFish.Weight = parseFloat(editedFish.Weight);
 				editedFish.MemberId = parseFloat(editedFish.MemberId);
 				editedFish.BoatId = parseFloat(editedFish.BoatId);
-        this.request.update(editedFish, link).then(() => {
-          this.filteredFishes[index] = editedFish;
+				this.request.update(editedFish, link).then(() => {
+					this.filteredFishes[index] = editedFish;
 			    for (let i = 0; i < this.request.fishes.length; i++) {
 			      if (this.request.fishes[i].Id == editedFish.Id) {
 					    this.request.fishes[i] = editedFish;
-					    break;
-            }
-          }
+					    i = this.request.fishes.length;
+					    this.shortFilter(index);
+				    }
+					}
+				});
+		  }
+	  });
+	  this.shortFilter(index);
+	}
 
-          if (!this.imperialMode) {
-            this.storedLengths[index] = this.filteredFishes[index].Length;
-            this.storedWeights[index] = this.filteredFishes[index].Weight;
-
-            this.filteredFishes[index].Length *= 2.54;
-            this.filteredFishes[index].Weight *= 0.45359237;
-          }
-        });
-      }
-		});
+	private async shortFilter(index) {
+		if (!this.imperialMode) {
+			this.storedLengths[index] = this.filteredFishes[index].Length;
+			this.storedWeights[index] = this.filteredFishes[index].Weight;
+			this.filteredFishes[index].Length *= 2.54;
+			this.filteredFishes[index].Weight *= 0.45359237;
+		}
+		await this.sortBy(this.lastSort);
+		await this.sortBy(this.lastSort);
 	}
 
   //Applies the filter to the list of fish in a tournament
@@ -240,7 +243,6 @@ export class HomeComponent implements OnInit {
 			  fish.Length *= 2.54;
 		  }
 	  });
-
     await this.sortBy(this.lastSort);
 	  await this.sortBy(this.lastSort);
   }

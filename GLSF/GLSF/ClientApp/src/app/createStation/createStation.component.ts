@@ -24,15 +24,18 @@ export class CreateStationComponent implements OnInit{
 
 	ngOnInit() {	}
 
+  //Sets up request service for stations by getting all tournaments
 	async setUpStationRequest() {
 		const tournamentId = await this.request.getTournaments();
 		this.request.getStations(tournamentId);
 	}
 
+  //Filters all made statiosn for a tournament, prevents duplicates
 	filter(tournamentId) {
 		this.request.getStations(tournamentId);
 	}
 
+  //Adds station to database linked to tournament
 	async createStation(tournamentId) {
 		this.submissionInProcess = true;
 		const tournamentExists = this.request.checkDropdownTournament(tournamentId);
@@ -53,6 +56,7 @@ export class CreateStationComponent implements OnInit{
     }
   }
 
+  //Makes sure station number is a valid number
 	private checkNumber() {
 		const stationNum = parseFloat(this.stationNumber);
 		if (this.stationNumber == '') {
@@ -76,6 +80,7 @@ export class CreateStationComponent implements OnInit{
 		return true;
 	}
 
+  //Checks station name, makes sure its less than 300 characters
 	private checkName() {
 		if (this.portName == '') {
 			this.nameLabel = 'Enter name';
@@ -88,11 +93,13 @@ export class CreateStationComponent implements OnInit{
 		return true;
 	}
 
+  //Sends station to link for request class
 	private sendRequest(values) {
 		const link = this.baseUrl + 'api/database/station';
 		return this.request.post(values, link);
 	}
 
+  //Reloads station page
   private async reload() {
 	  this.subStyle = "success";
 	  this.subText = "Submitted!";
