@@ -242,6 +242,7 @@ export class DataEntryComponent implements OnInit {
     this.noClips = false;
 	  this.hasTag = false;
 	  this.finClips = '';
+	  this.port = '';
 	  this.submissionInProcess = false;
   }
 
