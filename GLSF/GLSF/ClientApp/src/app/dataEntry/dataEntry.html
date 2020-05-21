@@ -24,11 +24,11 @@
   <input [(ngModel)]="length" type=text placeholder="Length (in)" class="moveright standardwidth" style="margin-left:45px;"><br />
   <label style="margin-left:60px;" class="required">{{weightLabel}}</label><label style="margin-left:110px;" class="required">{{lengthLabel}}</label><br />
 
-  <label>Species:</label><label style="margin-left: 170px;">No Fin Clips:</label><input type="checkbox" style="margin-left:10px;" [(ngModel)]="noClips" /><br />
+  <label>Species:</label><label style="margin-left: 170px;">Check If No Fins Clipped:</label><input type="checkbox" style="margin-left:10px;" [(ngModel)]="noClips" /><br />
   <select #speciesSelect class="moveright standardwidth" id="SpeciesSelecter">
     <option *ngFor="let fish of fishes" value='{{fish}}'>{{fish}}</option>
   </select>
-  <input [(ngModel)]="finClips" class="standardwidth" style="margin-left:45px;" placeholder="Fins Clipped" type=text>
+  <input [(ngModel)]="finClips" class="standardwidth" style="margin-left:45px;" placeholder="Fin Clips" type=text>
   <br /><br />
 
   <label>Tournament:</label><label style="margin-left:125px;">Station:</label><br />
@@ -39,7 +39,7 @@
     <option *ngFor="let station of this.request.stations" value='{{station.Id}}'>{{station.Id}}: {{station.Port}}</option>
   </select><br />
 
-  <label>Boat:</label><label style="margin-left:195px;">Caught By:</label><label style="margin-left:100px;">Junior: </label><br />
+  <label>Boat:</label><label style="margin-left:195px;">Caught By:</label><label style="margin-left:60px;">Juniors: </label><br />
   <select #boatSelect [disabled]="this.request.noBoatsAvailable" style="margin-left:60px;" class="standardwidth">
     <option *ngFor="let boat of this.request.checkedInBoats" (click)="filterMembers(boatSelect.value, juniorCheckbox.checked)" value='{{boat.Id}}'>{{boat.Name}}</option>
   </select>

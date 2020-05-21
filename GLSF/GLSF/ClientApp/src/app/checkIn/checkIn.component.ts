@@ -34,17 +34,18 @@ export class CheckInComponent implements OnInit{
 
   //Checks in boat selected by tournament administrator
 	async checkInBoat(i) {
-		this.checkInLabel = "";
 		if (this.currentUser.AccessLevel == 1) {
+			this.checkInLabel = "";
 			const boatLink = this.baseUrl + "api/database/boat";
 			const boat = this.request.boats[i];
 			if (boat.CheckedIn) {
 				boat.CheckedIn = false;
+				this.checkInLabel = boat.Id + " checked out"
 			} else {
 				boat.CheckedIn = true;
+				this.checkInLabel = boat.Id + " checked in"
 			}
 			await this.request.update(boat, boatLink);
-      this.checkInLabel = boat.Name + " checked in"
       this.request.filterCheckedInBoats();
 		}
 	}

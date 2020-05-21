@@ -62,8 +62,12 @@ export class DataEntryComponent implements OnInit {
 		await this.request.getBoats(tournamentId);
 		this.request.getStations(tournamentId);
 		await this.request.getMembers(tournamentId);
-		await this.request.filterMembers(this.request.boats[0].Id, isJunior);
 		await this.request.filterCheckedInBoats();
+		if (!this.request.noBoatsAvailable) {
+			await this.request.filterMembers(this.request.checkedInBoats[0].Id, isJunior);
+		} else {
+			await this.request.filterMembers(null, isJunior);
+		}
 	}
 
   //Opens camera so that a fish image can be taken
